@@ -75,6 +75,8 @@ const MarketingCalendar = () => {
     { value: "DEC", label: "DEC" },
     { value: "TBD", label: "TBD" },
   ];
+
+  console.log({months})
   const generatePdf = () => {
     const element = document.getElementById('CalenerContainer'); // The HTML element you want to convert
     // element.style.padding = "10px"

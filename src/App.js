@@ -36,6 +36,8 @@ import YearlyComparisonReport from "./reports/yealyComparison/ComparisonReport";
 import BMAIssues from "./pages/BMAIssues";
 import OrderStatusIssues from "./OrderStatusIssues";
 
+import MarketingMaterial from "./components/Material/material"
+
 
 function App() {
   // const Redirect = ({ href }) => {
@@ -101,6 +103,8 @@ function App() {
             {/* <Route path="/customerService" element={<CustomerServiceForm />}></Route> */}
             <Route path="/customerService" element={<BMAIssues />}></Route>
             <Route path="/orderStatus" element={<OrderStatusIssues />}></Route>
+
+            <Route path="/marketing-material" element={<MarketingMaterial />}></Route>
             
             {/* 1234 */}
           </Routes>

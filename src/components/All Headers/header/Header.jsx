@@ -14,8 +14,38 @@ const Header = () => {
           </Link>
         </p>
         <p className={`m-0  ${styles.text}`}>
-          <Link to="/marketing-calendar" className="linkStyle">
+          {/* <Link to="/marketing-calendar" className="linkStyle">
             Marketing Calendar
+          </Link> */}
+
+          <Link to="" className="linkStyle">
+            <div className="dropdown dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {path === "/marketing-calendar" ? "Calendar" : null ||  path === "/Target-Report" ? "Target Report" : "Marketing"}
+              <ul className="dropdown-menu">
+                <li>
+                  <Link
+                    to="/marketing-calendar"
+                    className="dropdown-item text-start"
+                    onClick={() => {
+                      navigate("/marketing-calendar");
+                    }}
+                  >
+                    Calendar
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/marketing-material"
+                    className="dropdown-item text-start"
+                    onClick={() => {
+                      navigate("/marketing-material");
+                    }}
+                  >
+                    Material's
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </Link>
         </p>
 
