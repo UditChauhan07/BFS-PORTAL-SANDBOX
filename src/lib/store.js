@@ -710,7 +710,12 @@ export async function getMarketingCalendar({ key, manufacturerId }) {
     "Content-Type": "application/json",
   };
 
-  let response = await fetch(url + "v3/eVC3IaiEEz3x7ym", {
+  // let apiUrl = url + "v3/eVC3IaiEEz3x7ym"  
+  
+  let apiUrl = url + "v3/sandboxCalendar"     
+  key = '00DO8000001NKS5!AQEAQC54cydfyWi6PsiARD8oJ8HC3whS.UxD83Ff.pkyemw3RMKyaCgoOovMo0qN_E8A9qZN_28GML8Yh4Dei8XWHaFdouN6'
+
+  let response = await fetch(apiUrl, {
     method: "POST",
     body: JSON.stringify({ key, manufacturerId }),
     headers: headersList,
@@ -854,7 +859,7 @@ export async function getMarkertingMaterial() {
   // let token = user?.x_access_token
 
   let saleRepId = '0053b00000DgAVKAA3'
-  let token = "00DO8000001NKS5!AQEAQPC3YRlgpeSdVlCmaqo.0uWadofhp.uyZ92fEhFbjqmi8U4ANdMNUgTz7QUP_zfyJF9TjPlSBtb.K_xvTIhbXtgi8paZ"
+  let token = "00DO8000001NKS5!AQEAQC54cydfyWi6PsiARD8oJ8HC3whS.UxD83Ff.pkyemw3RMKyaCgoOovMo0qN_E8A9qZN_28GML8Yh4Dei8XWHaFdouN6"
 
   let headersList = {
     Accept: "*/*",
