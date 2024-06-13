@@ -1,6 +1,8 @@
-export const originAPi = "https://b2b.beautyfashionsales.com"
+// export const originAPi = "https://b2b.beautyfashionsales.com"
 // export const originAPi = "https://dev.beautyfashionsales.com"
-// export const originAPi = "http://localhost:3001"
+
+export const originAPi = "http://localhost:8010"
+
 let url = `${originAPi}/beauty/`;
 let URL = `${originAPi}/beauty/0DS68FOD7s`;
 const orderKey = "orders";
@@ -631,6 +633,7 @@ export async function topProduct({ month, manufacturerId }) {
     return data;
   }
 }
+
 export async function getBrandList({ key, userId }) {
   let headersList = {
     Accept: "*/*",
@@ -650,6 +653,7 @@ export async function getBrandList({ key, userId }) {
     return data;
   }
 }
+
 export async function getRetailerList({ key, userId }) {
   let headersList = {
     Accept: "*/*",
@@ -808,7 +812,12 @@ export async function getMarketingCalendar({ key, manufacturerId }) {
     "Content-Type": "application/json",
   };
 
-  let response = await fetch(url + "v3/eVC3IaiEEz3x7ym", {
+  // let apiUrl = url + "v3/eVC3IaiEEz3x7ym"  
+  
+  let apiUrl = url + "v3/sandboxCalendar"     
+  key = '00DO8000001NKS5!AQEAQC54cydfyWi6PsiARD8oJ8HC3whS.UxD83Ff.pkyemw3RMKyaCgoOovMo0qN_E8A9qZN_28GML8Yh4Dei8XWHaFdouN6'
+
+  let response = await fetch(apiUrl, {
     method: "POST",
     body: JSON.stringify({ key, manufacturerId }),
     headers: headersList,
@@ -918,8 +927,11 @@ export async function getMarketingCalendarPDFV3({ key, manufacturerId, month }) 
     return data?.file || false;
   }
 }
-export async function uploadFileSupport({ key, supportId, files }) {
-  if (files.length) {
+
+
+export async function uploadFileSupport({key,supportId,files}){
+  if(files.length){
+
 
     let headersList = {
       "Accept": "*/*", key, supportId
@@ -942,6 +954,35 @@ export async function uploadFileSupport({ key, supportId, files }) {
   }
 }
 
+export async function getMarkertingMaterial() {
+  // let user = GetAuthData()
+
+  // console.log({user})
+
+  // let saleRepId = user?.Sales_Rep__c
+  // let token = user?.x_access_token
+
+  let saleRepId = '0053b00000DgAVKAA3'
+  let token = "00DO8000001NKS5!AQEAQC54cydfyWi6PsiARD8oJ8HC3whS.UxD83Ff.pkyemw3RMKyaCgoOovMo0qN_E8A9qZN_28GML8Yh4Dei8XWHaFdouN6"
+
+  let headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+  };
+
+  let response = await fetch(originAPi + "/test/check", {
+    method: "POST",
+    body: JSON.stringify({ SalesRepId:saleRepId, key:token }),
+    headers: headersList,
+  });
+  let data = JSON.parse(await response.text());
+  if (data.status == 300) {
+    DestoryAuth();
+  } else {
+    console.log({dataResult : data?.result})
+    return data?.result;
+  }
+}
 
 export const hexabrand = {
   a0O3b00000hym7GEAQ: "#38A3A5",

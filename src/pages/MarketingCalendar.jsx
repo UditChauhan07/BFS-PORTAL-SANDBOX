@@ -77,6 +77,8 @@ const MarketingCalendar = () => {
     { value: "DEC", label: "DEC" },
     { value: "TBD", label: "TBD" },
   ];
+
+  console.log({months})
   const generatePdf = () => {
     const element = document.getElementById('CalenerContainer'); // The HTML element you want to convert
     // element.style.padding = "10px"
@@ -228,8 +230,17 @@ const MarketingCalendar = () => {
             temp["Product Title"] = item.Name;
             temp["Product Description"] = item.Description;
             temp["Product Size"] = item.Size_Volume_Weight__c;
-            temp["Product Ship Date"] = item.Ship_Date__c ? (item.Ship_Date__c.split("-")[2] == 15 ? 'TBD' : item.Ship_Date__c.split("-")[2]) + '/' + monthNames[parseInt(item.Ship_Date__c.split("-")[1]) - 1].toUpperCase() + '/' + item.Ship_Date__c.split("-")[0] : 'NA';
-            temp["item OCD Date"] = item.Launch_Date__c ? item.Launch_Date__c.split("-")[2] + '/' + monthNames[parseInt(item.Launch_Date__c.split("-")[1]) - 1].toUpperCase() + '/' + item.Launch_Date__c.split("-")[0] : 'NA';
+
+            if(item.Ship_Date__c)
+            {
+              temp["Product Ship Date"] = item.Ship_Date__c ? (item?.Ship_Date__c.split("-")[2] == 15 ? 'TBD' : item?.Ship_Date__c.split("-")[2]) + '/' + monthNames[parseInt(item?.Ship_Date__c?.split("-")[1]) - 1]?.toUpperCase() + '/' + item?.Ship_Date__c.split("-")[0] : 'NA';
+            }
+            
+            if(item.Launch_Date__c)
+            {
+              temp["item OCD Date"] = item.Launch_Date__c ? item.Launch_Date__c?.split("-")[2] + '/' + monthNames[parseInt(item?.Launch_Date__c?.split("-")[1]) - 1]?.toUpperCase() + '/' + item?.Launch_Date__c.split("-")[0] : 'NA';
+            }
+            
             temp["Product Brand"] = item.ManufacturerName__c;
             temp["Product Price"] = item.usdRetail__c;
             finalData.push(temp);

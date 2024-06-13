@@ -38,6 +38,8 @@ import OrderStatusIssues from "./OrderStatusIssues";
 import EmailSetting from "./pages/EmailSetting";
 import BMAIssues from "./pages/BMAIssues";
 
+import MarketingMaterial from "./components/Material/material"
+
 
 function App() {
   // const Redirect = ({ href }) => {
@@ -102,9 +104,14 @@ function App() {
             {/* <Route path="/customerService" element={<CustomerServiceForm />}></Route> */}
             <Route path="/customerService" element={<CustomerService />}></Route>
             <Route path="/orderStatus" element={<OrderStatusIssues />}></Route>
-            <Route path="/orderStatusForm" element={<OrderStatusForm />}></Route>
-            <Route path="/emailSetting" element={<EmailSetting />}></Route>
-            <Route path="/brandManagementApproval" element={<BMAIssues />}></Route>
+
+//             <Route path="/orderStatusForm" element={<OrderStatusForm />}></Route>
+//             <Route path="/emailSetting" element={<EmailSetting />}></Route>
+//             <Route path="/brandManagementApproval" element={<BMAIssues />}></Route>
+
+
+            <Route path="/marketing-material" element={<MarketingMaterial />}></Route>
+
             
             {/* 1234 */}
           </Routes>
