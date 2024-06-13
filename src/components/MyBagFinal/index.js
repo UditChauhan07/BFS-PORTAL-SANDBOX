@@ -3,7 +3,7 @@ import React, { useEffect, useState,useRef } from "react";
 import Styles from "./Styles.module.css";
 import QuantitySelector from "../BrandDetails/Accordion/QuantitySelector";
 import { useNavigate } from "react-router-dom";
-import { GetAuthData, OrderPlaced, POGenerator, ShareDrive, admins, fetchBeg, getProductImageAll, getSalesRepList, salesRepIdKey } from "../../lib/store";
+import { GetAuthData, OrderPlaced, POGenerator, ShareDrive, admins, fetchBeg, getProductImageAll, getSalesRepList, salesRepIdKey, getCreditNotes } from "../../lib/store";
 import { useBag } from "../../context/BagContext";
 import OrderLoader from "../loader";
 import ModalPage from "../Modal UI";
@@ -31,50 +31,111 @@ function MyBagFinal() {
   const [salesRepData, setSalesRepData] = useState({ Name: null, Id: null })
   const [limitInput, setLimitInput] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [priceValue, setPriceValue] = useState("-$420");
+  const [priceValue, setPriceValue] = useState("");
+  const [fullPriceValue, setFullPriceValue] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const [creditNote, setCreditNote ] = useState({})
+  const [subTotal, setSubTotal] = useState(0)
+  const [validationMessage, setValidationMessage] = useState('');
+  const [subTotalAmountValue, setSubTotalAmountValue] = useState('');
 
+  let total = 0;
   const inputRef = useRef(null);
 
-
   const handleEditClick = () => {
-    setIsEditable(!isEditable);
-    setIsCheckboxChecked(false);
-    setPriceValue('-$');
-    inputRef.current.focus();
-  };
+    setValidationMessage('')
+    setIsEditable(!isEditable)
+    setIsCheckboxChecked(false)
+    setPriceValue('')
+    setFullPriceValue('$')
+    inputRef.current.focus()
+  }
+
+  const setTotalAmount = () => {
+    if(priceValue > 0)
+    {
+      const amount = subTotal - priceValue
+      setSubTotalAmountValue(amount)
+    }
+    else{
+      setSubTotalAmountValue(subTotal)
+    }
+  }
+
+  const extractWordAfterCharacter = (input, character) => {
+    const regex = new RegExp(`\\${character}(\\w+)`)
+    const match = input.match(regex)
+    console.log({match})
+    return match ? match[1] : ''
+  }
+
+  const handlePriceChange = (e) => {
+    const val = e.target.value
+    const character = '$'
+    const value = extractWordAfterCharacter(val, character)
+    console.log({value, cond: (value <= subTotal),ava : creditNote.available, subTotal })
+    // if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= creditNote.available)) {
+    if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available)) {
+      console.log({val2:value})
+      setPriceValue(value)
+      setFullPriceValue('$' + value)
+      setValidationMessage('')
+    } else {
+      setValidationMessage(`You can't set the value above $${creditNote.available}`)
+
+      setTimeout(() => {
+        setValidationMessage('')
+      }, 3000)
+    }
+  }
+
+  console.log({priceValue})
 
   const handleCheckboxChange = (e) => {
-    setIsEditable(!e.target.checked); 
-    setIsCheckboxChecked(e.target.checked);
+    // setIsEditable(e.target.checked)
+    setIsCheckboxChecked(e.target.checked)
     if (e.target.checked) {
-      setPriceValue("-$420");
+      // console.log({cond: (creditNote.available <= subTotal),ava : creditNote.available, subTotal })
+      if(creditNote.available <= subTotal)
+      {
+        setPriceValue(creditNote.available)
+        setFullPriceValue('$' + creditNote.available)
+        setValidationMessage('')
+      }
+      else{
+        setValidationMessage(`You can't set the value above the Sub Total Value - $${creditNote.available}.`)
+
+        setTimeout(() => {
+          setValidationMessage('')
+        }, 3000)
+      }
     } else {
-      setPriceValue("-$"); 
+      setPriceValue('0')
+      setFullPriceValue('$0')
+      setValidationMessage('')
     }
-  };
+  }
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
 
   const handleSubmitModal = () => {
-    handleCloseModal();
-  };
-
-
+    handleCloseModal()
+  }
 
   const handleNameChange = (event) => {
-    const limit = 10;
-    setLimitInput(event.target.value.slice(0, limit));
-  };
-  // .............
+    const limit = 10
+    setLimitInput(event.target.value.slice(0, limit))
+  }
+
   useEffect(() => {
     if (bagValue?.Account?.id && bagValue?.Manufacturer?.id && Object.values(bagValue?.orderList)?.length > 0) {
-      setButtonActive(true);
+      setButtonActive(true)
     }
-  }, []);
-  let total = 0;
+  }, [])
+
+ 
   const [productImage, setProductImage] = useState({ isLoaded: false, images: {} });
   useEffect(() => {
     let data = ShareDrive();
@@ -83,11 +144,14 @@ function MyBagFinal() {
     }
     GetAuthData().then((user) => {
       setUserData(user);
+     
       getSalesRepList({ key: user.x_access_token }).then((repList) => {
         let repData = repList.data.filter(item => item.Id === localStorage.getItem(salesRepIdKey))
         setSalesRepData(repData?.[0] || {})
       }).catch((e) => console.log({ e }))
+
     }).catch((e) => console.log({ e }))
+
     if (bagValue) {
       if (bagValue.Manufacturer) {
         if (bagValue.Manufacturer.id) {
@@ -131,7 +195,36 @@ function MyBagFinal() {
     if (bagValue?.Account?.id && bagValue?.Manufacturer?.id && Object.values(bagValue?.orderList)?.length > 0 && total > 0) {
       setButtonActive(true);
     }
+
+    setSubTotal(total)
+    setSubTotalAmountValue(total)
+
   }, [total, bagValue]);
+
+
+
+  useEffect(() => {
+    GetAuthData().then((user) => {
+      setUserData(user)
+      if (bagValue?.Account?.id && bagValue?.Manufacturer?.id) {
+        const token = user?.x_access_token
+        const retailer = bagValue.Account.id
+        const manufacture = bagValue.Manufacturer.id
+        console.log({token, retailer, manufacture})
+        if (token && retailer && manufacture) {
+          console.log('1111')
+          getCreditNotes(token, retailer, manufacture).then((note) => {
+            console.log({ note })
+            setCreditNote(note)
+          }).catch((noteErr) => console.log({ noteErr: noteErr.message }))
+        }
+      }
+
+    }).catch((e) => console.log({ e }))
+    setTotalAmount()
+  }, []);
+
+  console.log({creditNote})
 
   const onPriceChangeHander = (product, price = '0') => {
     if (price == '') price = 0;
@@ -178,9 +271,13 @@ function MyBagFinal() {
             ShippingCountry: fetchBag?.Account?.address?.country,
             ShippingZip: fetchBag?.Account?.address?.postalCode,
             list,
+            creditAmount:priceValue,
             key: user.x_access_token,
             shippingMethod: fetchBag.Account.shippingMethod
           };
+
+          console.log({begToOrder})
+
           OrderPlaced({ order: begToOrder })
             .then((response) => {
               if (response) {
@@ -240,12 +337,8 @@ function MyBagFinal() {
     localStorage.removeItem("orders")
     window.location.reload();
   }
+
   if (isOrderPlaced === 1) return <OrderLoader />;
-
-
-
-
-
 
   return (
     <div className="mt-4">
@@ -420,7 +513,7 @@ function MyBagFinal() {
                       </div>
                       <div className={Styles.TotalPricer}>
                         <div>
-                          <h2>Total</h2>
+                          <h2>Sub Total</h2>
                         </div>
                         <div>
                           <h2>${Number(total).toFixed(2)}</h2>
@@ -483,7 +576,23 @@ function MyBagFinal() {
                       />
                     ) : null}
                     <div className={Styles.ShipBut}>
-                      <button
+                      
+                    {!priceValue ?
+                      <button className={Styles.CredBut} onClick={handleShowModal}>Apply credit Note</button>
+                      :
+                      <div className={Styles.ShipAdress}>
+                        <div className="row">
+                          <div className="col-md-5">Sub Total :</div>
+                          <div className="col-md-5">${subTotal}</div>
+                        </div>
+                        <div className="row">
+                          <div className="col-md-5">Credit Amount :</div>
+                          <div className="col-md-5">${priceValue}</div>
+                        </div>
+                      </div>
+                    }
+
+                      <button className={Styles.orderBtn}
                         onClick={() => {
                           if (Object.keys(orders).length) {
                             if (PONumber.length) {
@@ -499,12 +608,13 @@ function MyBagFinal() {
                       </button>
 
                       {/* /// credit Modal.....Start */}
-
-                      <button className={Styles.CredBut} onClick={handleShowModal}>Apply credit Note</button>
                       <Modal size="lg" aria-labelledby="contained-modal-title-vcenter"
                         centered show={showModal}
                         onHide={handleCloseModal}>
-                        <Modal.Title className={Styles.Credittitles}>Credit notes <span>(3)</span></Modal.Title>
+                        <Modal.Title className={Styles.Credittitles}>
+                          Credit Notes 
+                          {/* <span>(3)</span> */}
+                        </Modal.Title>
                         <div className={Styles.mainRadioDiv}>
                           <Modal.Body>
                             <div className={Styles.inputRadio}>
@@ -512,7 +622,7 @@ function MyBagFinal() {
                                 <input type="radio" id="input1" name="creditNote" defaultChecked />
                                 <label htmlFor="input1">Available Credit</label>
                                 <div className={Styles.creditPrice}>
-                                  <b>$420</b>
+                                  <b>$ {creditNote.available} </b>
                                 </div>
                               </div>
                               <div className={Styles.editablePrice}>
@@ -520,21 +630,24 @@ function MyBagFinal() {
                                   <input
                                     type="text"
                                     className={Styles.price}
-                                    value={priceValue}
-                                    onChange={(e) => setPriceValue(e.target.value)}
-                                    readOnly={!isEditable}
+                                    value={fullPriceValue}
+                                    onChange={handlePriceChange}
+                                    // readOnly={!isEditable}
                                     ref={inputRef}
-                                
                                   />
                                 </div>
                                 <div>
                                   <img className={Styles.editIcon} onClick={handleEditClick} src="assets/images/pencil-square.png" alt="ss" />
                                 </div>
-                                <div className={Styles.checkDev}> <p >Uss Full Amount</p> </div>
+                                <div className={Styles.checkDev}> <p>Use Full Amount</p> </div>
                                 <input className={Styles.checkBox} onChange={handleCheckboxChange} checked={isCheckboxChecked}  type="checkbox" id="" />
                               </div>
-                            </div>
-                            <div className={Styles.inputRadio2}>
+                            </div> {validationMessage && (
+                                  <p className={Styles.validationError}>{validationMessage}</p>
+                                )}
+                           
+
+                            {/* <div className={Styles.inputRadio2}>
                               <input type="radio" id="input2" name="creditNote" disabled />
                               <label htmlFor="input2">Not Available Yet</label>
                               <div>
@@ -542,15 +655,14 @@ function MyBagFinal() {
 
                               </div>
                             </div>
-                          </Modal.Body>
-                          <Modal.Body>
+
                             <div className={Styles.inputRadio3}>
                               <input type="radio" id="input3" name="creditNote" disabled />
                               <label htmlFor="input3">Not Available Yet</label>
                               <div>
                                 <strong className={Styles.price3}>-$410 <br /><span className={Styles.dateDetails}>Uss Full Amount</span></strong>
                               </div>
-                            </div>
+                            </div> */}
                           </Modal.Body>
 
                           <div className={Styles.bothbutton}>
