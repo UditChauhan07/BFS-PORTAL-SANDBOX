@@ -52,21 +52,10 @@ function MyBagFinal() {
     inputRef.current.focus()
   }
 
-  const setTotalAmount = () => {
-    if(priceValue > 0)
-    {
-      const amount = subTotal - priceValue
-      setSubTotalAmountValue(amount)
-    }
-    else{
-      setSubTotalAmountValue(subTotal)
-    }
-  }
-
   const extractWordAfterCharacter = (input, character) => {
     const regex = new RegExp(`\\${character}(\\w+)`)
     const match = input.match(regex)
-    console.log({match})
+    // console.log({match})
     return match ? match[1] : ''
   }
 
@@ -74,15 +63,14 @@ function MyBagFinal() {
     const val = e.target.value
     const character = '$'
     const value = extractWordAfterCharacter(val, character)
-    console.log({value, cond: (value <= subTotal),ava : creditNote.available, subTotal })
-    // if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= creditNote.available)) {
-    if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available)) {
-      console.log({val2:value})
+    console.log({subTotal})
+    if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available && value <= subTotal)) {
       setPriceValue(value)
       setFullPriceValue('$' + value)
       setValidationMessage('')
     } else {
-      setValidationMessage(`You can't set the value above $${creditNote.available}`)
+      // setValidationMessage(`You can't set the value above $${creditNote.available}`)
+      setValidationMessage('Enter Valid Amount for Credit Allocation')
 
       setTimeout(() => {
         setValidationMessage('')
@@ -115,6 +103,7 @@ function MyBagFinal() {
       setFullPriceValue('$0')
       setValidationMessage('')
     }
+
   }
 
   const handleShowModal = () => setShowModal(true);
@@ -136,7 +125,8 @@ function MyBagFinal() {
   }, [])
 
  
-  const [productImage, setProductImage] = useState({ isLoaded: false, images: {} });
+  const [productImage, setProductImage] = useState({ isLoaded: false, images: {} })
+
   useEffect(() => {
     let data = ShareDrive();
     if (!data) {
@@ -159,7 +149,7 @@ function MyBagFinal() {
             data[bagValue.Manufacturer.id] = {};
           }
           if (Object.values(data[bagValue.Manufacturer.id]).length > 0) {
-            console.log({ aaas: Object.values(data[bagValue.Manufacturer.id]).length });
+            // console.log({ aaas: Object.values(data[bagValue.Manufacturer.id]).length });
             setProductImage({ isLoaded: true, images: data[bagValue.Manufacturer.id] })
           } else {
             setProductImage({ isLoaded: false, images: {} })
@@ -175,7 +165,7 @@ function MyBagFinal() {
           })
           getProductImageAll({ rawData: { codes: productCode } }).then((res) => {
             if (res) {
-              console.log({ res });
+              // console.log({ res });
               if (data[bagValue.Manufacturer.id]) {
                 data[bagValue.Manufacturer.id] = { ...data[bagValue.Manufacturer.id], ...res }
               } else {
@@ -195,12 +185,13 @@ function MyBagFinal() {
     if (bagValue?.Account?.id && bagValue?.Manufacturer?.id && Object.values(bagValue?.orderList)?.length > 0 && total > 0) {
       setButtonActive(true);
     }
+    
+    console.log({bagValue2222:total})
 
     setSubTotal(total)
     setSubTotalAmountValue(total)
 
-  }, [total, bagValue]);
-
+  }, [total, bagValue, subTotalAmountValue, subTotal])
 
 
   useEffect(() => {
@@ -210,27 +201,43 @@ function MyBagFinal() {
         const token = user?.x_access_token
         const retailer = bagValue.Account.id
         const manufacture = bagValue.Manufacturer.id
-        console.log({token, retailer, manufacture})
+        // console.log({token, retailer, manufacture})
         if (token && retailer && manufacture) {
-          console.log('1111')
           getCreditNotes(token, retailer, manufacture).then((note) => {
-            console.log({ note })
             setCreditNote(note)
           }).catch((noteErr) => console.log({ noteErr: noteErr.message }))
         }
       }
 
     }).catch((e) => console.log({ e }))
-    setTotalAmount()
-  }, []);
+  }, [])
 
-  console.log({creditNote})
+  // useEffect(() => {
+  //   let amount = 0
+    
+  //   const orders = localStorage.getItem("orders")
+  //   console.log({orders})
+
+  //   if (orders) {
+  //     const parsedOrders = Object.values(JSON.parse(orders))
+  //     if (parsedOrders.length > 0) {
+  //       amount = parsedOrders.reduce((acc, ele) => {
+  //         return acc + parseFloat(ele.product?.salesPrice * ele.quantity)
+  //       }, 0)
+  //     }
+  //   }
+
+  //   // console.log({amount})
+
+  //   setSubTotal(amount)
+  //   setSubTotalAmountValue(amount)
+  // }, []);
 
   const onPriceChangeHander = (product, price = '0') => {
-    if (price == '') price = 0;
+    if (price == '') price = 0
     setOrderProductPrice(product, price).then((res) => {
       if (res) {
-        setBagValue(fetchDataFromBag());
+        setBagValue(fetchDataFromBag())
       }
     })
   }
@@ -276,7 +283,7 @@ function MyBagFinal() {
             shippingMethod: fetchBag.Account.shippingMethod
           };
 
-          console.log({begToOrder})
+          // console.log({begToOrder})
 
           OrderPlaced({ order: begToOrder })
             .then((response) => {
@@ -446,7 +453,11 @@ function MyBagFinal() {
                         {localStorage.getItem("orders") && Object.values(JSON.parse(localStorage.getItem("orders"))).length > 0 ? (
                           Object.values(JSON.parse(localStorage.getItem("orders"))).map((ele) => {
                             // console.log(ele);
+                            
                             total += parseFloat(ele.product?.salesPrice * ele.quantity)
+
+                           
+
                             return (
                               <div className={Styles.Mainbox}>
                                 <div className={Styles.Mainbox1M}>
@@ -510,6 +521,8 @@ function MyBagFinal() {
                             </div>
                           </>
                         )}
+
+
                       </div>
                       <div className={Styles.TotalPricer}>
                         <div>
@@ -583,11 +596,11 @@ function MyBagFinal() {
                       <div className={Styles.ShipAdress}>
                         <div className="row">
                           <div className="col-md-5">Sub Total :</div>
-                          <div className="col-md-5">${subTotal}</div>
+                          <div className="col-md-5">${Number(total).toFixed(2)}</div>
                         </div>
                         <div className="row">
                           <div className="col-md-5">Credit Amount :</div>
-                          <div className="col-md-5">${priceValue}</div>
+                          <div className="col-md-5">${Number(priceValue).toFixed(2)}</div>
                         </div>
                       </div>
                     }
@@ -604,7 +617,7 @@ function MyBagFinal() {
                         }}
                         disabled={!buttonActive}
                       >
-                        ${Number(total).toFixed(2)} PLACE ORDER
+                       $ {!priceValue ? Number(total).toFixed(2) : Number(total - priceValue).toFixed(2) } PLACE ORDER
                       </button>
 
                       {/* /// credit Modal.....Start */}
@@ -632,7 +645,7 @@ function MyBagFinal() {
                                     className={Styles.price}
                                     value={fullPriceValue}
                                     onChange={handlePriceChange}
-                                    // readOnly={!isEditable}
+                                    readOnly={!isEditable}
                                     ref={inputRef}
                                   />
                                 </div>
@@ -642,10 +655,11 @@ function MyBagFinal() {
                                 <div className={Styles.checkDev}> <p>Use Full Amount</p> </div>
                                 <input className={Styles.checkBox} onChange={handleCheckboxChange} checked={isCheckboxChecked}  type="checkbox" id="" />
                               </div>
-                            </div> {validationMessage && (
-                                  <p className={Styles.validationError}>{validationMessage}</p>
-                                )}
-                           
+                            </div> 
+
+                            {validationMessage && (
+                              <p className={Styles.validationError}>{validationMessage}</p>
+                            )}
 
                             {/* <div className={Styles.inputRadio2}>
                               <input type="radio" id="input2" name="creditNote" disabled />
@@ -663,6 +677,7 @@ function MyBagFinal() {
                                 <strong className={Styles.price3}>-$410 <br /><span className={Styles.dateDetails}>Uss Full Amount</span></strong>
                               </div>
                             </div> */}
+
                           </Modal.Body>
 
                           <div className={Styles.bothbutton}>

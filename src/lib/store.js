@@ -1015,6 +1015,27 @@ export async function getCreditNotes(key, retailer, manufacturer) {
   }
 }
 
+export async function getCreditNotesList(key, retailer, manufacturer) {
+  const headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+    key : key
+  }
+
+  let response = await fetch(originAPi + "/test/applyCreditNotes", {
+    method: "POST",
+    body: JSON.stringify({ retailer, manufacturer }),
+    headers: headersList,
+  })
+  let data = JSON.parse(await response.text());
+  if (data.status == 300) {
+    DestoryAuth()
+  } else {
+    console.log({dataResult : data?.result})
+    return data?.result
+  }
+}
+
 export const hexabrand = {
   a0O3b00000hym7GEAQ: "#38A3A5",
   a0O3b00000fQrZyEAK: "#9EC1DA",
