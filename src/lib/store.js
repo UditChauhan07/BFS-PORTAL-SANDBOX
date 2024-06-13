@@ -1,6 +1,8 @@
 // export const originAPi = "https://b2b.beautyfashionsales.com"
 // export const originAPi = "https://dev.beautyfashionsales.com"
+
 export const originAPi = "http://localhost:8010"
+
 let url = `${originAPi}/beauty/`;
 let URL = `${originAPi}/beauty/0DS68FOD7s`;
 const orderKey = "orders";
@@ -42,6 +44,12 @@ export function ShareDrive(data, remove = false) {
     return JSON.parse(strData);
   }
 }
+export const sortArrayHandler = (arr, getter, order = 'asc') =>
+  arr.sort(
+    order === 'desc'
+      ? (a, b) => getter(b).localeCompare(getter(a))
+      : (a, b) => getter(a).localeCompare(getter(b))
+  );
 
 export async function AuthCheck() {
   if (JSON.parse(localStorage.getItem("Api Data"))?.data) {
@@ -236,7 +244,7 @@ export async function getOrderCustomerSupport({ user, PONumber }) {
   let bodyContent = new FormData();
   bodyContent.append("key", user.key);
   bodyContent.append("Sales_Rep__c", user.Sales_Rep__c);
-  if(PONumber)bodyContent.append("PONumber", PONumber);
+  if (PONumber) bodyContent.append("PONumber", PONumber);
 
   let response = await fetch(url + "v3/Jn91V1GChwP9dZg", {
     method: "POST",
@@ -365,7 +373,7 @@ export async function getDashboardata({ user }) {
     };
   }
 
- headersList = {...headersList,key:user.x_access_token,SalesRepId:user.Sales_Rep__c}
+  headersList = { ...headersList, key: user.x_access_token, SalesRepId: user.Sales_Rep__c }
 
   let response = await fetch(originAPi + "/95zWpMEFtbAr8lq/FlEpv2cw4VbxgDF", {
     // let response = await fetch(url + "v3/3kMMguJj62cyyf0", {
@@ -374,7 +382,7 @@ export async function getDashboardata({ user }) {
     headers: headersList,
   });
   let data = JSON.parse(await response.text());
-  console.warn({data});
+  console.warn({ data });
   // console.warn({data:user.Sales_Rep__c});
   if (data.status == 300) {
     DestoryAuth();
@@ -544,7 +552,7 @@ export async function getProductList({ rawData }) {
   if (data.status == 300) {
     DestoryAuth();
   } else {
-    console.warn({data});
+    console.warn({ data });
     return data;
   }
 }
@@ -569,7 +577,6 @@ export async function getProductImage({ rawData }) {
 }
 
 export async function getProductImageAll({ rawData }) {
-  console.log({ rawData });
   let headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
@@ -686,6 +693,101 @@ export async function getSalesRepList({ key }) {
   }
 }
 
+export async function getEmailBlast({ key, Id }) {
+  let headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+  };
+
+  let response = await fetch(originAPi + "/EAZ7KKgTyBDsI4M/m9w6uFie8U3EGuC", {
+    method: "POST",
+    body: JSON.stringify({ key, Id }),
+    headers: headersList,
+  });
+  let data = JSON.parse(await response.text());
+  if (data.status == 300) {
+    DestoryAuth();
+  } else {
+    return data.data;
+  }
+}
+export async function deleteEmailBlast({ key, ids }) {
+  let headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+  };
+
+  let response = await fetch(originAPi + "/EAZ7KKgTyBDsI4M/uZYl7iJRZswNYd6", {
+    method: "POST",
+    body: JSON.stringify({ key, ids }),
+    headers: headersList,
+  });
+  let data = JSON.parse(await response.text());
+  if (data.status == 300) {
+    DestoryAuth();
+  } else {
+    return data.data;
+  }
+}
+export async function resetEmailBlast({ key, ids }) {
+  let headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+  };
+
+  let response = await fetch(originAPi + "/EAZ7KKgTyBDsI4M/8XoSdoqMZ2dAiqh", {
+    method: "POST",
+    body: JSON.stringify({ key, ids }),
+    headers: headersList,
+  });
+  let data = JSON.parse(await response.text());
+  if (data.status == 300) {
+    DestoryAuth();
+  } else {
+    return data.data;
+  }
+}
+export async function resentEmailBlast({ key, ids }) {
+  let headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+  };
+
+  let response = await fetch(originAPi + "/EAZ7KKgTyBDsI4M/c35tdTxizS24VoX", {
+    method: "POST",
+    body: JSON.stringify({ key, ids }),
+    headers: headersList,
+  });
+  let data = JSON.parse(await response.text());
+  if (data.status == 300) {
+    DestoryAuth();
+  } else {
+    return data.data;
+  }
+}
+export async function storeDatesHandler({ key, dates }) {
+  let headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+  };
+
+  let response = await fetch(originAPi + "/EAZ7KKgTyBDsI4M/08fC7mUSNzUduyt", {
+    method: "POST",
+    body: JSON.stringify({ key, dates: JSON.stringify(dates) }),
+    headers: headersList,
+  });
+  let data = JSON.parse(await response.text());
+  if (data.status == 300) {
+    DestoryAuth();
+  } else {
+    if (data.status == 200) {
+      return true;
+    } else {
+      return false
+    }
+  }
+}
+
 export async function getSessionStatus({ key, salesRepId }) {
   let headersList = {
     Accept: "*/*",
@@ -754,7 +856,7 @@ export async function getOrderDetailsPdf({ key, opportunity_id }) {
     "Content-Type": "application/json",
   };
 
-  let response = await fetch(originAPi+"/mIRX7B9FlQjmOaf/0DS68FOD7s", {
+  let response = await fetch(originAPi + "/mIRX7B9FlQjmOaf/0DS68FOD7s", {
     method: "POST",
     body: JSON.stringify({ key, opportunity_id }),
     headers: headersList,
@@ -763,90 +865,92 @@ export async function getOrderDetailsPdf({ key, opportunity_id }) {
   if (data.status == 300) {
     DestoryAuth();
   } else {
-    return data?.file||false;
+    return data?.file || false;
   }
 }
 
-export async function getMarketingCalendarPDF({ key, manufacturerId,month }) {
+export async function getMarketingCalendarPDF({ key, manufacturerId, month }) {
   let headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
   };
 
-  let response = await fetch(originAPi+"/mIRX7B9FlQjmOaf", {
+  let response = await fetch(originAPi + "/mIRX7B9FlQjmOaf", {
     method: "POST",
-    body: JSON.stringify({ key, manufacturerId,month }),
+    body: JSON.stringify({ key, manufacturerId, month }),
     headers: headersList,
   });
   let data = JSON.parse(await response.text());
-  console.log({data});
+  console.log({ data });
   if (data.status == 300) {
     DestoryAuth();
   } else {
-    return data?.file||false;
+    return data?.file || false;
   }
 }
 
-export async function getMarketingCalendarPDFV2({ key, manufacturerId,month }) {
+export async function getMarketingCalendarPDFV2({ key, manufacturerId, month }) {
   let headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
   };
 
-  let response = await fetch(originAPi+"/mIRX7B9FlQjmOaf/VTOUZjSm8aIm1ve", {
+  let response = await fetch(originAPi + "/mIRX7B9FlQjmOaf/VTOUZjSm8aIm1ve", {
     method: "POST",
-    body: JSON.stringify({ key, manufacturerId,month }),
+    body: JSON.stringify({ key, manufacturerId, month }),
     headers: headersList,
   });
   let data = JSON.parse(await response.text());
-  console.log({data});
+  console.log({ data });
   if (data.status == 300) {
     DestoryAuth();
   } else {
-    return data?.file||false;
+    return data?.file || false;
   }
 }
 
-export async function getMarketingCalendarPDFV3({ key, manufacturerId,month }) {
+export async function getMarketingCalendarPDFV3({ key, manufacturerId, month }) {
   let headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
   };
 
-  let response = await fetch(originAPi+"/mIRX7B9FlQjmOaf/ohSOBafoPQH0NQi", {
+  let response = await fetch(originAPi + "/mIRX7B9FlQjmOaf/ohSOBafoPQH0NQi", {
     method: "POST",
-    body: JSON.stringify({ key, manufacturerId,month }),
+    body: JSON.stringify({ key, manufacturerId, month }),
     headers: headersList,
   });
   let data = JSON.parse(await response.text());
   if (data.status == 300) {
     DestoryAuth();
   } else {
-    return data?.file||false;
+    return data?.file || false;
   }
 }
+
 
 export async function uploadFileSupport({key,supportId,files}){
   if(files.length){
 
+
     let headersList = {
-      "Accept": "*/*",key,supportId
-   }
-   console.log({headersList});
-   let bodyContent = new FormData();
-   files.map((file)=>{
-   bodyContent.append("files", file.file);
-   })
-   let response = await fetch(originAPi+"/unCb9Coo4FFqCtG/w72MrdYNHfsSsqe", { 
-     method: "POST",
-     body: bodyContent,
-     headers: headersList
-   });
-   
-   let data = JSON.parse(await response.text());
-   if(data){
-    return data.data
-   }
+      "Accept": "*/*", key, supportId
+    }
+    console.log({ headersList });
+    let bodyContent = new FormData();
+    files.map((file) => {
+      bodyContent.append("files", file.file);
+    })
+    let response = await fetch(originAPi + "/unCb9Coo4FFqCtG/w72MrdYNHfsSsqe", {
+      method: "POST",
+      body: bodyContent,
+      headers: headersList
+    });
+
+    let data = JSON.parse(await response.text());
+    if (data) {
+      return data.data
+    }
   }
 }
 
@@ -897,8 +1001,8 @@ export const hexabrand = {
   a0ORb000000QzsfMAC: "#B7C8B3",
   a0O1O00000XYBvkUAH: "#6D243E",
   a0O1O00000XYBvaUAH: "#4B95DD",
-  a0ORb000000nDfFMAU:"#073763",
-  a0ORb000000nDIiMAM:"#7f6000"
+  a0ORb000000nDfFMAU: "#073763",
+  a0ORb000000nDIiMAM: "#7f6000"
 };
 
 export const hexabrandText = {
@@ -918,12 +1022,17 @@ export const hexabrandText = {
   a0ORb000000QzsfMAC: "#445840",
   a0O1O00000XYBvkUAH: "#ffffff",
   a0O1O00000XYBvaUAH: "#ffffff",
-  a0ORb000000nDfFMAU:"#deb887",
-  a0ORb000000nDIiMAM:"#deb887"
+  a0ORb000000nDfFMAU: "#deb887",
+  a0ORb000000nDIiMAM: "#deb887"
 };
 
 
-export function DateConvert(dateString) {
+export function DateConvert(dateString, timeStamp = false) {
+  if (timeStamp) {
+    const options = { year: "numeric", month: "long", day: "numeric" }
+    dateString = new Date(dateString).toLocaleDateString(undefined, options)
+    return dateString
+  }
   if (dateString) {
     const [year, month, day] = dateString.split(/[-/]/);
     if (day && month && year) {

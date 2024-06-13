@@ -1,5 +1,5 @@
 /* eslint-disable no-lone-blocks */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import Styles from "./Styles.module.css";
 import QuantitySelector from "../BrandDetails/Accordion/QuantitySelector";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,8 @@ import ModalPage from "../Modal UI";
 import StylesModal from "../Modal UI/Styles.module.css";
 import LoaderV2 from "../loader/v2";
 import ProductDetails from "../../pages/productDetails";
+import { Button, Modal } from 'react-bootstrap';
+
 
 function MyBagFinal() {
   let Img1 = "/assets/images/dummy.png";
@@ -28,6 +30,40 @@ function MyBagFinal() {
   const [userData, setUserData] = useState(null)
   const [salesRepData, setSalesRepData] = useState({ Name: null, Id: null })
   const [limitInput, setLimitInput] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [priceValue, setPriceValue] = useState("-$420");
+  const [isEditable, setIsEditable] = useState(false);
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+
+  const inputRef = useRef(null);
+
+
+  const handleEditClick = () => {
+    setIsEditable(!isEditable);
+    setIsCheckboxChecked(false);
+    setPriceValue('-$');
+    inputRef.current.focus();
+  };
+
+  const handleCheckboxChange = (e) => {
+    setIsEditable(!e.target.checked); 
+    setIsCheckboxChecked(e.target.checked);
+    if (e.target.checked) {
+      setPriceValue("-$420");
+    } else {
+      setPriceValue("-$"); 
+    }
+  };
+
+  const handleShowModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
+
+  const handleSubmitModal = () => {
+    handleCloseModal();
+  };
+
+
+
   const handleNameChange = (event) => {
     const limit = 10;
     setLimitInput(event.target.value.slice(0, limit));
@@ -205,6 +241,12 @@ function MyBagFinal() {
     window.location.reload();
   }
   if (isOrderPlaced === 1) return <OrderLoader />;
+
+
+
+
+
+
   return (
     <div className="mt-4">
       <section>
@@ -390,7 +432,7 @@ function MyBagFinal() {
 
                 <div className="col-lg-5 col-md-4 col-sm-12">
                   <div className={Styles.ShippControl}>
-                    <h2>Shipping Address</h2>
+                    <h2>Shipping Address </h2>
 
                     <div className={Styles.ShipAdress}>
                       {buttonActive ? (
@@ -455,6 +497,73 @@ function MyBagFinal() {
                       >
                         ${Number(total).toFixed(2)} PLACE ORDER
                       </button>
+
+                      {/* /// credit Modal.....Start */}
+
+                      <button className={Styles.CredBut} onClick={handleShowModal}>Apply credit Note</button>
+                      <Modal size="lg" aria-labelledby="contained-modal-title-vcenter"
+                        centered show={showModal}
+                        onHide={handleCloseModal}>
+                        <Modal.Title className={Styles.Credittitles}>Credit notes <span>(3)</span></Modal.Title>
+                        <div className={Styles.mainRadioDiv}>
+                          <Modal.Body>
+                            <div className={Styles.inputRadio}>
+                              <div className={Styles.inputA}>
+                                <input type="radio" id="input1" name="creditNote" defaultChecked />
+                                <label htmlFor="input1">Available Credit</label>
+                                <div className={Styles.creditPrice}>
+                                  <b>$420</b>
+                                </div>
+                              </div>
+                              <div className={Styles.editablePrice}>
+                                <div className={Styles.inputDiv}>
+                                  <input
+                                    type="text"
+                                    className={Styles.price}
+                                    value={priceValue}
+                                    onChange={(e) => setPriceValue(e.target.value)}
+                                    readOnly={!isEditable}
+                                    ref={inputRef}
+                                
+                                  />
+                                </div>
+                                <div>
+                                  <img className={Styles.editIcon} onClick={handleEditClick} src="assets/images/pencil-square.png" alt="ss" />
+                                </div>
+                                <div className={Styles.checkDev}> <p >Uss Full Amount</p> </div>
+                                <input className={Styles.checkBox} onChange={handleCheckboxChange} checked={isCheckboxChecked}  type="checkbox" id="" />
+                              </div>
+                            </div>
+                            <div className={Styles.inputRadio2}>
+                              <input type="radio" id="input2" name="creditNote" disabled />
+                              <label htmlFor="input2">Not Available Yet</label>
+                              <div>
+                                <strong className={Styles.price2}>-$320 <br /><span className={Styles.dateDetails}>Uss Full Amount</span></strong>
+
+                              </div>
+                            </div>
+                          </Modal.Body>
+                          <Modal.Body>
+                            <div className={Styles.inputRadio3}>
+                              <input type="radio" id="input3" name="creditNote" disabled />
+                              <label htmlFor="input3">Not Available Yet</label>
+                              <div>
+                                <strong className={Styles.price3}>-$410 <br /><span className={Styles.dateDetails}>Uss Full Amount</span></strong>
+                              </div>
+                            </div>
+                          </Modal.Body>
+
+                          <div className={Styles.bothbutton}>
+                            <div>
+                              <button className={Styles.CancleBtn} onClick={handleCloseModal}>Cancel</button>
+                            </div>
+                            <div><button className={Styles.submitBtn} onClick={handleSubmitModal}>Submit</button></div>
+                          </div>
+
+                        </div>
+                      </Modal>
+                      {/* /// credit Modal.... End */}
+
                       <p className={`${Styles.ClearBag}`} style={{ textAlign: 'center', cursor: 'pointer' }}
                         onClick={() => {
                           if (Object.keys(orders).length) {

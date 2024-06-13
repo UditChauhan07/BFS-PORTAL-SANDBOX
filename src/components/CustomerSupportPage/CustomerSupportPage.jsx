@@ -11,19 +11,6 @@ function CustomerSupportPage({ data, PageSize, currentPage, manufacturerFilter, 
   const [modalOpen, setModalOpen] = useState(false);
   const [brandManagementModalOpen, setBrandManagementModalOpen] = useState(false);
 
-  const filteredData = useMemo(() => {
-    let newValues = data;
-    if (manufacturerFilter) {
-      newValues = newValues.filter((item) => item.ManufacturerId__c === manufacturerFilter);
-    }
-    if (searchBy) {
-      newValues = newValues?.filter((value) => value.CaseNumber?.toLowerCase().includes(searchBy?.toLowerCase()));
-    }
-    if (retailerFilter) {
-      newValues = newValues.filter((item) => item.AccountId === retailerFilter);
-    }
-    return newValues;
-  }, [data, retailerFilter, manufacturerFilter, searchBy]);
   const reasons = {
     Charges: "Charges",
     "Product Missing": "Product Missing",
@@ -61,28 +48,25 @@ function CustomerSupportPage({ data, PageSize, currentPage, manufacturerFilter, 
                   </div>
                 </Link>
                 <Link to={"/customerService"}>
-                <div
-                  className={`${Styles.supportLeftBox} cardHover`}
-                  style={{ cursor: "pointer" }}
+                  <div
+                    className={`${Styles.supportLeftBox} cardHover`}
+                    style={{ cursor: "pointer" }}
                   // onClick={() => {
                   //   setModalOpen(true);
                   // }}
-                >
-                  <div className={Styles.supportLeftImg}>
-                    <CustomerServiceIcon width={42} height={42} />
+                  >
+                    <div className={Styles.supportLeftImg}>
+                      <CustomerServiceIcon width={42} height={42} />
+                    </div>
+                    <div className={Styles.supportLeftContent}>
+                      <h2>Customer Services </h2>
+                      <p>Resolving Concerns Serving Solutions</p>
+                    </div>
                   </div>
-                  <div className={Styles.supportLeftContent}>
-                    <h2>Customer Services </h2>
-                    <p>Resolving Concerns Serving Solutions</p>
-                  </div>
-                </div>
                 </Link>
                 {/* Brand Management Approval */}
-                <div
-                  style={{ cursor: "pointer" }}
-                  onClick={() => {
-                    setBrandManagementModalOpen(true);
-                  }}
+                <Link
+                  to={"/brandManagementApproval"}
                 >
                   <div className={`${Styles.supportLeftBox} cardHover`}>
                     <div className={Styles.supportLeftImg}>
@@ -93,7 +77,7 @@ function CustomerSupportPage({ data, PageSize, currentPage, manufacturerFilter, 
                       <p>Effective Management</p>
                     </div>
                   </div>
-                </div>
+                </Link>
 
                 <div>
                   <div className={`${Styles.supportLeftBox} cardHover`}>
@@ -136,8 +120,8 @@ function CustomerSupportPage({ data, PageSize, currentPage, manufacturerFilter, 
             </div>
 
             <div className="col-lg-9 col-md-12 col-sm-12">
-              {filteredData.length ? (
-                <MySupportTicket data={filteredData} currentPage={currentPage} PageSize={PageSize} />
+              {data.length ? (
+                <MySupportTicket data={data} currentPage={currentPage} PageSize={PageSize} />
               ) : (
                 <div className="flex justify-center items-center py-4 w-full lg:min-h-[300px] xl:min-h-[380px]">No data found</div>
               )}
