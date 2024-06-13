@@ -727,3 +727,13 @@ input[type="checkbox"] {
     margin: 20px 0 0px 0;
   }
 }
+
+.validationError {
+  color: red;
+  font-weight: bold;
+  font-size: x-small;
+}
+
+.orderBtn {
+  margin: 20px 0px;
+}

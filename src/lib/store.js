@@ -5,6 +5,7 @@ export const originAPi = "http://localhost:8010"
 
 let url = `${originAPi}/beauty/`;
 let URL = `${originAPi}/beauty/0DS68FOD7s`;
+
 const orderKey = "orders";
 const accountIdKey = "AccountId__c";
 const brandIdKey = "ManufacturerId__c";
@@ -44,6 +45,7 @@ export function ShareDrive(data, remove = false) {
     return JSON.parse(strData);
   }
 }
+
 export const sortArrayHandler = (arr, getter, order = 'asc') =>
   arr.sort(
     order === 'desc'
@@ -87,6 +89,7 @@ export function getStrCode(str) {
     return `${codeLength[0].charAt(0).toUpperCase() + codeLength[0].charAt(codeLength[0].length - 1).toUpperCase()}`;
   }
 }
+
 function padNumber(n, isTwoDigit) {
   if (isTwoDigit) {
     if (n < 10) {
@@ -118,14 +121,17 @@ export function formatNumber(num) {
     return num;
   }
 }
+
 export function supportDriveBeg() {
   let supportList = localStorage.getItem(support);
   return JSON.parse(supportList);
 }
+
 export async function supportShare(data) {
   localStorage.setItem(support, JSON.stringify(data));
   return true;
 }
+
 export function supportClear() {
   localStorage.removeItem(support);
   if (localStorage.getItem(support)) {
@@ -317,6 +323,7 @@ export async function getTargetReportAll({ user, year, preOrder }) {
     return false;
   }
 }
+
 export async function getOrderDetailsBasedId({ rawData }) {
   let headersList = {
     Accept: "*/*",
@@ -711,6 +718,7 @@ export async function getEmailBlast({ key, Id }) {
     return data.data;
   }
 }
+
 export async function deleteEmailBlast({ key, ids }) {
   let headersList = {
     Accept: "*/*",
@@ -729,6 +737,7 @@ export async function deleteEmailBlast({ key, ids }) {
     return data.data;
   }
 }
+
 export async function resetEmailBlast({ key, ids }) {
   let headersList = {
     Accept: "*/*",
@@ -747,6 +756,7 @@ export async function resetEmailBlast({ key, ids }) {
     return data.data;
   }
 }
+
 export async function resentEmailBlast({ key, ids }) {
   let headersList = {
     Accept: "*/*",
@@ -765,6 +775,7 @@ export async function resentEmailBlast({ key, ids }) {
     return data.data;
   }
 }
+
 export async function storeDatesHandler({ key, dates }) {
   let headersList = {
     Accept: "*/*",
@@ -928,7 +939,6 @@ export async function getMarketingCalendarPDFV3({ key, manufacturerId, month }) 
   }
 }
 
-
 export async function uploadFileSupport({key,supportId,files}){
   if(files.length){
 
@@ -984,6 +994,27 @@ export async function getMarkertingMaterial() {
   }
 }
 
+export async function getCreditNotes(key, retailer, manufacturer) {
+  const headersList = {
+    Accept: "*/*",
+    "Content-Type": "application/json",
+    key : key
+  }
+
+  let response = await fetch(originAPi + "/test/applyCreditNotes", {
+    method: "POST",
+    body: JSON.stringify({ retailer, manufacturer }),
+    headers: headersList,
+  })
+  let data = JSON.parse(await response.text());
+  if (data.status == 300) {
+    DestoryAuth()
+  } else {
+    console.log({dataResult : data?.result})
+    return data?.result
+  }
+}
+
 export const hexabrand = {
   a0O3b00000hym7GEAQ: "#38A3A5",
   a0O3b00000fQrZyEAK: "#9EC1DA",
@@ -1003,7 +1034,7 @@ export const hexabrand = {
   a0O1O00000XYBvaUAH: "#4B95DD",
   a0ORb000000nDfFMAU: "#073763",
   a0ORb000000nDIiMAM: "#7f6000"
-};
+}
 
 export const hexabrandText = {
   a0O3b00000hym7GEAQ: "#ffffff",
@@ -1024,8 +1055,7 @@ export const hexabrandText = {
   a0O1O00000XYBvaUAH: "#ffffff",
   a0ORb000000nDfFMAU: "#deb887",
   a0ORb000000nDIiMAM: "#deb887"
-};
-
+}
 
 export function DateConvert(dateString, timeStamp = false) {
   if (timeStamp) {
