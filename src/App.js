@@ -38,6 +38,9 @@ import OrderStatusIssues from "./OrderStatusIssues";
 import EmailSetting from "./pages/EmailSetting";
 import BMAIssues from "./pages/BMAIssues";
 
+import CreditNote from "./pages/CreditNote";
+
+
 import MarketingMaterial from "./components/Material/material"
 
 
@@ -91,6 +94,10 @@ function App() {
             <Route
               path="/education-center"
               element={<EducationCenter />}
+            ></Route>
+             <Route
+              path="/credit-note"
+              element={<CreditNote />}
             ></Route>
             <Route path="/about-us" element={<AboutUs />}></Route>
             <Route path="/wholesale-inquiry" element={<WholesaleInquiry />}></Route>
