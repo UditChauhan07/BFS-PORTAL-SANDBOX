@@ -1,7 +1,7 @@
 // export const originAPi = "https://b2b.beautyfashionsales.com"
 // export const originAPi = "https://dev.beautyfashionsales.com"
 
-export const originAPi = "http://localhost:8010"
+export const originAPi = "https://www.uditchauhan.com"
 
 let url = `${originAPi}/beauty/`;
 let URL = `${originAPi}/beauty/0DS68FOD7s`;
