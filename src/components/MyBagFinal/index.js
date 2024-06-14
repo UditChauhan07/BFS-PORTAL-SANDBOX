@@ -291,6 +291,7 @@ function MyBagFinal() {
                 } else {
                   fetchBag.orderList.map((ele) => addOrder(ele.product, 0, ele.discount))
                   localStorage.removeItem("orders")
+                  localStorage.removeItem('creditAmount')
                   navigate("/order-list")
                   setIsOrderPlaced(2)
                 }
