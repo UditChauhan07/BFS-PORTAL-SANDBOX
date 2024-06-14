@@ -53,6 +53,7 @@ const BagProvider = ({ children }) => {
     });
     return true
   };
+  
   const parseOrderObjectWithDiscount = (product, quantity, discount) => {
     return {
       quantity: quantity,

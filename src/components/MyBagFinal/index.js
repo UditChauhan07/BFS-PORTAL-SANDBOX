@@ -29,24 +29,26 @@ function MyBagFinal() {
   const [productDetailId, setProductDetailId] = useState(null)
   const [userData, setUserData] = useState(null)
   const [salesRepData, setSalesRepData] = useState({ Name: null, Id: null })
-  const [limitInput, setLimitInput] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  const [priceValue, setPriceValue] = useState("");
-  const [fullPriceValue, setFullPriceValue] = useState("");
-  const [isEditable, setIsEditable] = useState(false);
-  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false);
+  const [limitInput, setLimitInput] = useState("")
+  const [showModal, setShowModal] = useState(false)
+  const [priceValue, setPriceValue] = useState("")
+  const [fullPriceValue, setFullPriceValue] = useState("")
+  const [isEditable, setIsEditable] = useState(false)
+  const [isCheckboxChecked, setIsCheckboxChecked] = useState(false)
   const [creditNote, setCreditNote ] = useState({})
   const [subTotal, setSubTotal] = useState(0)
-  const [validationMessage, setValidationMessage] = useState('');
-  const [subTotalAmountValue, setSubTotalAmountValue] = useState('');
+  const [validationMessage, setValidationMessage] = useState('')
 
-  let total = 0;
-  const inputRef = useRef(null);
+  let total = 0
+  // console.log({creditAmount : localStorage.getItem("creditAmount") })
+
+  const inputRef = useRef(null)
 
   const handleEditClick = () => {
     setValidationMessage('')
     setIsEditable(!isEditable)
     setIsCheckboxChecked(false)
+    localStorage.setItem('creditAmount', '')
     setPriceValue('')
     setFullPriceValue('$')
     inputRef.current.focus()
@@ -66,8 +68,11 @@ function MyBagFinal() {
     console.log({subTotal})
     if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available && value <= subTotal)) {
       setPriceValue(value)
+      localStorage.setItem('creditAmount', value)
       setFullPriceValue('$' + value)
       setValidationMessage('')
+
+      console.log({lll : localStorage.getItem('creditAmount')})
     } else {
       // setValidationMessage(`You can't set the value above $${creditNote.available}`)
       setValidationMessage('Enter Valid Amount for Credit Allocation')
@@ -78,8 +83,6 @@ function MyBagFinal() {
     }
   }
 
-  console.log({priceValue})
-
   const handleCheckboxChange = (e) => {
     // setIsEditable(e.target.checked)
     setIsCheckboxChecked(e.target.checked)
@@ -88,6 +91,7 @@ function MyBagFinal() {
       if(creditNote.available <= subTotal)
       {
         setPriceValue(creditNote.available)
+        localStorage.setItem('creditAmount', creditNote.available)
         setFullPriceValue('$' + creditNote.available)
         setValidationMessage('')
       }
@@ -100,6 +104,7 @@ function MyBagFinal() {
       }
     } else {
       setPriceValue('0')
+      localStorage.setItem('creditAmount', 0)
       setFullPriceValue('$0')
       setValidationMessage('')
     }
@@ -123,7 +128,6 @@ function MyBagFinal() {
       setButtonActive(true)
     }
   }, [])
-
  
   const [productImage, setProductImage] = useState({ isLoaded: false, images: {} })
 
@@ -133,7 +137,7 @@ function MyBagFinal() {
       data = {};
     }
     GetAuthData().then((user) => {
-      setUserData(user);
+      setUserData(user)
      
       getSalesRepList({ key: user.x_access_token }).then((repList) => {
         let repData = repList.data.filter(item => item.Id === localStorage.getItem(salesRepIdKey))
@@ -185,13 +189,10 @@ function MyBagFinal() {
     if (bagValue?.Account?.id && bagValue?.Manufacturer?.id && Object.values(bagValue?.orderList)?.length > 0 && total > 0) {
       setButtonActive(true);
     }
-    
-    console.log({bagValue2222:total})
 
     setSubTotal(total)
-    setSubTotalAmountValue(total)
 
-  }, [total, bagValue, subTotalAmountValue, subTotal])
+  }, [total, bagValue, subTotal])
 
 
   useEffect(() => {
@@ -278,7 +279,7 @@ function MyBagFinal() {
             ShippingCountry: fetchBag?.Account?.address?.country,
             ShippingZip: fetchBag?.Account?.address?.postalCode,
             list,
-            creditAmount:priceValue,
+            creditAmount: localStorage.getItem('creditAmount'),
             key: user.x_access_token,
             shippingMethod: fetchBag.Account.shippingMethod
           };
@@ -308,10 +309,11 @@ function MyBagFinal() {
       .catch((error) => {
         console.error({ error });
       });
-  };
+  }
+
   const handleRemoveProductFromCart = (ele) => {
     addOrder(ele.product, 0, ele.discount);
-  };
+  }
 
   const fetchDataFromBag = () => {
     let orderStr = localStorage.getItem("orders");
@@ -340,6 +342,7 @@ function MyBagFinal() {
     }
     return orderDetails;
   }
+
   const deleteBag = () => {
     localStorage.removeItem("orders")
     window.location.reload();
@@ -455,8 +458,6 @@ function MyBagFinal() {
                             // console.log(ele);
                             
                             total += parseFloat(ele.product?.salesPrice * ele.quantity)
-
-                           
 
                             return (
                               <div className={Styles.Mainbox}>
@@ -590,9 +591,7 @@ function MyBagFinal() {
                     ) : null}
                     <div className={Styles.ShipBut}>
                       
-                    {!priceValue ?
-                      <button className={Styles.CredBut} onClick={handleShowModal}>Apply credit Note</button>
-                      :
+                    {priceValue || localStorage.getItem('creditAmount') > 0 ?
                       <div className={Styles.ShipAdress}>
                         <div className="row">
                           <div className="col-md-5">Sub Total :</div>
@@ -600,9 +599,11 @@ function MyBagFinal() {
                         </div>
                         <div className="row">
                           <div className="col-md-5">Credit Amount :</div>
-                          <div className="col-md-5">${Number(priceValue).toFixed(2)}</div>
+                          <div className="col-md-5">${Number(localStorage.getItem('creditAmount')).toFixed(2)}</div>
                         </div>
                       </div>
+                      :
+                      <button className={Styles.CredBut} onClick={handleShowModal}>Apply credit Note</button>
                     }
 
                       <button className={Styles.orderBtn}
@@ -617,7 +618,7 @@ function MyBagFinal() {
                         }}
                         disabled={!buttonActive}
                       >
-                       $ {!priceValue ? Number(total).toFixed(2) : Number(total - priceValue).toFixed(2) } PLACE ORDER
+                       $ {(localStorage.getItem('creditAmount') > 0) ? Number(total - localStorage.getItem('creditAmount')).toFixed(2) : Number(total).toFixed(2) } PLACE ORDER
                       </button>
 
                       {/* /// credit Modal.....Start */}
