@@ -1015,24 +1015,27 @@ export async function getCreditNotes(key, retailer, manufacturer) {
   }
 }
 
-export async function getCreditNotesList(key, retailer, manufacturer) {
+export async function getCreditNotesList(key, retailer='', manufacturer='') {
+  console.log({key, retailer, manufacturer})
   const headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
     key : key
   }
 
-  let response = await fetch(originAPi + "/test/applyCreditNotes", {
+  let response = await fetch(originAPi + "/test/creditNotes", {
     method: "POST",
-    body: JSON.stringify({ retailer, manufacturer }),
+    body: JSON.stringify({ retailer: retailer, manufacturer: manufacturer }),
     headers: headersList,
   })
-  let data = JSON.parse(await response.text());
+
+  let data = JSON.parse(await response.text())
+
   if (data.status == 300) {
     DestoryAuth()
   } else {
-    console.log({dataResult : data?.result})
-    return data?.result
+    console.log({ dataResult : data?.data?.records })
+    return data?.data?.records
   }
 }
 

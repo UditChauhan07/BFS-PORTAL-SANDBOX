@@ -89,25 +89,25 @@ const TopProducts = () => {
               data[manufacturerFilter] = res
             }
             ShareDrive(data)
-            setProductImages({ isLoaded: true, images: res });
+            setProductImages({ isLoaded: true, images: res })
             setIsLoaded(true)
           } else {
             setIsLoaded(true)
-            setProductImages({ isLoaded: true, images: {} });
+            setProductImages({ isLoaded: true, images: {} })
           }
         }).catch((err) => {
-          console.log({ err });
+          console.log({ err })
         })
       }
     }).catch((err) => {
-      console.log({ err });
+      console.log({ err })
     })
   }
   const btnHandler = ({month,manufacturerId}) => {
     setIsLoaded(false)
     setTopProductList({ isLoaded: false, data: [], message: null })
-      setManufacturerFilter(manufacturerId);
-      setSelectedMonth(month);
+      setManufacturerFilter(manufacturerId)
+      setSelectedMonth(month)
       SearchData({ selectedMonth:month, manufacturerFilter:manufacturerId })
   }
   return (

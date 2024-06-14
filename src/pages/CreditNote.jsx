@@ -1,33 +1,49 @@
-import React, { useState, useEffect } from 'react'
-import TopNav from "../components/All Headers/topNav/TopNav";
-import LogoHeader from "../components/All Headers/logoHeader/LogoHeader";
-import Header from "../components/All Headers/header/Header";
-import MobileHeader from "../components/All Headers/mobileHeader/MobileHeader";
-import Style from "../pages/CreditNote.module.css"
+import React, { useState, useEffect } from 'react';
+// import TopNav from "../components/All Headers/topNav/TopNav";
+// import LogoHeader from "../components/All Headers/logoHeader/LogoHeader";
+// import Header from "../components/All Headers/header/Header";
+// import MobileHeader from "../components/All Headers/mobileHeader/MobileHeader";
+
+import { useManufacturer } from "../api/useManufacturer";
+import { useRetailersData } from "../api/useRetailersData";
+
+import Style from "../pages/CreditNote.module.css";
 import AppLayout from '../components/AppLayout';
 import { FilterItem } from '../components/FilterItem';
 import { GetAuthData, getCreditNotesList } from "../lib/store";
 
 const CreditNote = () => {
-    const [userData, setUserData] = useState(null)
-    console.log({userData})
-
-    // const [selectedOption, setSelectedOption] = useState('Filter');
-    // const [showDropdown, setShowDropdown] = useState(false);
-
-    // const handleOptionClick = (option) => {
-    //     setSelectedOption(option);
-    //     setShowDropdown(false);
-    // };
-    // const toggleDropdown = () => {
-    //     setShowDropdown(!showDropdown);
-    // };
+    let img = 'assets/default-image.png'
+    const [userData, setUserData] = useState(null);
+    const { data: manufacturers } = useManufacturer();
+    const { data: retailers } = useRetailersData();
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoadedRetailer, setIsLoadedRetailer] = useState(false);
+    const [manufacturerFilter, setManufacturerFilter] = useState();
+    const [retailerFilter, setRetailerFilter] = useState();
+    const [data, setData] = useState([]);
 
     useEffect(() => {
         GetAuthData().then((user) => {
-            setUserData(user)
-        }).catch((e) => console.log({ e }))
-    }, []);
+            setUserData(user);
+            console.log({ user: user.x_access_token, retailerFilter, manufacturerFilter });
+            getCreditNotesList(user.x_access_token, retailerFilter, manufacturerFilter).then((data) => {
+                console.log({ data });
+                setData(data);
+            })
+            .catch((err) => console.log({ err: err.message }));
+        }).catch((e) => console.log({ e: e.message }));
+    }, [retailerFilter, manufacturerFilter]);
+
+    const brandBtnHandler = ({ manufacturerId }) => {
+        setIsLoaded(false);
+        setManufacturerFilter(manufacturerId);
+    };
+
+    const retailerBtnHandler = ({ retailerId }) => {
+        setIsLoadedRetailer(false);
+        setRetailerFilter(retailerId);
+    };
 
     return (
         <AppLayout
@@ -35,172 +51,78 @@ const CreditNote = () => {
                 <>
                     <FilterItem
                         minWidth="220px"
-                        label="Manufacturer"
-                        value=""
-                        options={[]}
-                        onChange={(value) => {
-
-                        }}
-                        name={"dashboard-manu"}
+                        label="All Manufacturer"
+                        name="Manufacturer"
+                        value={manufacturerFilter}
+                        options={manufacturers?.data?.map((manufacturer) => ({
+                            label: manufacturer.Name,
+                            value: manufacturer.Id,
+                        }))}
+                        onChange={(value) => brandBtnHandler({ manufacturerId: value })}
                     />
+
                     <FilterItem
                         minWidth="220px"
                         label="All Account"
-                        value=""
-                        options={[]}
-                        onChange={(value) => {
-
-                        }}
-                        name={"dashboard-all-accounts"}
+                        name="Retailer"
+                        value={retailerFilter}
+                        options={retailers?.data?.map((retailer) => ({
+                            label: retailer.Name,
+                            value: retailer.Id,
+                        }))}
+                        onChange={(value) => retailerBtnHandler({ retailerId: value })}
                     />
                 </>
             }
         >
             <div className="container p-0 ">
                 <div className="row p-0 m-0 d-flex flex-column justify-content-around align-items-center col-12">
-
                     <hr className="hrBgColor"></hr>
-
-
-
-                    {/* <div className={Style.backTransaction}>
-                    <div>
-                        <img src='assets/images/Vector.png' alt='ww' />
-                    </div>
-                    <div><h1>Transactions</h1></div>
-                </div> */}
-                    {/* <div>
-                    <div className={Style.filterTransaction}>
-                        <div className='search-icon'>
-                            <img src='assets/images/Group235.png' alt='nn' />
-                        </div>
-                        <div className={Style.inputMain}>
-                            <input className={Style.searchInput}
-                                type="text"
-                                placeholder="TYPE TO SEARCH FOR A TRANSACTION"
-                            />
-                        </div>
-                    </div>
-                </div> */}
                     <div className={Style.productDeatils}>
                         <div className={Style.titleAndFilter}>
-                            <div><h3>Product Deatils</h3></div>
-                            {/* <div className={Style.filterDropDown}>
                             <div>
-                                <img src='assets/images/FilterIcon.png' alt='bb' />
+                                <h3>Transactions</h3>
                             </div>
-                            <div className={Style.customDropdown}>
-                                <span className={Style.FilterHead} onClick={toggleDropdown}>{selectedOption}</span>
-                                {showDropdown && (
-                                    <ul className={Style.dropdownOptions}>
-                                        <li className={selectedOption === 'A-Z' ? Style.active : ''} onClick={() => handleOptionClick('A-Z')}>A-Z</li>
-                                        <li className={selectedOption === 'Z-A' ? Style.active : ''} onClick={() => handleOptionClick('Z-A')}>Z-A</li>
-                                       
-                                    </ul>
-                                )}
-                            </div>
-                        </div> */}
                         </div>
-                        <div className={Style.productdata}>
-                            <div className={Style.productDataDeatils}>
-                                <div className={Style.ProductImg}>
-                                    <img src='assets/images/image 48.png' alt='img' />
+
+                        {data.map((item) => (
+                            <div className={Style.productdata} key={item.id}>
+                                <div className={Style.productDataDeatils}>
+                                    <div className={Style.ProductImg}>
+                                        <img src={item?.ManufacturerLogo ?? img} alt='img' />
+                                    </div>
+                                    <div className={Style.productTitle}>
+                                        <h3>
+                                            {item.Manufacturer}
+                                            {/* | <span>{item.productDescription}</span> */}
+                                        </h3>
+                                    </div>
                                 </div>
-                                <div className={Style.productTitle}><h3>Diptyque | <span>Eau de Parfum</span></h3> </div>
+                                <div className={Style.pricDeatils}>
+                                    <div className={Style.priceAndDate}>
+                                        {item.Status__c == 'Issued' ?
+                                            <p className={Style.plusPrice}>
+                                                +${item.Wallet_Amount__c}
+                                            </p>
+                                            : 
+                                            <p className={Style.minusPrice}>
+                                                -${item.Wallet_Amount__c}
+                                            </p>
+                                        }
+                                        <small>{new Date(item.CreatedDate).toLocaleString()}</small>
+                                    </div>
+                                    <div className={Style.viewBtn}>
+                                        {/* <button >View Now</button> */}
+                                    </div>
+                                </div>
+                                <hr className="hrBgColor"></hr>
                             </div>
-                            <div className={Style.pricDeatils}>
-                                <div className={Style.priceAndDate}>
-                                    <p className={Style.plusPrice}>+$2000</p>
-                                    <small>01 Jan 1:00PM</small>
-                                </div>
-                                <div className={Style.viewBtn}>
-                                    {/* <button >View Now</button> */}
-                                </div>
-                            </div>
-                            <hr className="hrBgColor"></hr>
-                        </div>
-                        <div className={Style.productdata}>
-                            <div className={Style.productDataDeatils}>
-                                <div className={Style.ProductImg}>
-                                    <img src='assets/images/image 49.png' alt='img' />
-                                </div>
-                                <div className={Style.productTitle}><h3>Maison margiela  | <span>Tip Tac Toe Nail Lacquer C...</span></h3> </div>
-                            </div>
-                            <div className={Style.pricDeatils}>
-                                <div className={Style.priceAndDate}>
-                                    <p className={Style.minusPrice}>-$540</p>
-                                    <small>01 Jan 1:00PM</small>
-                                </div>
-                                <div className={Style.viewBtn}>
-                                    {/* <button >View Now</button> */}
-                                </div>
-                            </div>
-                            <hr className="hrBgColor"></hr>
-                        </div>
-                        <div className={Style.productdata}>
-                            <div className={Style.productDataDeatils}>
-                                <div className={Style.ProductImg}>
-                                    <img src='assets/images/image 49 (1).png' alt='img' />
-                                </div>
-                                <div className={Style.productTitle}><h3>Estee Lauder | <span> Seaport Salon & Day Spa</span></h3> </div>
-                            </div>
-                            <div className={Style.pricDeatils}>
-                                <div className={Style.priceAndDate}>
-                                    <p className={Style.minusPrice}>-$7500</p>
-                                    <small>01 Jan 1:00PM</small>
-                                </div>
-                                <div className={Style.viewBtn}>
-                                    {/* <button >View Now</button> */}
-                                </div>
-                            </div>
-                            <hr className="hrBgColor"></hr>
-                        </div>
-                        <div className={Style.productdata}>
-                            <div className={Style.productDataDeatils}>
-                                <div className={Style.ProductImg}>
-                                    <img src='assets/images/image 48.png' alt='img' />
-                                </div>
-                                <div className={Style.productTitle}><h3>Bobbi brown | <span>Eau de Parfum</span></h3> </div>
-                            </div>
-                            <div className={Style.pricDeatils}>
-                                <div className={Style.priceAndDate}>
-                                    <p className={Style.plusPrice}>+$400.70</p>
-                                    <small>01 Jan 1:00PM</small>
-                                </div>
-                                <div className={Style.viewBtn}>
-                                    {/* <button >View Now</button> */}
-                                </div>
-                            </div>
-                            <hr className="hrBgColor"></hr>
-                        </div>
-                        <div className={Style.productdata}>
-                            <div className={Style.productDataDeatils}>
-                                <div className={Style.ProductImg}>
-                                    <img src='assets/images/image 49.png' alt='img' />
-                                </div>
-                                <div className={Style.productTitle}><h3>Bumble and bumble | <span>Tip Tac Toe Nail Lacquer C...</span></h3> </div>
-                            </div>
-                            <div className={Style.pricDeatils}>
-                                <div className={Style.priceAndDate}>
-                                    <p className={Style.minusPrice}>-$4.20</p>
-                                    <small>01 Jan 1:00PM</small>
-                                </div>
-                                <div className={Style.viewBtn}>
-                                    {/* <button >View Now</button> */}
-                                </div>
-                            </div>
-                            <hr className="hrBgColor"></hr>
-                        </div>
+                        ))}
                     </div>
-
-
-
                 </div>
-
             </div>
         </AppLayout>
-    )
-}
+    );
+};
 
-export default CreditNote
-
+export default CreditNote;
