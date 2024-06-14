@@ -40,8 +40,6 @@ function MyBagFinal() {
   const [validationMessage, setValidationMessage] = useState('')
 
   let total = 0
-  // console.log({creditAmount : localStorage.getItem("creditAmount") })
-
   const inputRef = useRef(null)
 
   const handleEditClick = () => {

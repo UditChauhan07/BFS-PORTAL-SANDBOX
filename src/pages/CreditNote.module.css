@@ -124,6 +124,20 @@
     display: flex;
 }
 
+.noDataFound {
+    border: 1px solid rgba(228, 228, 228, 1);
+    height: auto;
+    width: 98%;
+    margin: auto;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    text-align: center;
+}
+
+
 .productDataDeatils {
     display: flex;
     align-items: center;
@@ -134,7 +148,12 @@
 
 .ProductImg {
     border: 1px solid rgba(164, 164, 164, 1);
+    width : 20%;
+}
 
+.DefaultProductImg {
+    border: 1px solid rgba(164, 164, 164, 1);
+    width : 5%;
 }
 
 .productTitle {
