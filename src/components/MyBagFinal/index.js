@@ -245,25 +245,25 @@ function MyBagFinal() {
 
   const orderPlaceHandler = () => {
     setIsOrderPlaced(1);
-    let fetchBag = fetchBeg();
+    let fetchBag = fetchBeg()
     GetAuthData()
       .then((user) => {
-        let SalesRepId = localStorage.getItem(salesRepIdKey) ?? user.Sales_Rep__c;
+        let SalesRepId = localStorage.getItem(salesRepIdKey) ?? user.Sales_Rep__c
         if (fetchBag) {
           let list = [];
-          let orderType = "Wholesale Numbers";
-          let productLists = Object.values(fetchBag.orderList);
+          let orderType = "Wholesale Numbers"
+          let productLists = Object.values(fetchBag.orderList)
           if (productLists.length) {
             productLists.map((product) => {
-              if (product.product.Category__c == "PREORDER") orderType = "Pre Order";
+              if (product.product.Category__c == "PREORDER") orderType = "Pre Order"
               let temp = {
                 ProductCode: product.product.ProductCode,
                 qty: product.quantity,
                 price: product.product?.salesPrice,
                 discount: product.product?.discount,
-              };
+              }
               list.push(temp);
-            });
+            })
           }
           let begToOrder = {
             AccountId: fetchBag?.Account?.id,
@@ -282,32 +282,29 @@ function MyBagFinal() {
             creditAmount: localStorage.getItem('creditAmount'),
             key: user.x_access_token,
             shippingMethod: fetchBag.Account.shippingMethod
-          };
-
-          // console.log({begToOrder})
+          }
 
           OrderPlaced({ order: begToOrder })
             .then((response) => {
               if (response) {
                 if (response.length) {
-                  setIsOrderPlaced(0);
+                  setIsOrderPlaced(0)
                   setorderStatus({ status: true, message: response[0].message })
-                  // alert(response[0].message)
                 } else {
-                  fetchBag.orderList.map((ele) => addOrder(ele.product, 0, ele.discount));
-                  localStorage.removeItem("orders");
-                  navigate("/order-list");
-                  setIsOrderPlaced(2);
+                  fetchBag.orderList.map((ele) => addOrder(ele.product, 0, ele.discount))
+                  localStorage.removeItem("orders")
+                  navigate("/order-list")
+                  setIsOrderPlaced(2)
                 }
               }
             })
             .catch((err) => {
-              console.error({ err });
-            });
+              console.error({ err })
+            })
         }
       })
       .catch((error) => {
-        console.error({ error });
+        console.error({ error })
       });
   }
 
