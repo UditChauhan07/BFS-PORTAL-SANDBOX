@@ -1,20 +1,33 @@
-import React, { useState } from 'react'
-
+import React, { useState, useEffect } from 'react'
+import TopNav from "../components/All Headers/topNav/TopNav";
+import LogoHeader from "../components/All Headers/logoHeader/LogoHeader";
+import Header from "../components/All Headers/header/Header";
+import MobileHeader from "../components/All Headers/mobileHeader/MobileHeader";
 import Style from "../pages/CreditNote.module.css"
 import AppLayout from '../components/AppLayout';
 import { FilterItem } from '../components/FilterItem';
+import { GetAuthData, getCreditNotesList } from "../lib/store";
+
 const CreditNote = () => {
+    const [userData, setUserData] = useState(null)
+    console.log({userData})
 
-    const [selectedOption, setSelectedOption] = useState('Filter');
-    const [showDropdown, setShowDropdown] = useState(false);
+    // const [selectedOption, setSelectedOption] = useState('Filter');
+    // const [showDropdown, setShowDropdown] = useState(false);
 
-    const handleOptionClick = (option) => {
-        setSelectedOption(option);
-        setShowDropdown(false);
-    };
-    const toggleDropdown = () => {
-        setShowDropdown(!showDropdown);
-    };
+    // const handleOptionClick = (option) => {
+    //     setSelectedOption(option);
+    //     setShowDropdown(false);
+    // };
+    // const toggleDropdown = () => {
+    //     setShowDropdown(!showDropdown);
+    // };
+
+    useEffect(() => {
+        GetAuthData().then((user) => {
+            setUserData(user)
+        }).catch((e) => console.log({ e }))
+    }, []);
 
     return (
         <AppLayout

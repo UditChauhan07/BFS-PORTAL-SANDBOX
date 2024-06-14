@@ -19,4 +19,4 @@ const MyBag = () => {
   );
 };
 
-export default MyBag;
+export default MyBag
