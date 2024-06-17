@@ -63,7 +63,9 @@ function MyBagFinal() {
     const val = e.target.value
     const character = '$'
     const value = extractWordAfterCharacter(val, character)
-    console.log({ subTotal })
+
+    console.log({val, character, value})
+    
     if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available && value <= subTotal)) {
       setPriceValue(value)
       localStorage.setItem('creditAmount', value)
@@ -535,10 +537,11 @@ function MyBagFinal() {
                         <p>Credit Note Discount</p>
                         </div>
                         <div className={Styles.editPrice}>
-                          <h2 className={Styles.disprice}>-${Number(localStorage.getItem('creditAmount'))}</h2>
+                          <h2 className={Styles.disprice}>-${Number(localStorage.getItem('creditAmount')).toFixed(2) }</h2>
                             <img src="assets/images/pencil-square.png" alt="edit-icon" onClick={handleShowModal}/>
                         </div>
                       </div>
+
                       {/* New Total End */}
                       <div className={Styles.TotalPricer}>
                         <div>
@@ -650,7 +653,7 @@ function MyBagFinal() {
                                   <input
                                     type="text"
                                     className={Styles.price}
-                                    value={fullPriceValue}
+                                    value={`$` + localStorage.getItem('creditAmount') }
                                     onChange={handlePriceChange}
                                     readOnly={!isEditable}
                                     ref={inputRef}
@@ -668,22 +671,6 @@ function MyBagFinal() {
                               <p className={Styles.validationError}>{validationMessage}</p>
                             )}
 
-                            {/* <div className={Styles.inputRadio2}>
-                              <input type="radio" id="input2" name="creditNote" disabled />
-                              <label htmlFor="input2">Not Available Yet</label>
-                              <div>
-                                <strong className={Styles.price2}>-$320 <br /><span className={Styles.dateDetails}>Uss Full Amount</span></strong>
-
-                              </div>
-                            </div>
-
-                            <div className={Styles.inputRadio3}>
-                              <input type="radio" id="input3" name="creditNote" disabled />
-                              <label htmlFor="input3">Not Available Yet</label>
-                              <div>
-                                <strong className={Styles.price3}>-$410 <br /><span className={Styles.dateDetails}>Uss Full Amount</span></strong>
-                              </div>
-                            </div> */}
 
                           </Modal.Body>
 
