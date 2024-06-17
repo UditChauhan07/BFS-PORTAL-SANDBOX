@@ -535,8 +535,8 @@ function MyBagFinal() {
                         <p>Credit Note Discount</p>
                         </div>
                         <div className={Styles.editPrice}>
-                          <h2 className={Styles.disprice}>-$420.00 </h2>
-                            <img src="assets/images/pencil-square.png" onClick={handleShowModal}/>
+                          <h2 className={Styles.disprice}>-${Number(localStorage.getItem('creditAmount'))}</h2>
+                            <img src="assets/images/pencil-square.png" alt="edit-icon" onClick={handleShowModal}/>
                         </div>
                       </div>
                       {/* New Total End */}
