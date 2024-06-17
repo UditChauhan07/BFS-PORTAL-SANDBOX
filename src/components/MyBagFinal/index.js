@@ -10,7 +10,7 @@ import ModalPage from "../Modal UI";
 import StylesModal from "../Modal UI/Styles.module.css";
 import LoaderV2 from "../loader/v2";
 import ProductDetails from "../../pages/productDetails";
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 
 function MyBagFinal() {
@@ -55,7 +55,6 @@ function MyBagFinal() {
   const extractWordAfterCharacter = (input, character) => {
     const regex = new RegExp(`\\${character}(\\w+)`)
     const match = input.match(regex)
-    // console.log({match})
     return match ? match[1] : ''
   }
 
