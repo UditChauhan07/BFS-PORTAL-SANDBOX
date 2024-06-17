@@ -78,7 +78,7 @@ function MyBagFinal() {
 
       setTimeout(() => {
         setValidationMessage('')
-      }, 3000)
+      }, 5000)
     }
   }
 
@@ -98,7 +98,7 @@ function MyBagFinal() {
 
         setTimeout(() => {
           setValidationMessage('')
-        }, 3000)
+        }, 5000)
       }
     } else {
       setPriceValue('0')
@@ -519,10 +519,7 @@ function MyBagFinal() {
                             </div>
                           </>
                         )}
-
-
                       </div>
-
   
                       {/* New Total Start */}
                       {localStorage.getItem("orders") && Object.values(JSON.parse(localStorage.getItem("orders"))).length > 0 ? 
@@ -557,8 +554,6 @@ function MyBagFinal() {
                         </>
                       )
                       : '' }
-
-                      
                     </div>
                   </div>
                 </div>
