@@ -12,6 +12,7 @@ import Loading from "../components/Loading";
 import AppLayout from '../components/AppLayout';
 import { FilterItem } from '../components/FilterItem';
 import { GetAuthData, getCreditNotesList } from "../lib/store";
+import { Modal } from 'react-bootstrap';
 
 const CreditNote = () => {
     let img = 'assets/default-image.png'
@@ -24,6 +25,9 @@ const CreditNote = () => {
     const [manufacturerFilter, setManufacturerFilter] = useState()
     const [retailerFilter, setRetailerFilter] = useState()
     const [data, setData] = useState([])
+
+    const [showModal, setShowModal] = useState(false);
+    const [currentDate, setCurrentDate] = useState('');
 
     console.log({isLoading})
     useEffect(() => {
@@ -54,7 +58,9 @@ const CreditNote = () => {
         setIsLoadedRetailer(false)
         setRetailerFilter(retailerId)
     };
-
+    //............View Modal Function...........//
+    const handleShowModal = () => setShowModal(true);
+    const handleCloseModal = () => setShowModal(false);
     return (
         <AppLayout
             filterNodes={
@@ -91,7 +97,7 @@ const CreditNote = () => {
                     <div className={Style.productDeatils}>
                         <div className={Style.titleAndFilter}>
                             <div>
-                                <h3>Transactions</h3>
+                                <h1>Transactions</h1>
                             </div>
                         </div>
                         
@@ -125,10 +131,53 @@ const CreditNote = () => {
                                                     <small>{new Date(item.CreatedDate).toLocaleString()}</small>
                                                 </div>
                                                 <div className={Style.viewBtn}>
-                                                    {/* <button>View Now</button> */}
+                                                     <button onClick={handleShowModal}>View </button> 
                                                 </div>
                                             </div>
-                                            <hr className="hrBgColor"></hr>
+                                                                       {/* /// credit Modal.....Start */}
+
+                            <Modal size="lg" aria-labelledby="contained-modal-title-vcenter"
+                                centered show={showModal}
+                                onHide={handleCloseModal}>
+                                <Modal.Title >
+                                    <div className={Style.PoDeatils}>
+                                        <div className={Style.Ponumber}>PO Number <span>#310475</span> </div>
+                                        <div className={Style.PoDate}><p> Date: <span> 10 Mar 2024</span></p></div>
+                                    </div>
+
+                                </Modal.Title>
+
+                                <div className={Style.maincreditAmountDiv}>
+                                    <Modal.Body>
+                                        <div className={Style.CaseDeatils}>
+                                            <div className={Style.CaseTitle}><p>Diptyque | <span>Eau de Parfum</span></p></div>
+                                            <div className={Style.CaseNumDeatils}><p>Case Number <span>#310475</span></p></div>
+                                        </div>
+                                        <div className={Style.creditAmountDiv}>
+                                            <div className={Style.creditAmount}><p>Credit Not Amount</p></div>
+                                            <div className={Style.creditAmountDetail}>
+                                                <p>$2000</p>
+                                                <small>25 Jun 2024</small>
+                                            </div>
+                                        </div>
+                                        <div className={Style.creditAmountDiv}>
+                                            <div className={Style.creditAmount}><p>Order Price</p></div>
+                                            <div className={Style.creditAmountDetail2}>
+                                                <p >$2000</p>
+                                                <small>25 Jun 2024</small>
+                                            </div>
+                                        </div>
+                                    </Modal.Body>
+                                </div>
+                                <div className={Style.mainbutton}>
+                                    <div>
+                                        <button className={Style.CancleBtn} onClick={handleCloseModal}>Cancel</button>
+                                    </div>
+
+                                </div>
+                            </Modal>
+
+                            {/* /// credit Modal.... End */}
                                         </div>
                                     ))
                                 ) : (

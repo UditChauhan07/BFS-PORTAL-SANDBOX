@@ -222,3 +222,185 @@
     padding: 6px 10px;
     font-size: 14px;
 }
+
+/* .....my new modal css start.. */
+.PoDeatils {
+    display: flex;
+    width: 80%;
+    margin: auto;
+    justify-content: space-between;
+    margin-top: 2.5rem;
+}
+
+.Ponumber {
+    color: rgba(0, 0, 0, 1);
+    font-family: "Arial";
+    font-size: 20px;
+}
+
+.Ponumber span {
+    color: rgba(0, 0, 0, 1);
+    font-family: "Mixed";
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.PoDate {
+    font-size: 17px;
+    font-family: "Montserrat";
+    color: rgba(92, 92, 92, 1);
+}
+
+.PoDate span {
+    font-family: "Montserrat";
+    color: rgba(0, 0, 0, 1);
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.CaseDeatils {
+    display: flex;
+    justify-content: space-between;
+}
+
+.CaseTitle {
+    color: rgba(0, 0, 0, 1);
+    text-transform: uppercase;
+    font-family: "Montserrat";
+
+}
+
+.CaseTitle p {
+    font-weight: 600;
+    letter-spacing: 3px;
+}
+
+.CaseTitle span {
+    font-size: 13px;
+    letter-spacing: 3px;
+
+}
+
+.CaseNumDeatils {
+    color: rgba(0, 0, 0, 1);
+}
+
+.CaseNumDeatils p {
+    font-size: 20px;
+    font-family: "Arial";
+}
+
+.CaseNumDeatils span {
+    font-family: "Mixed";
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.inputRadio {
+    border: 1px solid #80808038;
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    background-color: rgb(255, 255, 255) !important;
+
+}
+
+.maincreditAmountDiv {
+    border: 1px solid #80808038;
+    border-radius: 10px;
+    background-color: #d7e0df3d;
+    width: 80%;
+    height: 80%;
+    margin: auto;
+    padding: 15px;
+    /* margin-bottom: 70px !important; */
+}
+
+.creditAmountDiv {
+    border: 1px solid #80808038;
+    padding: 10px;
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    background-color: rgb(255, 255, 255) !important;
+}
+
+.creditAmount {
+    width: 50%;
+    font-size: 14px;
+    padding: 10px;
+    font-family: "Montserrat";
+    color: rgba(0, 0, 0, 1);
+    font-weight: 700;
+
+}
+
+.creditAmount p {
+    letter-spacing: 1.3px;
+    margin: auto;
+}
+
+.creditAmountDetail {
+    padding: 8px;
+    text-align: end;
+    width: 50%;
+    line-height: 0.3;
+    font-family: "Montserrat";
+}
+
+.creditAmountDetail p {
+    font-family: "Montserrat";
+    color: rgba(88, 168, 18, 1);
+    font-weight: 700;
+
+}
+
+.creditAmountDetail small {
+    font-family: "Montserrat";
+    font-size: 12px;
+    color: rgba(138, 138, 138, 1);
+    font-weight: 300;
+
+}
+
+.creditAmountDetail2 {
+    padding: 8px;
+    text-align: end;
+    width: 50%;
+    line-height: 0.3;
+    font-family: "Montserrat";
+}
+
+.creditAmountDetail2 p {
+    font-family: "Montserrat";
+    color: rgba(138, 138, 138, 1);
+    font-weight: 700;
+}
+
+.creditAmountDetail2 small {
+    font-family: "Montserrat";
+    font-size: 12px;
+    color: rgba(138, 138, 138, 1);
+    font-weight: 300;
+
+}
+
+.mainbutton {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 60px;
+    margin-top: 15px;
+    margin-bottom: 2.5rem;
+}
+
+.CancleBtn {
+    padding: 5px 30px !important;
+    border: 1px solid rgba(0, 0, 0, 1);
+    font-weight: 600;
+    margin-right: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* .....my new modal css End.. */
