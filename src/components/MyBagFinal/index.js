@@ -340,7 +340,8 @@ function MyBagFinal() {
 
   const deleteBag = () => {
     localStorage.removeItem("orders")
-    window.location.reload();
+    localStorage.removeItem("creditAmount")
+    window.location.reload()
   }
 
   if (isOrderPlaced === 1) return <OrderLoader />;
@@ -526,7 +527,7 @@ function MyBagFinal() {
                         <h2>Previous Total</h2>
                         </div>
                         <div>
-                          <h2>$1150.50</h2>
+                          <h2>${Number(total).toFixed(2)}</h2>
                         </div>
                       </div>
                       <div className={Styles.DiscountPricer}>
@@ -534,7 +535,7 @@ function MyBagFinal() {
                         <h2>Credit Note Discount</h2>
                         </div>
                         <div>
-                          <h2>-$420.00</h2>
+                          <h2>-${Number(localStorage.getItem('creditAmount')).toFixed(2)}</h2>
                         </div>
                       </div>
                       {/* New Total End */}
@@ -543,7 +544,7 @@ function MyBagFinal() {
                           <h2>Sub Total</h2>
                         </div>
                         <div>
-                          <h2>${Number(total).toFixed(2)}</h2>
+                          <h2>${(localStorage.getItem('creditAmount') > 0) ? Number(total - localStorage.getItem('creditAmount')).toFixed(2) : Number(total).toFixed(2)}</h2>
                         </div>
                       </div>
                     </div>
@@ -605,16 +606,7 @@ function MyBagFinal() {
                     <div className={Styles.ShipBut}>
 
                       {priceValue || localStorage.getItem('creditAmount') > 0 ?
-                        <div className={Styles.ShipAdress}>
-                          <div className="row">
-                            <div className="col-md-5">Sub Total :</div>
-                            <div className="col-md-5">${Number(total).toFixed(2)}</div>
-                          </div>
-                          <div className="row">
-                            <div className="col-md-5">Credit Amount :</div>
-                            <div className="col-md-5">${Number(localStorage.getItem('creditAmount')).toFixed(2)}</div>
-                          </div>
-                        </div>
+                        ''
                         :
                         <button className={Styles.CredBut} onClick={handleShowModal}>Apply credit Note</button>
                       }
