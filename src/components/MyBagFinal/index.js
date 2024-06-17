@@ -531,10 +531,11 @@ function MyBagFinal() {
                       </div>
                       <div className={Styles.DiscountPricer}>
                         <div>
-                        <h2>Credit Note Discount</h2>
+                        <p>Credit Note Discount</p>
                         </div>
-                        <div>
-                          <h2>-$420.00</h2>
+                        <div className={Styles.editPrice}>
+                          <h2 className={Styles.disprice}>-$420.00 </h2>
+                            <img src="assets/images/pencil-square.png" onClick={handleShowModal}/>
                         </div>
                       </div>
                       {/* New Total End */}
