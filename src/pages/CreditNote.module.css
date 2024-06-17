@@ -5,12 +5,15 @@
     font-weight: 700;
     font-family: "Montserrat";
 }
-
+.filterDotedDiv{
+    display: flex;
+    justify-content: space-between;
+}
 .filterTransaction {
     display: flex;
     border: 1px solid rgba(0, 0, 0, 1);
     border-style: dotted;
-    width: 30%;
+    width: 40%;
     align-items: center;
     padding: 10px;
 
@@ -27,6 +30,8 @@
     width: 100%;
     outline: none;
 }
+
+
 
 .productDeatils {
     border: 1px solid rgba(0, 0, 0, 1);
@@ -52,6 +57,7 @@
     font-family: "Montserrat";
     font-weight: 700;
     padding: 10px;
+    text-transform: uppercase;
 }
 
 .filterDropDown {
@@ -114,6 +120,126 @@
 .FilterHead {
     color: rgba(56, 56, 56, 1);
 }
+
+/* //......Transaction Drop Down Start.. */
+.Calendardate{
+    width: 50%;
+}
+.Calendardate input{
+    width: 90%;
+    outline: none;
+}
+.TransactionDiv{
+    width: 50%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+}
+.TransactionDropDown p{
+    margin-bottom:0px;
+}
+.dropdownOptions2{
+    position: absolute;
+    right: 0%;
+    /* top: 0%; */
+    text-align: end;
+    transform: translateX(-12%);
+    background-color: #f9f9f9;
+    min-width: 80px;
+    border: 1px solid #ddd;
+    padding: 0%;
+    font-family: "Montserrat";
+    list-style-type: none;
+    z-index: 1;
+    letter-spacing: 1.3px;
+}
+.dropdownOptions2 li{
+    font-family: "Montserrat";
+    padding-right: 3px;
+    border-bottom: 1px solid rgba(209, 209, 209, 1);
+}
+.filterTransaction2 {
+    display: flex;
+    border: 1px solid rgba(0, 0, 0, 1);
+    border-style: dotted;
+    width: 25%;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+
+}
+
+.dropdownOptions2 li:hover{
+    background-color: #000000;
+    color: white;
+   
+
+}
+
+/* //......Transaction Drop Down End.. */
+
+
+
+
+/* .......Filter Drop Down Start.... */
+
+.filterDropDown {
+    position: relative;
+    display: flex;
+
+    /* Ensures it behaves like a block-level element */
+    &:hover {
+        .dropdownOptions {
+            display: block;
+            /* Show the dropdown on hover */
+        }
+    }
+
+    .customDropdown {
+        position: relative;
+        /* Ensure positioning context for the dropdown */
+    }
+
+    .dropdownOptions {
+
+        position: absolute;
+        text-align: end;
+        transform: translateX(-40%);
+        background-color: #fff;
+        min-width: 80px;
+        border: 1px solid #ccc;
+       
+        list-style-type: none;
+        display: none;
+        top: 100%;
+        left: 0;
+
+
+        z-index: 1;
+        padding: 0;
+        list-style-type: none;
+        margin: 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+
+        /* Optional: add shadow */
+        li {
+            padding: 0px 5px;
+            cursor: pointer;
+
+            &:hover {
+                background-color: #000000;
+                color: white;
+            }
+        }
+    }
+}
+
+/* ...Filter Drop Down End */
+
+
+
 
 .productdata {
     border: 1px solid rgba(228, 228, 228, 1);

@@ -28,8 +28,14 @@ const CreditNote = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [currentDate, setCurrentDate] = useState('');
+    //.....State for filter Search Start...////
+    const [selectedOption, setSelectedOption] = useState('Filter');
+    const [showDropdown, setShowDropdown] = useState(false);
+    //.....State for filter Search End...////
+    const [selectedOption2, setSelectedOption2] = useState('Transaction');
+    const [showDropmenu, setShowDropmenu] = useState(false);
 
-    console.log({isLoading})
+    console.log({ isLoading })
     useEffect(() => {
         setIsLoading(true)
         GetAuthData().then((user) => {
@@ -39,10 +45,10 @@ const CreditNote = () => {
                 setData(data)
                 setIsLoading(false)
             })
-            .catch((err) => {
-                console.log({ err: err.message })
-                setIsLoading(false)
-            })
+                .catch((err) => {
+                    console.log({ err: err.message })
+                    setIsLoading(false)
+                })
         }).catch((e) => {
             console.log({ e: e.message })
             setIsLoading(false)
@@ -58,9 +64,45 @@ const CreditNote = () => {
         setIsLoadedRetailer(false)
         setRetailerFilter(retailerId)
     };
-    //............View Modal Function...........//
+    //............View Modal Function Start...........//
     const handleShowModal = () => setShowModal(true);
     const handleCloseModal = () => setShowModal(false);
+    //............View Modal Function End...........//
+
+    //............Calender Function Start...........//
+
+
+    useEffect(() => {
+        const today = new Date();
+        const year = today.getFullYear();
+        let month = today.getMonth() + 1;
+        let day = today.getDate();
+
+        // Adding leading zeros if month or day is less than 10
+        month = month < 10 ? '0' + month : month;
+        day = day < 10 ? '0' + day : day;
+
+        const formattedDate = `${year}-${month}-${day}`;
+        setCurrentDate(formattedDate);
+    }, []);
+
+    const handleDateChange = (event) => {
+        setCurrentDate(event.target.value);
+    };
+    //............Calender Function End...........//
+
+    ///...........Function for Filter start.....//
+    const handleOptionClick = (option) => {
+        setSelectedOption(option);
+        setShowDropdown(false); // Hide the dropdown after selection (optional)
+    };
+    ///...........Function for Filter start.....//
+
+    const handleMenuClick = (option) => {
+        setSelectedOption2(option);
+        setShowDropmenu(false)
+    }
+
     return (
         <AppLayout
             filterNodes={
@@ -93,14 +135,73 @@ const CreditNote = () => {
         >
             <div className="container p-0 ">
                 <div className="row p-0 m-0 d-flex flex-column justify-content-around align-items-center col-12">
-                    <hr className="hrBgColor"></hr>
+                    <div className={Style.backTransaction}>
+                        <div>
+                            <img src='assets/images/Vector.png' alt='ww' />
+                        </div>
+                        <div><h1>Transactions</h1></div>
+                    </div>
+                    <div className={Style.filterMain}>
+                        <div className={Style.filterDotedDiv}>
+                            <div className={Style.filterTransaction}>
+                                <div className='search-icon'>
+                                    <img src='assets/images/Group235.png' alt='nn' />
+                                </div>
+                                <div className={Style.inputMain}>
+                                    <input className={Style.searchInput}
+                                        type="text"
+                                        placeholder="TYPE TO SEARCH FOR A TRANSACTION"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className={Style.filterTransaction2}>
+
+                                <div className={Style.Calendardate}>
+                                    <form action="/action_page.php">
+                                        <input type="date" name="calender" value={currentDate} onChange={handleDateChange} />
+                                    </form>
+                                </div>
+                                <div className={Style.TransactionDiv} onMouseEnter={() => setShowDropmenu(true)} onMouseLeave={() => setShowDropmenu(false)}>
+                                    <div className={Style.Transactionimg}>
+                                        <img src='assets/images/Vector(4).png' alt='aa' /></div>
+
+                                    <div className={Style.TransactionDropDown}>
+                                        <p >{selectedOption2}</p>
+                                        {showDropmenu && (
+                                            <ul className={Style.dropdownOptions2}>
+                                                <li onClick={() => handleMenuClick('All')}>ALL</li>
+                                                <li onClick={() => handleMenuClick('Debit')}>DEBIT</li>
+                                                <li onClick={() => handleMenuClick('Credit')}>CREDIT</li>
+                                            </ul>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
                     <div className={Style.productDeatils}>
                         <div className={Style.titleAndFilter}>
                             <div>
-                                <h1>Transactions</h1>
+                                <h3>Product details</h3>
+                            </div>
+                            <div className={Style.filterDropDown} onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
+                                <div>
+                                    <img src='assets/images/FilterIcon.png' alt='bb' />
+                                </div>
+                                <div className={Style.customDropdown}>
+                                    <span className={Style.FilterHead}>{selectedOption}</span>
+                                    <ul className={`${Style.dropdownOptions} ${showDropdown ? '' : Style.dropdownHidden}`}>
+                                        <li onClick={() => handleOptionClick('A-Z')}>A-Z</li>
+                                        <li onClick={() => handleOptionClick('Z-A')}>Z-A</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                        
+
+
                         {
                             !isLoading ? (
                                 data.length > 0 ? (
@@ -131,53 +232,53 @@ const CreditNote = () => {
                                                     <small>{new Date(item.CreatedDate).toLocaleString()}</small>
                                                 </div>
                                                 <div className={Style.viewBtn}>
-                                                     <button onClick={handleShowModal}>View </button> 
+                                                    <button onClick={handleShowModal}>View </button>
                                                 </div>
                                             </div>
-                                                                       {/* /// credit Modal.....Start */}
+                                            {/* /// credit Modal.....Start */}
 
-                            <Modal size="lg" aria-labelledby="contained-modal-title-vcenter"
-                                centered show={showModal}
-                                onHide={handleCloseModal}>
-                                <Modal.Title >
-                                    <div className={Style.PoDeatils}>
-                                        <div className={Style.Ponumber}>PO Number <span>#310475</span> </div>
-                                        <div className={Style.PoDate}><p> Date: <span> 10 Mar 2024</span></p></div>
-                                    </div>
+                                            <Modal size="lg" aria-labelledby="contained-modal-title-vcenter"
+                                                centered show={showModal}
+                                                onHide={handleCloseModal}>
+                                                <Modal.Title >
+                                                    <div className={Style.PoDeatils}>
+                                                        <div className={Style.Ponumber}>PO Number <span>#310475</span> </div>
+                                                        <div className={Style.PoDate}><p> Date: <span> 10 Mar 2024</span></p></div>
+                                                    </div>
 
-                                </Modal.Title>
+                                                </Modal.Title>
 
-                                <div className={Style.maincreditAmountDiv}>
-                                    <Modal.Body>
-                                        <div className={Style.CaseDeatils}>
-                                            <div className={Style.CaseTitle}><p>Diptyque | <span>Eau de Parfum</span></p></div>
-                                            <div className={Style.CaseNumDeatils}><p>Case Number <span>#310475</span></p></div>
-                                        </div>
-                                        <div className={Style.creditAmountDiv}>
-                                            <div className={Style.creditAmount}><p>Credit Not Amount</p></div>
-                                            <div className={Style.creditAmountDetail}>
-                                                <p>$2000</p>
-                                                <small>25 Jun 2024</small>
-                                            </div>
-                                        </div>
-                                        <div className={Style.creditAmountDiv}>
-                                            <div className={Style.creditAmount}><p>Order Price</p></div>
-                                            <div className={Style.creditAmountDetail2}>
-                                                <p >$2000</p>
-                                                <small>25 Jun 2024</small>
-                                            </div>
-                                        </div>
-                                    </Modal.Body>
-                                </div>
-                                <div className={Style.mainbutton}>
-                                    <div>
-                                        <button className={Style.CancleBtn} onClick={handleCloseModal}>Cancel</button>
-                                    </div>
+                                                <div className={Style.maincreditAmountDiv}>
+                                                    <Modal.Body>
+                                                        <div className={Style.CaseDeatils}>
+                                                            <div className={Style.CaseTitle}><p>Diptyque | <span>Eau de Parfum</span></p></div>
+                                                            <div className={Style.CaseNumDeatils}><p>Case Number <span>#310475</span></p></div>
+                                                        </div>
+                                                        <div className={Style.creditAmountDiv}>
+                                                            <div className={Style.creditAmount}><p>Credit Not Amount</p></div>
+                                                            <div className={Style.creditAmountDetail}>
+                                                                <p>$2000</p>
+                                                                <small>25 Jun 2024</small>
+                                                            </div>
+                                                        </div>
+                                                        <div className={Style.creditAmountDiv}>
+                                                            <div className={Style.creditAmount}><p>Order Price</p></div>
+                                                            <div className={Style.creditAmountDetail2}>
+                                                                <p >$2000</p>
+                                                                <small>25 Jun 2024</small>
+                                                            </div>
+                                                        </div>
+                                                    </Modal.Body>
+                                                </div>
+                                                <div className={Style.mainbutton}>
+                                                    <div>
+                                                        <button className={Style.CancleBtn} onClick={handleCloseModal}>Cancel</button>
+                                                    </div>
 
-                                </div>
-                            </Modal>
+                                                </div>
+                                            </Modal>
 
-                            {/* /// credit Modal.... End */}
+                                            {/* /// credit Modal.... End */}
                                         </div>
                                     ))
                                 ) : (
