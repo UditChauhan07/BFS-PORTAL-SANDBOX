@@ -1,5 +1,5 @@
 /* eslint-disable no-lone-blocks */
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Styles from "./Styles.module.css";
 import QuantitySelector from "../BrandDetails/Accordion/QuantitySelector";
 import { useNavigate } from "react-router-dom";
@@ -35,7 +35,7 @@ function MyBagFinal() {
   const [fullPriceValue, setFullPriceValue] = useState("")
   const [isEditable, setIsEditable] = useState(false)
   const [isCheckboxChecked, setIsCheckboxChecked] = useState(false)
-  const [creditNote, setCreditNote ] = useState({})
+  const [creditNote, setCreditNote] = useState({})
   const [subTotal, setSubTotal] = useState(0)
   const [validationMessage, setValidationMessage] = useState('')
 
@@ -63,14 +63,14 @@ function MyBagFinal() {
     const val = e.target.value
     const character = '$'
     const value = extractWordAfterCharacter(val, character)
-    console.log({subTotal})
+    console.log({ subTotal })
     if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available && value <= subTotal)) {
       setPriceValue(value)
       localStorage.setItem('creditAmount', value)
       setFullPriceValue('$' + value)
       setValidationMessage('')
 
-      console.log({lll : localStorage.getItem('creditAmount')})
+      console.log({ lll: localStorage.getItem('creditAmount') })
     } else {
       // setValidationMessage(`You can't set the value above $${creditNote.available}`)
       setValidationMessage('Enter Valid Amount for Credit Allocation')
@@ -86,14 +86,13 @@ function MyBagFinal() {
     setIsCheckboxChecked(e.target.checked)
     if (e.target.checked) {
       // console.log({cond: (creditNote.available <= subTotal),ava : creditNote.available, subTotal })
-      if(creditNote.available <= subTotal)
-      {
+      if (creditNote.available <= subTotal) {
         setPriceValue(creditNote.available)
         localStorage.setItem('creditAmount', creditNote.available)
         setFullPriceValue('$' + creditNote.available)
         setValidationMessage('')
       }
-      else{
+      else {
         setValidationMessage(`You can't set the value above the Sub Total Value - $${creditNote.available}.`)
 
         setTimeout(() => {
@@ -126,7 +125,7 @@ function MyBagFinal() {
       setButtonActive(true)
     }
   }, [])
- 
+
   const [productImage, setProductImage] = useState({ isLoaded: false, images: {} })
 
   useEffect(() => {
@@ -136,7 +135,7 @@ function MyBagFinal() {
     }
     GetAuthData().then((user) => {
       setUserData(user)
-     
+
       getSalesRepList({ key: user.x_access_token }).then((repList) => {
         let repData = repList.data.filter(item => item.Id === localStorage.getItem(salesRepIdKey))
         setSalesRepData(repData?.[0] || {})
@@ -213,7 +212,7 @@ function MyBagFinal() {
 
   // useEffect(() => {
   //   let amount = 0
-    
+
   //   const orders = localStorage.getItem("orders")
   //   console.log({orders})
 
@@ -452,7 +451,7 @@ function MyBagFinal() {
                         {localStorage.getItem("orders") && Object.values(JSON.parse(localStorage.getItem("orders"))).length > 0 ? (
                           Object.values(JSON.parse(localStorage.getItem("orders"))).map((ele) => {
                             // console.log(ele);
-                            
+
                             total += parseFloat(ele.product?.salesPrice * ele.quantity)
 
                             return (
@@ -521,6 +520,24 @@ function MyBagFinal() {
 
 
                       </div>
+                      {/* New Total Start */}
+                      <div className={Styles.PreviousPricer}>
+                        <div>
+                        <h2>Previous Total</h2>
+                        </div>
+                        <div>
+                          <h2>$1150.50</h2>
+                        </div>
+                      </div>
+                      <div className={Styles.DiscountPricer}>
+                        <div>
+                        <h2>Credit Note Discount</h2>
+                        </div>
+                        <div>
+                          <h2>-$420.00</h2>
+                        </div>
+                      </div>
+                      {/* New Total End */}
                       <div className={Styles.TotalPricer}>
                         <div>
                           <h2>Sub Total</h2>
@@ -586,21 +603,21 @@ function MyBagFinal() {
                       />
                     ) : null}
                     <div className={Styles.ShipBut}>
-                      
-                    {priceValue || localStorage.getItem('creditAmount') > 0 ?
-                      <div className={Styles.ShipAdress}>
-                        <div className="row">
-                          <div className="col-md-5">Sub Total :</div>
-                          <div className="col-md-5">${Number(total).toFixed(2)}</div>
+
+                      {priceValue || localStorage.getItem('creditAmount') > 0 ?
+                        <div className={Styles.ShipAdress}>
+                          <div className="row">
+                            <div className="col-md-5">Sub Total :</div>
+                            <div className="col-md-5">${Number(total).toFixed(2)}</div>
+                          </div>
+                          <div className="row">
+                            <div className="col-md-5">Credit Amount :</div>
+                            <div className="col-md-5">${Number(localStorage.getItem('creditAmount')).toFixed(2)}</div>
+                          </div>
                         </div>
-                        <div className="row">
-                          <div className="col-md-5">Credit Amount :</div>
-                          <div className="col-md-5">${Number(localStorage.getItem('creditAmount')).toFixed(2)}</div>
-                        </div>
-                      </div>
-                      :
-                      <button className={Styles.CredBut} onClick={handleShowModal}>Apply credit Note</button>
-                    }
+                        :
+                        <button className={Styles.CredBut} onClick={handleShowModal}>Apply credit Note</button>
+                      }
 
                       <button className={Styles.orderBtn}
                         onClick={() => {
@@ -614,7 +631,7 @@ function MyBagFinal() {
                         }}
                         disabled={!buttonActive}
                       >
-                       $ {(localStorage.getItem('creditAmount') > 0) ? Number(total - localStorage.getItem('creditAmount')).toFixed(2) : Number(total).toFixed(2) } PLACE ORDER
+                        $ {(localStorage.getItem('creditAmount') > 0) ? Number(total - localStorage.getItem('creditAmount')).toFixed(2) : Number(total).toFixed(2)} PLACE ORDER
                       </button>
 
                       {/* /// credit Modal.....Start */}
@@ -622,7 +639,7 @@ function MyBagFinal() {
                         centered show={showModal}
                         onHide={handleCloseModal}>
                         <Modal.Title className={Styles.Credittitles}>
-                          Credit Notes 
+                          Credit Notes
                           {/* <span>(3)</span> */}
                         </Modal.Title>
                         <div className={Styles.mainRadioDiv}>
@@ -650,9 +667,9 @@ function MyBagFinal() {
                                   <img className={Styles.editIcon} onClick={handleEditClick} src="assets/images/pencil-square.png" alt="ss" />
                                 </div>
                                 <div className={Styles.checkDev}> <p>Use Full Amount</p> </div>
-                                <input className={Styles.checkBox} onChange={handleCheckboxChange} checked={isCheckboxChecked}  type="checkbox" id="" />
+                                <input className={Styles.checkBox} onChange={handleCheckboxChange} checked={isCheckboxChecked} type="checkbox" id="" />
                               </div>
-                            </div> 
+                            </div>
 
                             {validationMessage && (
                               <p className={Styles.validationError}>{validationMessage}</p>
