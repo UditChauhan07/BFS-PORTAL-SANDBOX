@@ -38,15 +38,21 @@ const CreditNote = () => {
     const [selectedOption2, setSelectedOption2] = useState('Transaction');
     const [showDropmenu, setShowDropmenu] = useState(false);
 
+
     const [modalNoteId, setModalNoteId] = useState('')
 
 
-    console.log({ isLoading })
+    const [searchFilter, setSearchFilter] = useState('')
+    const [createdDateFilter, setCreatedDateFilter] = useState('')
+    const [recordStatusFilter, setRecordStatusFilter] = useState('')
+    const [sortOrder, setSortOrder] = useState('Z-A')
+
+    // console.log({ isLoading })
     useEffect(() => {
         setIsLoading(true)
         GetAuthData().then((user) => {
             setUserData(user)
-            console.log({ user: user.x_access_token, retailerFilter, manufacturerFilter });
+            // console.log({ user: user.x_access_token, retailerFilter, manufacturerFilter });
             getCreditNotesList(user.x_access_token, retailerFilter, manufacturerFilter).then((data) => {
                 setData(data)
                 setIsLoading(false)
@@ -61,15 +67,64 @@ const CreditNote = () => {
         })
     }, [retailerFilter, manufacturerFilter])
 
-    const filteredData = useMemo(() => {
-        return data.filter(item => {
-            const manufacturerMatch = manufacturerFilter ? item.ManufacturerId === manufacturerFilter : true
-            const retailerMatch = retailerFilter ? item.RetailerId === retailerFilter : true
-            return manufacturerMatch && retailerMatch
-        })
-    }, [data, manufacturerFilter, retailerFilter])
+    // const filteredData = useMemo(() => {
+    //     return data.filter(item => {
+    //         const manufacturerMatch = manufacturerFilter ? item.Manufacturer__c === manufacturerFilter : true
+    //         const retailerMatch = retailerFilter ? item.Account__c === retailerFilter : true
 
-    console.log({filteredData})
+    //         console.log({manufacturerFilter, manufacturerMatchId : item.ManufacturerId , retailerFilter, retailerMatchId : item.RetailerId})
+    //         return manufacturerMatch && retailerMatch
+    //     })
+    // }, [data, manufacturerFilter, retailerFilter])
+
+    const filteredData = useMemo(() => {
+        const sortedData = data.filter(item => {
+            const manufacturerMatch = manufacturerFilter ? item.Manufacturer__c === manufacturerFilter : true
+            const retailerMatch = retailerFilter ? item.Account__c === retailerFilter : true
+            const statusMatch = recordStatusFilter ? item.Status__c === recordStatusFilter : true
+          
+
+            const createdDateMatch = createdDateFilter 
+                ? new Date(item.CreatedDate) >= new Date(createdDateFilter.start) && new Date(item.CreatedDate) <= new Date(createdDateFilter.end)
+                : true;
+
+            const keywords = searchFilter.split(' ').filter(Boolean)
+
+            const keywordMatch = keywords.length > 0 
+                ? keywords.some(keyword => {
+                    const lowerCaseKeyword = keyword.toLowerCase();
+                    return Object.values(item).some(value => {
+                        if (typeof value === 'string') {
+                            return value.toLowerCase().includes(lowerCaseKeyword);
+                        } else if (typeof value === 'number') {
+                            return value.toString().includes(lowerCaseKeyword);
+                        } else if (value instanceof Date) {
+                            return value.toISOString().toLowerCase().includes(lowerCaseKeyword);
+                        }
+                        return false;
+                    });
+                }) 
+                : true
+
+            return manufacturerMatch && retailerMatch && statusMatch && createdDateMatch && keywordMatch;
+        })
+
+        if (sortOrder === 'A-Z') {
+            sortedData.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer))
+        } 
+        // else if (sortOrder === 'Z-A') {
+        //     sortedData.sort((a, b) => b.Manufacturer.localeCompare(a.Manufacturer))
+        // }
+        else {
+            sortedData.sort((a, b) => b.Manufacturer.localeCompare(a.Manufacturer))
+        }
+
+
+        return sortedData
+
+    }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder ])
+
+    // console.log({filteredData})
 
     const brandBtnHandler = ({ manufacturerId }) => {
         setIsLoadedManufacture(false)
@@ -96,25 +151,30 @@ const CreditNote = () => {
     }, []);
 
     const handleDateChange = (event) => {
-        setCurrentDate(event.target.value);
+        let value = event.target.value
+        console.log({ dateValue:value })
+        setCurrentDate(value)
+        setCreatedDateFilter(value)
     };
     //............Calender Function End...........//
 
     ///...........Function for Filter start.....//
     const handleOptionClick = (option) => {
-        setSelectedOption(option);
-        setShowDropdown(false); // Hide the dropdown after selection (optional)
+        setSelectedOption(option)
+        setShowDropdown(false)
+        setSortOrder(option)
     };
     ///...........Function for Filter start.....//
 
     const handleMenuClick = (option) => {
         setSelectedOption2(option);
         setShowDropmenu(false)
+        setRecordStatusFilter(option)
     }
 
     //............View Modal Function...........//
     const handleShowModal = (note) => {
-        console.log({note})
+        // console.log({note})
         setShowModal(true, note)
         setModalNoteId(note)
     }
@@ -122,6 +182,10 @@ const CreditNote = () => {
         setShowModal(false, {})
         setModalNoteId('')
     }
+
+    const handleKeywordChange = (event) => {
+        setSearchFilter(event.target.value)
+    };
 
     return (
         <AppLayout
@@ -168,9 +232,11 @@ const CreditNote = () => {
                                     <img src='assets/images/Group235.png' alt='nn' />
                                 </div>
                                 <div className={Style.inputMain}>
-                                    <input className={Style.searchInput}
+                                    <input 
+                                        className={Style.searchInput}
                                         type="text"
                                         placeholder="TYPE TO SEARCH FOR A TRANSACTION"
+                                        onKeyUp={handleKeywordChange}
                                     />
                                 </div>
                             </div>
@@ -191,8 +257,8 @@ const CreditNote = () => {
                                         {showDropmenu && (
                                             <ul className={Style.dropdownOptions2}>
                                                 <li onClick={() => handleMenuClick('All')}>ALL</li>
-                                                <li onClick={() => handleMenuClick('Debit')}>DEBIT</li>
-                                                <li onClick={() => handleMenuClick('Credit')}>CREDIT</li>
+                                                <li onClick={() => handleMenuClick('Refund')}>DEBIT</li>
+                                                <li onClick={() => handleMenuClick('Issued')}>CREDIT</li>
                                             </ul>
                                         )}
                                     </div>
