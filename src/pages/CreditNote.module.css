@@ -421,8 +421,10 @@ padding: 5px;
 }
 
 .CaseNumDeatils p {
+    margin-bottom: 5px;
     font-size: 20px;
     font-family: "Arial";
+    letter-spacing: normal;
 }
 
 .CaseNumDeatils span {
@@ -467,13 +469,14 @@ padding: 5px;
     padding: 10px;
     font-family: "Montserrat";
     color: rgba(0, 0, 0, 1);
-    font-weight: 700;
 
 }
 
 .creditAmount p {
-    letter-spacing: 1.3px;
+    text-align: left;
+    letter-spacing: 1.5px;
     margin: auto;
+    font-weight: 600;
 }
 
 .creditAmountDetail {
@@ -485,9 +488,12 @@ padding: 5px;
 }
 
 .creditAmountDetail p {
+    margin-top: -5px;
+    text-align: end;
     font-family: "Montserrat";
     color: rgba(88, 168, 18, 1);
     font-weight: 700;
+    margin-bottom: 5px;
 
 }
 
@@ -496,6 +502,7 @@ padding: 5px;
     font-size: 12px;
     color: rgba(138, 138, 138, 1);
     font-weight: 300;
+    letter-spacing: 1.5px;
 
 }
 
@@ -508,9 +515,14 @@ padding: 5px;
 }
 
 .creditAmountDetail2 p {
-    font-family: "Montserrat";
     color: rgba(138, 138, 138, 1);
+    margin-top: -5px;
+    text-align: end;
+    font-family: "Montserrat";
     font-weight: 700;
+    margin-bottom: 5px;
+
+
 }
 
 .creditAmountDetail2 small {
@@ -518,13 +530,13 @@ padding: 5px;
     font-size: 12px;
     color: rgba(138, 138, 138, 1);
     font-weight: 300;
-
+    letter-spacing: 1.5px;
 }
 
 .mainbutton {
     display: flex;
     justify-content: flex-end;
-    margin-right: 60px;
+    margin-right: 4.5rem;
     margin-top: 15px;
     margin-bottom: 2.5rem;
 }
