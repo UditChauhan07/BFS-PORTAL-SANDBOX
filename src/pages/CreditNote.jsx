@@ -148,7 +148,7 @@ const CreditNote = () => {
 
     const handleDateChange = (event) => {
         let value = event.target.value
-        console.log({ dateValue:value })
+        // console.log({ dateValue:value })
         setCurrentDate(value)
         setCreatedDateFilter(value)
     };
@@ -163,15 +163,10 @@ const CreditNote = () => {
     ///...........Function for Filter start.....//
 
     const handleMenuClick = (option) => {
-        setSelectedOption2(option);
+        setSelectedOption2(option)
         setShowDropmenu(false)
-        
-        if(option == 'All')
-        {
-            option = ''
-        }
-
-        setRecordStatusFilter(option)
+        let status = (option === 'DEBIT') ? 'Refund' : ((option === 'CREDIT') ? 'Issued' : '')
+        setRecordStatusFilter(status)
     }
 
     const handleKeywordChange = (event) => {
@@ -255,8 +250,8 @@ const CreditNote = () => {
                                         {showDropmenu && (
                                             <ul className={Style.dropdownOptions2}>
                                                 <li onClick={() => handleMenuClick('All')}>ALL</li>
-                                                <li onClick={() => handleMenuClick('Refund')}>DEBIT</li>
-                                                <li onClick={() => handleMenuClick('Issued')}>CREDIT</li>
+                                                <li onClick={() => handleMenuClick('DEBIT')}>DEBIT</li>
+                                                <li onClick={() => handleMenuClick('CREDIT')}>CREDIT</li>
                                             </ul>
                                         )}
                                     </div>
