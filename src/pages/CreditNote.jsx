@@ -1,9 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-// import TopNav from "../components/All Headers/topNav/TopNav";
-// import LogoHeader from "../components/All Headers/logoHeader/LogoHeader";
-// import Header from "../components/All Headers/header/Header";
-// import MobileHeader from "../components/All Headers/mobileHeader/MobileHeader";
-
 import { useManufacturer } from "../api/useManufacturer";
 import { useRetailersData } from "../api/useRetailersData";
 import Style from "../pages/CreditNote.module.css";
@@ -24,7 +19,7 @@ const CreditNote = () => {
     const [manufacturerFilter, setManufacturerFilter] = useState()
     const [retailerFilter, setRetailerFilter] = useState()
     const [data, setData] = useState([])
-    const [currentDate, setCurrentDate] = useState('');
+    const [currentDate, setCurrentDate] = useState('')
 
     //.....State for filter Search Start...////
     const [selectedOption, setSelectedOption] = useState('Filter');
