@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-// import TopNav from "../components/All Headers/topNav/TopNav";
-// import LogoHeader from "../components/All Headers/logoHeader/LogoHeader";
-// import Header from "../components/All Headers/header/Header";
-// import MobileHeader from "../components/All Headers/mobileHeader/MobileHeader";
+import React, { useState, useEffect, useMemo } from 'react';
+import TopNav from "../components/All Headers/topNav/TopNav";
+import LogoHeader from "../components/All Headers/logoHeader/LogoHeader";
+import Header from "../components/All Headers/header/Header";
+import MobileHeader from "../components/All Headers/mobileHeader/MobileHeader";
 
 import { useManufacturer } from "../api/useManufacturer";
 import { useRetailersData } from "../api/useRetailersData";
@@ -30,12 +30,16 @@ const CreditNote = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [currentDate, setCurrentDate] = useState('');
+
     //.....State for filter Search Start...////
     const [selectedOption, setSelectedOption] = useState('Filter');
     const [showDropdown, setShowDropdown] = useState(false);
     //.....State for filter Search End...////
     const [selectedOption2, setSelectedOption2] = useState('Transaction');
     const [showDropmenu, setShowDropmenu] = useState(false);
+
+    const [modalNoteId, setModalNoteId] = useState('')
+
 
     console.log({ isLoading })
     useEffect(() => {
@@ -57,22 +61,25 @@ const CreditNote = () => {
         })
     }, [retailerFilter, manufacturerFilter])
 
+    const filteredData = useMemo(() => {
+        return data.filter(item => {
+            const manufacturerMatch = manufacturerFilter ? item.ManufacturerId === manufacturerFilter : true
+            const retailerMatch = retailerFilter ? item.RetailerId === retailerFilter : true
+            return manufacturerMatch && retailerMatch
+        })
+    }, [data, manufacturerFilter, retailerFilter])
+
+    console.log({filteredData})
+
     const brandBtnHandler = ({ manufacturerId }) => {
         setIsLoadedManufacture(false)
         setManufacturerFilter(manufacturerId)
-    };
+    }
 
     const retailerBtnHandler = ({ retailerId }) => {
         setIsLoadedRetailer(false)
         setRetailerFilter(retailerId)
-    };
-    //............View Modal Function Start...........//
-    const handleShowModal = () => setShowModal(true);
-    const handleCloseModal = () => setShowModal(false);
-    //............View Modal Function End...........//
-
-    //............Calender Function Start...........//
-
+    }
 
     useEffect(() => {
         const today = new Date();
@@ -103,6 +110,17 @@ const CreditNote = () => {
     const handleMenuClick = (option) => {
         setSelectedOption2(option);
         setShowDropmenu(false)
+    }
+
+    //............View Modal Function...........//
+    const handleShowModal = (note) => {
+        console.log({note})
+        setShowModal(true, note)
+        setModalNoteId(note)
+    }
+    const handleCloseModal = () => {
+        setShowModal(false, {})
+        setModalNoteId('')
     }
 
     return (
@@ -207,8 +225,8 @@ const CreditNote = () => {
 
                         {
                             !isLoading ? (
-                                data.length > 0 ? (
-                                    data.map((item) => (
+                                filteredData.length > 0 ? (
+                                    filteredData.map((item) => (
                                         <div className={Style.productdata} key={item.id}>
                                             <div className={Style.productDataDeatils}>
                                                 <div className={item?.ManufacturerLogo ? Style.ProductImg : Style.DefaultProductImg}>
@@ -235,9 +253,15 @@ const CreditNote = () => {
                                                     <small>{new Date(item.CreatedDate).toLocaleString()}</small>
                                                 </div>
                                                 <div className={Style.viewBtn}>
-                                                    <button onClick={handleShowModal}>View </button>
+                                                     <button 
+                                                        value = {item.Id}
+                                                        onClick={ () => handleShowModal(item) }
+                                                     >
+                                                        View 
+                                                    </button> 
                                                 </div>
                                             </div>
+
 
                                             {/* /// credit Modal.....Start */}
                                             <Modal size="lg" aria-labelledby="contained-modal-title-vcenter"
@@ -245,9 +269,10 @@ const CreditNote = () => {
                                                 onHide={handleCloseModal}>
                                                 <Modal.Title >
                                                     <div className={Style.PoDeatils}>
-                                                        <div className={Style.Ponumber}>PO Number <span>#310475</span> </div>
+                                                        <div className={Style.Ponumber}>PO Number <span>#{item?.opportunity?.PO_Number__c}</span> </div>
                                                         <div className={Style.PoDate}><p> Date: <span> 10 Mar 2024</span></p></div>
                                                     </div>
+
 
                                                 </Modal.Title>
 
