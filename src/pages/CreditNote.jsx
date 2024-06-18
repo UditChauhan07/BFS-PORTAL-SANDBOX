@@ -14,6 +14,8 @@ import { FilterItem } from '../components/FilterItem';
 import { GetAuthData, getCreditNotesList } from "../lib/store";
 import { Modal } from 'react-bootstrap';
 
+
+
 const CreditNote = () => {
     let img = 'assets/default-image.png'
     const [userData, setUserData] = useState(null)
@@ -214,6 +216,7 @@ const CreditNote = () => {
                                     <ul className={`${Style.dropdownOptions} ${showDropdown ? '' : Style.dropdownHidden}`}>
                                         <li onClick={() => handleOptionClick('A-Z')}>A-Z</li>
                                         <li onClick={() => handleOptionClick('Z-A')}>Z-A</li>
+
                                     </ul>
                                 </div>
                             </div>
@@ -259,8 +262,8 @@ const CreditNote = () => {
                                                 </div>
                                             </div>
 
-                                            {/* /// credit Modal.....Start */}
 
+                                            {/* /// credit Modal.....Start */}
                                             <Modal size="lg" aria-labelledby="contained-modal-title-vcenter"
                                                 centered show={showModal}
                                                 onHide={handleCloseModal}>
