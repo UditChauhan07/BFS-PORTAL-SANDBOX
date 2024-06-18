@@ -14,11 +14,11 @@ const Header = () => {
           </Link>
         </p>
         <p className={`m-0  ${styles.text}`}>
-          {/* <Link to="/marketing-calendar" className="linkStyle">
+          <Link to="/marketing-calendar" className="linkStyle">
             Marketing Calendar
-          </Link> */}
+          </Link>
 
-          <Link to="" className="linkStyle">
+          {/* <Link to="" className="linkStyle">
             <div className="dropdown dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               {path === "/marketing-calendar" ? "Calendar" : null ||  path === "/Target-Report" ? "Target Report" : "Marketing"}
               <ul className="dropdown-menu">
@@ -46,7 +46,7 @@ const Header = () => {
                 </li>
               </ul>
             </div>
-          </Link>
+          </Link> */}
         </p>
 
         <p className={`m-0  ${styles.text}`}>

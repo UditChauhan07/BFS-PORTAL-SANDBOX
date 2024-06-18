@@ -28,12 +28,16 @@ const CreditNote = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [currentDate, setCurrentDate] = useState('');
+
     //.....State for filter Search Start...////
     const [selectedOption, setSelectedOption] = useState('Filter');
     const [showDropdown, setShowDropdown] = useState(false);
     //.....State for filter Search End...////
     const [selectedOption2, setSelectedOption2] = useState('Transaction');
     const [showDropmenu, setShowDropmenu] = useState(false);
+
+    const [modalNoteId, setModalNoteId] = useState('')
+
 
     console.log({ isLoading })
     useEffect(() => {
@@ -64,9 +68,10 @@ const CreditNote = () => {
         setIsLoadedRetailer(false)
         setRetailerFilter(retailerId)
     };
+
     //............View Modal Function Start...........//
-    const handleShowModal = () => setShowModal(true);
-    const handleCloseModal = () => setShowModal(false);
+//     const handleShowModal = () => setShowModal(true);
+//     const handleCloseModal = () => setShowModal(false);
     //............View Modal Function End...........//
 
     //............Calender Function Start...........//
@@ -101,6 +106,17 @@ const CreditNote = () => {
     const handleMenuClick = (option) => {
         setSelectedOption2(option);
         setShowDropmenu(false)
+
+    //............View Modal Function...........//
+    const handleShowModal = (note) => {
+        console.log({note})
+        setShowModal(true, note)
+        setModalNoteId(note)
+    }
+    const handleCloseModal = () => {
+        setShowModal(false, {})
+        setModalNoteId('')
+
     }
 
     return (
@@ -232,9 +248,31 @@ const CreditNote = () => {
                                                     <small>{new Date(item.CreatedDate).toLocaleString()}</small>
                                                 </div>
                                                 <div className={Style.viewBtn}>
-                                                    <button onClick={handleShowModal}>View </button>
+
+//                                                     <button onClick={handleShowModal}>View </button>
+//                                                 </div>
+//                                             </div>
+//                                             {/* /// credit Modal.....Start */}
+
+//                                             <Modal size="lg" aria-labelledby="contained-modal-title-vcenter"
+//                                                 centered show={showModal}
+//                                                 onHide={handleCloseModal}>
+//                                                 <Modal.Title >
+//                                                     <div className={Style.PoDeatils}>
+//                                                         <div className={Style.Ponumber}>PO Number <span>#310475</span> </div>
+//                                                         <div className={Style.PoDate}><p> Date: <span> 10 Mar 2024</span></p></div>
+//                                                     </div>
+
+
+                                                     <button 
+                                                        value = {item.Id}
+                                                        onClick={ () => handleShowModal(item) }
+                                                     >
+                                                        View 
+                                                    </button> 
                                                 </div>
                                             </div>
+
                                             {/* /// credit Modal.....Start */}
 
                                             <Modal size="lg" aria-labelledby="contained-modal-title-vcenter"
@@ -242,9 +280,10 @@ const CreditNote = () => {
                                                 onHide={handleCloseModal}>
                                                 <Modal.Title >
                                                     <div className={Style.PoDeatils}>
-                                                        <div className={Style.Ponumber}>PO Number <span>#310475</span> </div>
+                                                        <div className={Style.Ponumber}>PO Number <span>#{item?.opportunity?.PO_Number__c}</span> </div>
                                                         <div className={Style.PoDate}><p> Date: <span> 10 Mar 2024</span></p></div>
                                                     </div>
+
 
                                                 </Modal.Title>
 
