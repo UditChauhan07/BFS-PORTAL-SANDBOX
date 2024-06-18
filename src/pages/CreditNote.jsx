@@ -35,16 +35,6 @@ const CreditNote = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
-    const getDateForComparison = (timestamp) => {
-        const date = new Date(timestamp)
-        const year = date.getFullYear()
-        const month = String(date.getMonth() + 1).padStart(2, '0')
-        const day = String(date.getDate()).padStart(2, '0')
-        const formattedDate = `${year}-${month}-${day}`
-
-        return formattedDate
-    }
-
     // Component Modal Function start......//
     const openModal = (item) => {
         setSelectedItem(item);
@@ -94,15 +84,6 @@ const CreditNote = () => {
             const manufacturerMatch = manufacturerFilter ? item.Manufacturer__c === manufacturerFilter : true
             const retailerMatch = retailerFilter ? item.Account__c === retailerFilter : true
             const statusMatch = recordStatusFilter ? item.Status__c === recordStatusFilter : true
-
-            // const createdDateMatch = createdDateFilter 
-            //     ? new Date(item.CreatedDate) >= new Date(createdDateFilter.start) && new Date(item.CreatedDate) <= new Date(createdDateFilter.end)
-            //     : true;
-
-            // const createdDateMatch = createdDateFilter 
-            //     ? getDateForComparison(new Date(item.CreatedDate)) === getDateForComparison(item.CreatedDate)
-            //     : true
-
             const createdDateMatch = createdDateFilter
             ? isSameDate(new Date(item.CreatedDate), new Date(createdDateFilter))
             : true;
@@ -124,14 +105,6 @@ const CreditNote = () => {
                     });
                 }) 
                 : true
-
-            console.log(
-                {
-                    createdDateFilter, 
-                    date: new Date(item.CreatedDate).getTime(), 
-                    funDate : new Date(createdDateFilter).getTime()
-                }
-            )
 
             return manufacturerMatch && retailerMatch && statusMatch && createdDateMatch && keywordMatch;
         })
