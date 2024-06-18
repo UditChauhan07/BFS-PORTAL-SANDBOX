@@ -1,8 +1,8 @@
 // export const originAPi = "https://b2b.beautyfashionsales.com"
 // export const originAPi = "https://dev.beautyfashionsales.com"
 
-// export const originAPi = "https://www.uditchauhan.com"
-export const originAPi = "http://localhost:8010"
+export const originAPi = "https://www.uditchauhan.com"
+// export const originAPi = "http://localhost:8010"
 
 let url = `${originAPi}/beauty/`;
 let URL = `${originAPi}/beauty/0DS68FOD7s`;
@@ -1017,7 +1017,7 @@ export async function getCreditNotes(key, retailer, manufacturer) {
 }
 
 export async function getCreditNotesList(key, retailer='', manufacturer='') {
-  console.log({key, retailer, manufacturer})
+  // console.log({key, retailer, manufacturer})
   const headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
@@ -1035,7 +1035,7 @@ export async function getCreditNotesList(key, retailer='', manufacturer='') {
   if (data.status == 300) {
     DestoryAuth()
   } else {
-    console.log({ dataResult : data?.data?.records })
+    // console.log({ dataResult : data?.data?.records })
     return data?.data?.records
   }
 }

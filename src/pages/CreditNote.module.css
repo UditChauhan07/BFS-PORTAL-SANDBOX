@@ -4,6 +4,8 @@
     font-size: 29px;
     font-weight: 700;
     font-family: "Montserrat";
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 .filterDotedDiv{
     display: flex;
@@ -479,7 +481,7 @@ padding: 5px;
     font-weight: 600;
 }
 
-.creditAmountDetail {
+.creditAmountDetail ,.creditAmountDetailDebit{
     padding: 8px;
     text-align: end;
     width: 50%;
@@ -494,7 +496,14 @@ padding: 5px;
     color: rgba(88, 168, 18, 1);
     font-weight: 700;
     margin-bottom: 5px;
+}
 
+.creditAmountDetailDebit p {
+    margin-top: -5px;
+    text-align: end;
+    font-family: "Montserrat";
+    font-weight: 700;
+    margin-bottom: 5px;
 }
 
 .creditAmountDetail small {

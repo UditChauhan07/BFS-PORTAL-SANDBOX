@@ -1,20 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import TopNav from "../components/All Headers/topNav/TopNav";
-import LogoHeader from "../components/All Headers/logoHeader/LogoHeader";
-import Header from "../components/All Headers/header/Header";
-import MobileHeader from "../components/All Headers/mobileHeader/MobileHeader";
+// import TopNav from "../components/All Headers/topNav/TopNav";
+// import LogoHeader from "../components/All Headers/logoHeader/LogoHeader";
+// import Header from "../components/All Headers/header/Header";
+// import MobileHeader from "../components/All Headers/mobileHeader/MobileHeader";
 
 import { useManufacturer } from "../api/useManufacturer";
 import { useRetailersData } from "../api/useRetailersData";
-
 import Style from "../pages/CreditNote.module.css";
 import Loading from "../components/Loading";
 import AppLayout from '../components/AppLayout';
 import { FilterItem } from '../components/FilterItem';
 import { GetAuthData, getCreditNotesList } from "../lib/store";
-import { Modal } from 'react-bootstrap';
 import ModalPage from '../components/Modal UI';
-
 
 const CreditNote = () => {
     let img = 'assets/default-image.png'
@@ -35,42 +32,52 @@ const CreditNote = () => {
     //.....State for filter Search End...////
     const [selectedOption2, setSelectedOption2] = useState('Transaction');
     const [showDropmenu, setShowDropmenu] = useState(false);
-
-
     const [modalOpen, setModalOpen] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+
+    const getDateForComparison = (timestamp) => {
+        const date = new Date(timestamp)
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        const formattedDate = `${year}-${month}-${day}`
+
+        return formattedDate
+    }
 
     // Component Modal Function start......//
-    const openModal = () => {
+    const openModal = (item) => {
+        setSelectedItem(item);
         setModalOpen(true);
-    };
+    }
+    
     const closeModal = () => {
         setModalOpen(false);
-    };
+        setSelectedItem(null);
+    }
     // Component Modal Function End......//
 
-
-    console.log({ isLoading })
-
-
-    const [modalNoteId, setModalNoteId] = useState('')
-
+    
+    function isSameDate(date1, date2) {
+        return date1.getFullYear() === date2.getFullYear() &&
+               date1.getMonth() === date2.getMonth() &&
+               date1.getDate() === date2.getDate();
+    }
 
     const [searchFilter, setSearchFilter] = useState('')
     const [createdDateFilter, setCreatedDateFilter] = useState('')
     const [recordStatusFilter, setRecordStatusFilter] = useState('')
     const [sortOrder, setSortOrder] = useState('Z-A')
 
-    // console.log({ isLoading })
-
     useEffect(() => {
         setIsLoading(true)
         GetAuthData().then((user) => {
             setUserData(user)
-            // console.log({ user: user.x_access_token, retailerFilter, manufacturerFilter });
-            getCreditNotesList(user.x_access_token, retailerFilter, manufacturerFilter).then((data) => {
-                setData(data)
-                setIsLoading(false)
-            })
+            getCreditNotesList(user.x_access_token, retailerFilter, manufacturerFilter)
+                .then((data) => {
+                    setData(data)
+                    setIsLoading(false)
+                })
                 .catch((err) => {
                     console.log({ err: err.message })
                     setIsLoading(false)
@@ -81,26 +88,24 @@ const CreditNote = () => {
         })
     }, [retailerFilter, manufacturerFilter])
 
-    // const filteredData = useMemo(() => {
-    //     return data.filter(item => {
-    //         const manufacturerMatch = manufacturerFilter ? item.Manufacturer__c === manufacturerFilter : true
-    //         const retailerMatch = retailerFilter ? item.Account__c === retailerFilter : true
-
-    //         console.log({manufacturerFilter, manufacturerMatchId : item.ManufacturerId , retailerFilter, retailerMatchId : item.RetailerId})
-    //         return manufacturerMatch && retailerMatch
-    //     })
-    // }, [data, manufacturerFilter, retailerFilter])
 
     const filteredData = useMemo(() => {
         const sortedData = data.filter(item => {
             const manufacturerMatch = manufacturerFilter ? item.Manufacturer__c === manufacturerFilter : true
             const retailerMatch = retailerFilter ? item.Account__c === retailerFilter : true
             const statusMatch = recordStatusFilter ? item.Status__c === recordStatusFilter : true
-          
 
-            const createdDateMatch = createdDateFilter 
-                ? new Date(item.CreatedDate) >= new Date(createdDateFilter.start) && new Date(item.CreatedDate) <= new Date(createdDateFilter.end)
-                : true;
+            // const createdDateMatch = createdDateFilter 
+            //     ? new Date(item.CreatedDate) >= new Date(createdDateFilter.start) && new Date(item.CreatedDate) <= new Date(createdDateFilter.end)
+            //     : true;
+
+            // const createdDateMatch = createdDateFilter 
+            //     ? getDateForComparison(new Date(item.CreatedDate)) === getDateForComparison(item.CreatedDate)
+            //     : true
+
+            const createdDateMatch = createdDateFilter
+            ? isSameDate(new Date(item.CreatedDate), new Date(createdDateFilter))
+            : true;
 
             const keywords = searchFilter.split(' ').filter(Boolean)
 
@@ -120,6 +125,14 @@ const CreditNote = () => {
                 }) 
                 : true
 
+            console.log(
+                {
+                    createdDateFilter, 
+                    date: new Date(item.CreatedDate).getTime(), 
+                    funDate : new Date(createdDateFilter).getTime()
+                }
+            )
+
             return manufacturerMatch && retailerMatch && statusMatch && createdDateMatch && keywordMatch;
         })
 
@@ -133,12 +146,8 @@ const CreditNote = () => {
             sortedData.sort((a, b) => b.Manufacturer.localeCompare(a.Manufacturer))
         }
 
-
         return sortedData
-
     }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder ])
-
-    // console.log({filteredData})
 
     const brandBtnHandler = ({ manufacturerId }) => {
         setIsLoadedManufacture(false)
@@ -148,7 +157,7 @@ const CreditNote = () => {
     const retailerBtnHandler = ({ retailerId }) => {
         setIsLoadedRetailer(false)
         setRetailerFilter(retailerId)
-
+    }
 
     useEffect(() => {
         const today = new Date();
@@ -183,22 +192,24 @@ const CreditNote = () => {
     const handleMenuClick = (option) => {
         setSelectedOption2(option);
         setShowDropmenu(false)
+        
+        if(option == 'All')
+        {
+            option = ''
+        }
+
         setRecordStatusFilter(option)
     }
 
-    //............View Modal Function...........//
-    const handleShowModal = (note) => {
-        // console.log({note})
-        setShowModal(true, note)
-        setModalNoteId(note)
-    }
-    const handleCloseModal = () => {
-        setShowModal(false, {})
-        setModalNoteId('')
+    const handleKeywordChange = (event) => {
+        let value = event.target.value
+        setSearchFilter(value)
     }
 
-    const handleKeywordChange = (event) => {
-        setSearchFilter(event.target.value)
+    const convertDate = (isoDate) => {
+        const date = new Date(isoDate);
+        const options = { day: '2-digit', month: 'short', year: 'numeric' };
+        return date.toLocaleDateString('en-GB', options);
     };
 
     return (
@@ -330,15 +341,18 @@ const CreditNote = () => {
                                                             -${item.Wallet_Amount__c}
                                                         </p>
                                                     )}
-                                                    <small>{new Date(item.CreatedDate).toLocaleString()}</small>
+                                                    <small>
+                                                        {new Date(item.CreatedDate).toLocaleString()}
+                                                    </small>
                                                 </div>
                                                 <div className={Style.viewBtn}>
-
-                                                    <button onClick={openModal}>View </button>
-
+                                                    <button 
+                                                        onClick={() => openModal(item)}
+                                                    >
+                                                        View 
+                                                    </button>
                                                 </div>
                                             </div>
-
 
                                             {/* /// credit Modal.....Start */}
 
@@ -350,21 +364,35 @@ const CreditNote = () => {
                                                         <div className="" style={{ width: '75vw' }}>
                                                             <div className="" style={{ minWidth: '75vw' }}>
                                                                 <div className={Style.PoDeatils}>
-                                                                    <div className={Style.Ponumber}>PO Number <span>#310475</span> </div>
-                                                                    <div className={Style.PoDate}><p> Date: <span> 10 Mar 2024</span></p></div>
+                                                                    <div className={Style.Ponumber}>PO Number <span>#{selectedItem?.opportunity?.PO_Number__c}</span> </div>
+                                                                    <div className={Style.PoDate}><p> Date: <span> { convertDate(selectedItem?.opportunity?.CreatedDate) }</span></p></div>
                                                                 </div>
                                                                 <div className={Style.maincreditAmountDiv}>
                                                                     <div className={Style.CaseDeatils}>
-                                                                        <div className={Style.CaseTitle}><p>Diptyque | <span>Eau de Parfum</span></p></div>
-                                                                        <div className={Style.CaseNumDeatils}><p>Case Number <span>#310475</span></p></div>
+                                                                        <div className={Style.CaseTitle}>
+                                                                            <p>
+                                                                                {selectedItem?.Manufacturer} 
+                                                                                {/* | <span>Eau de Parfum</span> */}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className={Style.CaseNumDeatils}>
+                                                                            <p>Case Number
+                                                                                <span> #{selectedItem?.opportunity?.PO_Number__c}</span>
+                                                                            </p>
+                                                                        </div>
                                                                     </div>
                                                                     <div className={Style.creditAmountDiv}>
                                                                         <div className={Style.creditAmount}>
-                                                                            <p>Credit Not Amount</p>
+                                                                            <p>Credit Amount</p>
                                                                         </div>
-                                                                        <div className={Style.creditAmountDetail}>
-                                                                            <p>$2000</p>
-                                                                            <small>25 Jan 2024</small>
+                                                                        <div 
+                                                                            // className={Style.creditAmountDetail}
+                                                                            className={(selectedItem?.Status__c === "Refund") ? (Style.creditAmountDetailDebit) : (Style.creditAmountDetail) }
+                                                                        >
+                                                                            <p>${selectedItem?.Wallet_Amount__c}</p>
+                                                                            <small>
+                                                                                { convertDate(selectedItem?.CreatedDate) }
+                                                                            </small>
                                                                         </div>
                                                                     </div>
                                                                     <div className={Style.creditAmountDiv}>
@@ -372,8 +400,10 @@ const CreditNote = () => {
                                                                             <p>Order Price</p>
                                                                             </div>
                                                                         <div className={Style.creditAmountDetail2}>
-                                                                            <p>$5320</p>
-                                                                            <small>25 Jan 2024</small>
+                                                                            <p>${selectedItem?.opportunity?.Amount}</p>
+                                                                            <small>
+                                                                                {convertDate(selectedItem?.opportunity?.CreatedDate)}
+                                                                            </small>
                                                                         </div>
                                                                     </div>
                                                                 </div>
