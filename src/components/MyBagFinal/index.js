@@ -10,7 +10,7 @@ import ModalPage from "../Modal UI";
 import StylesModal from "../Modal UI/Styles.module.css";
 import LoaderV2 from "../loader/v2";
 import ProductDetails from "../../pages/productDetails";
-import { Button, Modal } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 
 function MyBagFinal() {
@@ -55,7 +55,6 @@ function MyBagFinal() {
   const extractWordAfterCharacter = (input, character) => {
     const regex = new RegExp(`\\${character}(\\w+)`)
     const match = input.match(regex)
-    // console.log({match})
     return match ? match[1] : ''
   }
 
@@ -63,7 +62,9 @@ function MyBagFinal() {
     const val = e.target.value
     const character = '$'
     const value = extractWordAfterCharacter(val, character)
-    console.log({ subTotal })
+
+    console.log({val, character, value})
+    
     if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available && value <= subTotal)) {
       setPriceValue(value)
       localStorage.setItem('creditAmount', value)
@@ -77,7 +78,7 @@ function MyBagFinal() {
 
       setTimeout(() => {
         setValidationMessage('')
-      }, 3000)
+      }, 5000)
     }
   }
 
@@ -97,7 +98,7 @@ function MyBagFinal() {
 
         setTimeout(() => {
           setValidationMessage('')
-        }, 3000)
+        }, 5000)
       }
     } else {
       setPriceValue('0')
@@ -340,7 +341,8 @@ function MyBagFinal() {
 
   const deleteBag = () => {
     localStorage.removeItem("orders")
-    window.location.reload();
+    localStorage.removeItem("creditAmount")
+    window.location.reload()
   }
 
   if (isOrderPlaced === 1) return <OrderLoader />;
@@ -517,36 +519,41 @@ function MyBagFinal() {
                             </div>
                           </>
                         )}
-
-
                       </div>
+  
                       {/* New Total Start */}
-                      <div className={Styles.PreviousPricer}>
-                        <div>
-                        <h2>Previous Total</h2>
-                        </div>
-                        <div>
-                          <h2>$1150.50</h2>
-                        </div>
-                      </div>
-                      <div className={Styles.DiscountPricer}>
-                        <div>
-                        <p>Credit Note Discount</p>
-                        </div>
-                        <div className={Styles.editPrice}>
-                          <h2 className={Styles.disprice}>-$420.00 </h2>
-                            <img src="assets/images/pencil-square.png" onClick={handleShowModal}/>
-                        </div>
-                      </div>
-                      {/* New Total End */}
-                      <div className={Styles.TotalPricer}>
-                        <div>
-                          <h2>Sub Total</h2>
-                        </div>
-                        <div>
-                          <h2>${Number(total).toFixed(2)}</h2>
-                        </div>
-                      </div>
+                      {localStorage.getItem("orders") && Object.values(JSON.parse(localStorage.getItem("orders"))).length > 0 ? 
+                      (
+                        <>
+                          <div className={Styles.PreviousPricer}>
+                            <div>
+                            <h2>Previous Total</h2>
+                            </div>
+                            <div>
+                              <h2>${Number(total).toFixed(2)}</h2>
+                            </div>
+                          </div>
+                          <div className={Styles.DiscountPricer}>
+                            <div>
+                            <p>Credit Note Discount</p>
+                            </div>
+                            <div className={Styles.editPrice}>
+                              <h2 className={Styles.disprice}>-${Number(localStorage.getItem('creditAmount')).toFixed(2) }</h2>
+                                <img src="assets/images/pencil-square.png" alt="edit-icon" onClick={handleShowModal}/>
+                            </div>
+                          </div>
+                          {/* New Total End */}
+                          <div className={Styles.TotalPricer}>
+                            <div>
+                              <h2>Sub Total</h2>
+                            </div>
+                            <div>
+                              <h2>${(localStorage.getItem('creditAmount') > 0) ? Number(total - localStorage.getItem('creditAmount')).toFixed(2) : Number(total).toFixed(2)}</h2>
+                            </div>
+                          </div>
+                        </>
+                      )
+                      : '' }
                     </div>
                   </div>
                 </div>
@@ -606,16 +613,7 @@ function MyBagFinal() {
                     <div className={Styles.ShipBut}>
 
                       {priceValue || localStorage.getItem('creditAmount') > 0 ?
-                        <div className={Styles.ShipAdress}>
-                          <div className="row">
-                            <div className="col-md-5">Sub Total :</div>
-                            <div className="col-md-5">${Number(total).toFixed(2)}</div>
-                          </div>
-                          <div className="row">
-                            <div className="col-md-5">Credit Amount :</div>
-                            <div className="col-md-5">${Number(localStorage.getItem('creditAmount')).toFixed(2)}</div>
-                          </div>
-                        </div>
+                        ''
                         :
                         <button className={Styles.CredBut} onClick={handleShowModal}>Apply credit Note</button>
                       }
@@ -658,7 +656,7 @@ function MyBagFinal() {
                                   <input
                                     type="text"
                                     className={Styles.price}
-                                    value={fullPriceValue}
+                                    value={`$` + localStorage.getItem('creditAmount') }
                                     onChange={handlePriceChange}
                                     readOnly={!isEditable}
                                     ref={inputRef}
@@ -676,22 +674,6 @@ function MyBagFinal() {
                               <p className={Styles.validationError}>{validationMessage}</p>
                             )}
 
-                            {/* <div className={Styles.inputRadio2}>
-                              <input type="radio" id="input2" name="creditNote" disabled />
-                              <label htmlFor="input2">Not Available Yet</label>
-                              <div>
-                                <strong className={Styles.price2}>-$320 <br /><span className={Styles.dateDetails}>Uss Full Amount</span></strong>
-
-                              </div>
-                            </div>
-
-                            <div className={Styles.inputRadio3}>
-                              <input type="radio" id="input3" name="creditNote" disabled />
-                              <label htmlFor="input3">Not Available Yet</label>
-                              <div>
-                                <strong className={Styles.price3}>-$410 <br /><span className={Styles.dateDetails}>Uss Full Amount</span></strong>
-                              </div>
-                            </div> */}
 
                           </Modal.Body>
 
