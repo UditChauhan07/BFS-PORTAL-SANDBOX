@@ -8,6 +8,7 @@
     margin-bottom: 1rem;
 }
 .filterDotedDiv{
+    margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
 }
@@ -71,6 +72,7 @@
     margin-right: 15px;
     display: flex;
     width: 110px;
+    height: 45px;
     align-items: center;
     justify-content: space-around;
     cursor: pointer;
@@ -121,22 +123,24 @@
 }
 
 .FilterHead {
+    font-weight: 600;
     color: rgba(56, 56, 56, 1);
+    font-family: 'Montserrat';
 }
 
 /* //......Transaction Drop Down Start.. */
 .Calendardate{
-    width: 50%;
+    /* width: 50%; */
 }
 .Calendardate input{
-    width: 90%;
+    width: 80%;
     font-weight: 500;
     color: rgba(0, 0, 0, 1);
     margin-left: 3px;
     outline: none;
 }
 .TransactionDiv{
-    width: 50%;
+    /* width: 50%; */
     display: flex;
     align-items: center;
     gap: 5px;
@@ -167,14 +171,14 @@
 }
 .dropdownOptions2 li{
     font-family: "Montserrat";
-    padding: 5px;
+    padding: 0px 5px;
     border-bottom: 1px solid rgba(209, 209, 209, 1);
 }
 .filterTransaction2 {
     display: flex;
     border: 1px solid rgba(0, 0, 0, 1);
     border-style: dotted;
-    width: 27%;
+    /* width: 27%; */
     align-items: center;
     padding: 10px;
     cursor: pointer;
@@ -284,13 +288,13 @@ padding: 5px;
 }
 
 .ProductImg {
-    border: 1px solid rgba(164, 164, 164, 1);
-    width : 20%;
+    /* border: 1px solid rgba(164, 164, 164, 1);
+    width : 20%; */
 }
 
 .DefaultProductImg {
-    border: 1px solid rgba(164, 164, 164, 1);
-    width : 5%;
+    /* border: 1px solid rgba(164, 164, 164, 1);
+    width : 5%; */
 }
 
 .productTitle {
@@ -356,7 +360,7 @@ padding: 5px;
 .viewBtn button {
     background-color: black;
     color: white;
-    padding: 6px 10px;
+    padding: 4px 13px;
     font-size: 14px;
 }
 

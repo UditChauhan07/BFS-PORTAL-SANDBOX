@@ -527,7 +527,7 @@ function MyBagFinal() {
                         <>
                           <div className={Styles.PreviousPricer}>
                             <div>
-                            <h2>Previous Total</h2>
+                            <h2>Total</h2>
                             </div>
                             <div>
                               <h2>${Number(total).toFixed(2)}</h2>
@@ -545,7 +545,7 @@ function MyBagFinal() {
                           {/* New Total End */}
                           <div className={Styles.TotalPricer}>
                             <div>
-                              <h2>Sub Total</h2>
+                              <h2>Expected To Pay</h2>
                             </div>
                             <div>
                               <h2>${(localStorage.getItem('creditAmount') > 0) ? Number(total - localStorage.getItem('creditAmount')).toFixed(2) : Number(total).toFixed(2)}</h2>
