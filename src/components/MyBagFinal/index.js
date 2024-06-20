@@ -138,13 +138,13 @@ function MyBagFinal() {
     }
   }
   
-  console.log(
-    {
-      'creditNoteFilterId':localStorage.getItem('creditNoteFilterId'), 
-      'creditNoteFilterPoNumber':localStorage.getItem('creditNoteFilterPoNumber'),
-      'creditNoteFilterAmount' : localStorage.getItem('creditNoteFilterAmount')
-    }
-  )
+  // console.log(
+  //   {
+  //     'creditNoteFilterId':localStorage.getItem('creditNoteFilterId'), 
+  //     'creditNoteFilterPoNumber':localStorage.getItem('creditNoteFilterPoNumber'),
+  //     'creditNoteFilterAmount' : localStorage.getItem('creditNoteFilterAmount')
+  //   }
+  // )
 
   const handleNote = (selectedNote) => {
     setSelectedOption(selectedNote)
@@ -352,7 +352,7 @@ function MyBagFinal() {
                   localStorage.removeItem('creditNoteFilterId')
                   localStorage.removeItem('creditNoteFilterPoNumber')
                   localStorage.removeItem('creditNoteFilterAmount')
-                  
+
                   navigate("/order-list")
                   setIsOrderPlaced(2)
                 }
