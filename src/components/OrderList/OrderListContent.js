@@ -186,7 +186,7 @@ function OrderListContent({ data,hideDetailedShow=false }) {
                         </Link>
                       </span>
                     </div>
-                  </div>
+                  </div>      
 
                   <div className={Styles.totalProductPrice}>
                     <div className={Styles.Margitotal}>
