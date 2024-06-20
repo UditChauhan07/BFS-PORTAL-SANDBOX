@@ -174,6 +174,14 @@ const CreditNote = () => {
         const options = { day: '2-digit', month: 'short', year: 'numeric' };
         return date.toLocaleDateString('en-GB', options);
     };
+    //.........DropDowwn2 Function End......///
+
+    //............View Modal Function...........//
+    const handleShowModal = () => setShowModal(true);
+    const handleCloseModal = () => setShowModal(false);
+
+
+
 
     return (
         <AppLayout

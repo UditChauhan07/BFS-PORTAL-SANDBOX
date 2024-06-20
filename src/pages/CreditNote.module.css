@@ -19,6 +19,7 @@
     width: 40%;
     align-items: center;
     padding: 10px;
+    cursor: pointer;
 
 }
 
@@ -96,10 +97,10 @@ margin-bottom: 1rem;
 
 .dropdownOptions {
     position: absolute;
-    top: -500%;
-    left: 25%;
+    /* top: -500%;
+    left: 25%; */
     text-align: end;
-    transform: translateX(-50%);
+    transform: translateX(-40%);
     background-color: #f9f9f9;
     min-width: 80px;
     border: 1px solid #ddd;
@@ -339,12 +340,13 @@ padding: 5px;
     line-height: 0.6;
 }
 
-.plusPrice{
+.plusPrice {
     color: rgba(112, 210, 65, 1);
     font-size: 18px;
     font-weight: 700;
 }
-.minusPrice{
+
+.minusPrice {
     font-size: 18px;
     font-weight: 700;
     color: rgb(7, 7, 7);
@@ -360,6 +362,7 @@ padding: 5px;
     padding: 4px;
     font-family: "Montserrat";
 }
+
 .viewBtn button {
     background-color: black;
     color: white;
