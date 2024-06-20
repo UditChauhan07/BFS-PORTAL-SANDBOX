@@ -22,23 +22,23 @@ const CreditNote = () => {
     const [currentDate, setCurrentDate] = useState('')
 
     //.....State for filter Search Start...////
-    const [selectedOption, setSelectedOption] = useState('Filter');
-    const [showDropdown, setShowDropdown] = useState(false);
+    const [selectedOption, setSelectedOption] = useState('Filter')
+    const [showDropdown, setShowDropdown] = useState(false)
     //.....State for filter Search End...////
-    const [selectedOption2, setSelectedOption2] = useState('Transaction');
-    const [showDropmenu, setShowDropmenu] = useState(false);
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedOption2, setSelectedOption2] = useState('Transaction')
+    const [showDropmenu, setShowDropmenu] = useState(false)
+    const [modalOpen, setModalOpen] = useState(false)
+    const [selectedItem, setSelectedItem] = useState(null)
 
     // Component Modal Function start......//
     const openModal = (item) => {
-        setSelectedItem(item);
-        setModalOpen(true);
+        setSelectedItem(item)
+        setModalOpen(true)
     }
     
     const closeModal = () => {
-        setModalOpen(false);
-        setSelectedItem(null);
+        setModalOpen(false)
+        setSelectedItem(null)
     }
     // Component Modal Function End......//
 
@@ -81,10 +81,9 @@ const CreditNote = () => {
             const statusMatch = recordStatusFilter ? item.Status__c === recordStatusFilter : true
             const createdDateMatch = createdDateFilter
             ? isSameDate(new Date(item.CreatedDate), new Date(createdDateFilter))
-            : true;
+            : true
 
             const keywords = searchFilter.split(' ').filter(Boolean)
-
             const keywordMatch = keywords.length > 0 
                 ? keywords.some(keyword => {
                     const lowerCaseKeyword = keyword.toLowerCase();
@@ -101,7 +100,7 @@ const CreditNote = () => {
                 }) 
                 : true
 
-            return manufacturerMatch && retailerMatch && statusMatch && createdDateMatch && keywordMatch;
+            return manufacturerMatch && retailerMatch && statusMatch && createdDateMatch && keywordMatch
         })
 
         if (sortOrder === 'A-Z') {
@@ -128,25 +127,24 @@ const CreditNote = () => {
     }
 
     useEffect(() => {
-        const today = new Date();
-        const year = today.getFullYear();
-        let month = today.getMonth() + 1;
-        let day = today.getDate();
+        // Set Default Date in the Date Picker
+        const today = new Date()
+        const year = today.getFullYear()
+        let month = today.getMonth() + 1
+        let day = today.getDate()
 
-        // Adding leading zeros if month or day is less than 10
-        month = month < 10 ? '0' + month : month;
-        day = day < 10 ? '0' + day : day;
+        month = month < 10 ? '0' + month : month
+        day = day < 10 ? '0' + day : day
 
-        const formattedDate = `${year}-${month}-${day}`;
-        setCurrentDate(formattedDate);
-    }, []);
+        const formattedDate = `${year}-${month}-${day}`
+        setCurrentDate(formattedDate)
+    }, [])
 
     const handleDateChange = (event) => {
         let value = event.target.value
-        // console.log({ dateValue:value })
         setCurrentDate(value)
         setCreatedDateFilter(value)
-    };
+    }
     //............Calender Function End...........//
 
     ///...........Function for Filter start.....//
@@ -154,7 +152,7 @@ const CreditNote = () => {
         setSelectedOption(option)
         setShowDropdown(false)
         setSortOrder(option)
-    };
+    }
     ///...........Function for Filter start.....//
 
     const handleMenuClick = (option) => {
@@ -170,9 +168,9 @@ const CreditNote = () => {
     }
 
     const convertDate = (isoDate) => {
-        const date = new Date(isoDate);
-        const options = { day: '2-digit', month: 'short', year: 'numeric' };
-        return date.toLocaleDateString('en-GB', options);
+        const date = new Date(isoDate)
+        const options = { day: '2-digit', month: 'short', year: 'numeric' }
+        return date.toLocaleDateString('en-GB', options)
     };
     //.........DropDowwn2 Function End......///
 

@@ -10,6 +10,7 @@ import ModalPage from "../Modal UI";
 import StylesModal from "../Modal UI/Styles.module.css";
 import LoaderV2 from "../loader/v2";
 import ProductDetails from "../../pages/productDetails";
+import Select from "react-select";
 import { Modal } from 'react-bootstrap';
 
 
@@ -38,6 +39,8 @@ function MyBagFinal() {
   const [creditNote, setCreditNote] = useState({})
   const [subTotal, setSubTotal] = useState(0)
   const [validationMessage, setValidationMessage] = useState('')
+  const [creditNoteFilter, setCreditNoteFilter] = useState({})
+  const [selectedOption, setSelectedOption] = useState(null);
 
   let total = 0
   const inputRef = useRef(null)
@@ -59,29 +62,7 @@ function MyBagFinal() {
   //   return match ? match[1] : ''
   // }
 
-  // const handlePriceChange = (e) => {
-  //   const val = e.target.value
-  //   const character = '$'
-  //   const value = extractWordAfterCharacter(val, character)
 
-  //   console.log({ val, character, value })
-
-  //   if (value === '' || (parseFloat(value) >= 0 && value <= creditNote?.amount?.available && value <= subTotal)) {
-  //     setPriceValue(value)
-  //     localStorage.setItem('creditAmount', value)
-  //     setFullPriceValue('$' + value)
-  //     setValidationMessage('')
-
-  //     console.log({ lll: localStorage.getItem('creditAmount') })
-  //   } else {
-
-  //     setValidationMessage('Enter Valid Amount for Credit Allocation')
-
-  //     setTimeout(() => {
-  //       setValidationMessage('')
-  //     }, 5000)
-  //   }
-  // }
 
 //...New...Function...Write...By... Ankush...Start//
 
@@ -110,6 +91,26 @@ const handlePriceChange = (e) => {
     setTimeout(() => {
       setValidationMessage('');
     }, 5000);
+
+//   const handlePriceChange = (e) => {
+//     const val = e.target.value
+//     const character = '$'
+//     const value = extractWordAfterCharacter(val, character)
+
+//     console.log({val, character, value})
+    
+//     if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available && value <= subTotal)) {
+//       setPriceValue(value)
+//       localStorage.setItem('creditAmount', value)
+//       setFullPriceValue('$' + value)
+//       setValidationMessage('')
+//     } else {
+//       setValidationMessage('Enter Valid Amount for Credit Allocation')
+//       setTimeout(() => {
+//         setValidationMessage('')
+//       }, 5000)
+//     }
+
   }
 }
   
@@ -118,9 +119,9 @@ const handlePriceChange = (e) => {
 
 
   const handleCheckboxChange = (e) => {
-    // setIsEditable(e.target.checked)
     setIsCheckboxChecked(e.target.checked)
     if (e.target.checked) {
+
       // console.log({cond: (creditNote?.amount?.available <= subTotal),ava : creditNote?.amount?.available, subTotal })
       if (creditNote?.amount?.available <= subTotal) {
         setPriceValue(creditNote?.amount?.available)
@@ -130,6 +131,7 @@ const handlePriceChange = (e) => {
       }
       else {
         setValidationMessage(`You can't set the value above the Sub Total Value - $${creditNote.amount.available}.`)
+
 
         setTimeout(() => {
           setValidationMessage('')
@@ -148,7 +150,45 @@ const handlePriceChange = (e) => {
   const handleCloseModal = () => setShowModal(false);
 
   const handleSubmitModal = () => {
-    handleCloseModal()
+    console.log({amount : selectedOption?.Amount, subTotal})
+
+    if (selectedOption?.Amount < subTotal) {
+      setCreditNoteFilter(selectedOption)
+      localStorage.setItem('creditNoteFilterId', (selectedOption?.Id) ? selectedOption?.Id : '')
+      localStorage.setItem('creditNoteFilterPoNumber', (selectedOption?.PO_Number) ? selectedOption?.PO_Number : '')
+      localStorage.setItem('creditNoteFilterAmount', (selectedOption?.Amount) ? selectedOption?.Amount : '')
+      setPriceValue(selectedOption.Amount)
+      localStorage.setItem('creditAmount', selectedOption.Amount)
+      setFullPriceValue('$' + selectedOption.Amount)
+      setValidationMessage('')
+
+      handleCloseModal()
+    } else {
+      if(selectedOption?.Amount > 0) {
+        setValidationMessage(`You can't set the value above the Sub Total Value.`)
+        setTimeout(() => {
+          setValidationMessage('')
+        }, 5000)
+      } else {
+        setPriceValue('')
+        localStorage.setItem('creditAmount', '0')
+        setFullPriceValue('$0')
+        setValidationMessage('')
+        handleCloseModal()
+      }
+    }
+  }
+  
+  // console.log(
+  //   {
+  //     'creditNoteFilterId':localStorage.getItem('creditNoteFilterId'), 
+  //     'creditNoteFilterPoNumber':localStorage.getItem('creditNoteFilterPoNumber'),
+  //     'creditNoteFilterAmount' : localStorage.getItem('creditNoteFilterAmount')
+  //   }
+  // )
+
+  const handleNote = (selectedNote) => {
+    setSelectedOption(selectedNote)
   }
 
   const handleNameChange = (event) => {
@@ -235,7 +275,7 @@ const handlePriceChange = (e) => {
         const token = user?.x_access_token
         const retailer = bagValue.Account.id
         const manufacture = bagValue.Manufacturer.id
-        // console.log({token, retailer, manufacture})
+        
         if (token && retailer && manufacture) {
           getCreditNotes(token, retailer, manufacture).then((note) => {
             setCreditNote(note)
@@ -245,6 +285,14 @@ const handlePriceChange = (e) => {
 
     }).catch((e) => console.log({ e }))
   }, [])
+
+  // if(localStorage.getItem('creditNoteFilterAmount') > 0)
+  // {
+  //   let noteString = `--------------Credit Note--------------- \n $`+ localStorage.getItem('creditNoteFilterAmount') +` approved from PO Number `+ localStorage.getItem('creditNoteFilterPoNumber')+`\n \n Expected to pay  $ `+ (subTotal - localStorage.getItem('creditNoteFilterAmount')) +`\n \n--------------Credit Note---------------`
+    
+  //   console.log({noteString})
+  // }
+
 
   // useEffect(() => {
   //   let amount = 0
@@ -298,12 +346,20 @@ const handlePriceChange = (e) => {
               list.push(temp);
             })
           }
+
+          var noteString = ''
+
+          if(localStorage.getItem('creditNoteFilterAmount') > 0)
+          {
+            noteString = `\n \n--------------Credit Note--------------- \n $`+ localStorage.getItem('creditNoteFilterAmount') +` approved from PO Number `+ localStorage.getItem('creditNoteFilterPoNumber')+`\n \n Expected to pay  $ `+ (subTotal - localStorage.getItem('creditNoteFilterAmount')) +`\n \n--------------Credit Note---------------`
+          }
+
           let begToOrder = {
             AccountId: fetchBag?.Account?.id,
             Name: fetchBag?.Account?.name,
             ManufacturerId__c: fetchBag?.Manufacturer?.id,
             PONumber: PONumber,
-            desc: orderDesc,
+            desc: (orderDesc) ? orderDesc : '' + noteString,
             SalesRepId,
             Type: orderType,
             ShippingCity: fetchBag?.Account?.address?.city,
@@ -312,10 +368,17 @@ const handlePriceChange = (e) => {
             ShippingCountry: fetchBag?.Account?.address?.country,
             ShippingZip: fetchBag?.Account?.address?.postalCode,
             list,
+            creditNote:  {
+              Id : localStorage.getItem('creditNoteFilterId'), 
+              PoNumber : localStorage.getItem('creditNoteFilterPoNumber'),
+              Amount : localStorage.getItem('creditNoteFilterAmount')
+            },
             creditAmount: localStorage.getItem('creditAmount'),
             key: user.x_access_token,
             shippingMethod: fetchBag.Account.shippingMethod
           }
+
+          console.log({begToOrder})
 
           OrderPlaced({ order: begToOrder })
             .then((response) => {
@@ -327,6 +390,10 @@ const handlePriceChange = (e) => {
                   fetchBag.orderList.map((ele) => addOrder(ele.product, 0, ele.discount))
                   localStorage.removeItem("orders")
                   localStorage.removeItem('creditAmount')
+                  localStorage.removeItem('creditNoteFilterId')
+                  localStorage.removeItem('creditNoteFilterPoNumber')
+                  localStorage.removeItem('creditNoteFilterAmount')
+
                   navigate("/order-list")
                   setIsOrderPlaced(2)
                 }
@@ -691,7 +758,7 @@ const handlePriceChange = (e) => {
                         </Modal.Title>
                         <div className={Styles.mainRadioDiv}>
                           <Modal.Body>
-                            <div className={Styles.inputRadio}>
+                            {/* <div className={Styles.inputRadio}>
                               <div className={Styles.inputA}>
                                 <input type="radio" id="input1" name="creditNote" defaultChecked />
                                 <label htmlFor="input1">Available Credit</label>
@@ -717,7 +784,29 @@ const handlePriceChange = (e) => {
                                 <div className={Styles.checkDev}> <p>Use Full Amount</p> </div>
                                 <input className={Styles.checkBox} onChange={handleCheckboxChange} checked={isCheckboxChecked} type="checkbox" id="" />
                               </div>
-                            </div>
+                            </div> */}
+
+                            <Select
+                              options={creditNote?.data?.records?.map((ele) => {
+                                  return {
+                                    value: { Id : ele.Id, PO_Number: ele?.Po_Number1__c, Amount : ele?.Wallet_Amount__c },
+                                    label: `$` + Number(ele?.Wallet_Amount__c).toFixed(2) + ` (PO : `+ ele?.Po_Number1__c +`)`
+                                  }
+                                })
+                              }
+                              value={{
+                                label: (selectedOption?.Amount > 0) ? `$` + Number(selectedOption?.Amount).toFixed(2) + ` (PO : `+ selectedOption?.PO_Number +`)` : "Search Credit Allocation",
+                                value : selectedOption
+                              }} 
+                              defaultValue={{
+                                label: "Search Credit Allocation",
+                                value: "",
+                              }}
+                              onChange={(option) => handleNote(option.value)}
+                              isSearchable
+                              menuPosition={"fixed"}
+                              menuShouldScrollIntoView={false}
+                            />
 
                             {validationMessage && (
                               <p className={Styles.validationError}>{validationMessage}</p>
@@ -730,7 +819,7 @@ const handlePriceChange = (e) => {
                             <div>
                               <button className={Styles.CancleBtn} onClick={handleCloseModal}>Cancel</button>
                             </div>
-                            <div><button className={Styles.submitBtn} onClick={handleSubmitModal}>Submit</button></div>
+                            <div><button className={Styles.submitBtn} onClick={handleSubmitModal} >Submit</button></div>
                           </div>
 
                         </div>
