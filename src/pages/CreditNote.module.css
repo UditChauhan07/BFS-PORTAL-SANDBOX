@@ -49,7 +49,8 @@
 }
 
 .titleAndFilter {
-
+margin-top: 1rem;
+margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
     height: auto;
@@ -185,7 +186,9 @@
     position: relative;
 
 }
-
+.dropdownOptions2 li{
+    padding: 3px;
+}
 .dropdownOptions2 li:hover{
     background-color: #000000;
     color: white;
@@ -254,14 +257,14 @@ padding: 5px;
 /* ...Filter Drop Down End */
 
 
-
-
 .productdata {
     border: 1px solid rgba(228, 228, 228, 1);
+    border-bottom: 0.3px solid rgba(228, 228, 228, 1);
+
     height: auto;
     width: 98%;
     margin: auto;
-    margin-top: 15px;
+    margin-top: -1px;
     display: flex;
 }
 
