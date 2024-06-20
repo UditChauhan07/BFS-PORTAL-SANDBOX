@@ -177,8 +177,8 @@ const CreditNote = () => {
     //.........DropDowwn2 Function End......///
 
     //............View Modal Function...........//
-    const handleShowModal = () => setShowModal(true);
-    const handleCloseModal = () => setShowModal(false);
+    // const handleShowModal = () => setShowModal(true);
+    // const handleCloseModal = () => setShowModal(false);
 
 
 
