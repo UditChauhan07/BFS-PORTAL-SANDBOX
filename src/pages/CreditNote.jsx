@@ -117,8 +117,6 @@ const CreditNote = () => {
         return sortedData
     }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder ])
 
-    console.log({filteredData})
-
     const brandBtnHandler = ({ manufacturerId }) => {
         setIsLoadedManufacture(false)
         setManufacturerFilter(manufacturerId)
