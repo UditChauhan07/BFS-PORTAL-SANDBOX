@@ -8,6 +8,7 @@
     margin-bottom: 1rem;
 }
 .filterDotedDiv{
+    margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
 }
@@ -18,6 +19,7 @@
     width: 40%;
     align-items: center;
     padding: 10px;
+    cursor: pointer;
 
 }
 
@@ -48,7 +50,8 @@
 }
 
 .titleAndFilter {
-
+margin-top: 1rem;
+margin-bottom: 1rem;
     display: flex;
     justify-content: space-between;
     height: auto;
@@ -71,6 +74,7 @@
     margin-right: 15px;
     display: flex;
     width: 110px;
+    height: 45px;
     align-items: center;
     justify-content: space-around;
     cursor: pointer;
@@ -93,10 +97,10 @@
 
 .dropdownOptions {
     position: absolute;
-    top: -500%;
-    left: 25%;
+    /* top: -500%;
+    left: 25%; */
     text-align: end;
-    transform: translateX(-50%);
+    transform: translateX(-40%);
     background-color: #f9f9f9;
     min-width: 80px;
     border: 1px solid #ddd;
@@ -121,22 +125,24 @@
 }
 
 .FilterHead {
+    font-weight: 600;
     color: rgba(56, 56, 56, 1);
+    font-family: 'Montserrat';
 }
 
 /* //......Transaction Drop Down Start.. */
 .Calendardate{
-    width: 50%;
+    /* width: 50%; */
 }
 .Calendardate input{
-    width: 90%;
+    width: 80%;
     font-weight: 500;
     color: rgba(0, 0, 0, 1);
     margin-left: 3px;
     outline: none;
 }
 .TransactionDiv{
-    width: 50%;
+    /* width: 50%; */
     display: flex;
     align-items: center;
     gap: 5px;
@@ -167,21 +173,23 @@
 }
 .dropdownOptions2 li{
     font-family: "Montserrat";
-    padding: 5px;
+    padding: 0px 5px;
     border-bottom: 1px solid rgba(209, 209, 209, 1);
 }
 .filterTransaction2 {
     display: flex;
     border: 1px solid rgba(0, 0, 0, 1);
     border-style: dotted;
-    width: 27%;
+    /* width: 27%; */
     align-items: center;
     padding: 10px;
     cursor: pointer;
     position: relative;
 
 }
-
+.dropdownOptions2 li{
+    padding: 3px;
+}
 .dropdownOptions2 li:hover{
     background-color: #000000;
     color: white;
@@ -250,14 +258,14 @@ padding: 5px;
 /* ...Filter Drop Down End */
 
 
-
-
 .productdata {
     border: 1px solid rgba(228, 228, 228, 1);
+    border-bottom: 0.3px solid rgba(228, 228, 228, 1);
+
     height: auto;
     width: 98%;
     margin: auto;
-    margin-top: 15px;
+    margin-top: -1px;
     display: flex;
 }
 
@@ -284,13 +292,13 @@ padding: 5px;
 }
 
 .ProductImg {
-    border: 1px solid rgba(164, 164, 164, 1);
-    width : 20%;
+    /* border: 1px solid rgba(164, 164, 164, 1);
+    width : 20%; */
 }
 
 .DefaultProductImg {
-    border: 1px solid rgba(164, 164, 164, 1);
-    width : 5%;
+    /* border: 1px solid rgba(164, 164, 164, 1);
+    width : 5%; */
 }
 
 .productTitle {
@@ -332,12 +340,13 @@ padding: 5px;
     line-height: 0.6;
 }
 
-.plusPrice{
+.plusPrice {
     color: rgba(112, 210, 65, 1);
     font-size: 18px;
     font-weight: 700;
 }
-.minusPrice{
+
+.minusPrice {
     font-size: 18px;
     font-weight: 700;
     color: rgb(7, 7, 7);
@@ -353,10 +362,11 @@ padding: 5px;
     padding: 4px;
     font-family: "Montserrat";
 }
+
 .viewBtn button {
     background-color: black;
     color: white;
-    padding: 6px 10px;
+    padding: 4px 13px;
     font-size: 14px;
 }
 
