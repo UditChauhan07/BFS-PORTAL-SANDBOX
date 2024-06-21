@@ -104,13 +104,13 @@ const CreditNote = () => {
         })
 
         if (sortOrder === 'A-Z') {
-            sortedData.sort((a, b) => a.Manufacturer.localeCompare(b.Manufacturer))
+            sortedData.sort((a, b) => a.Manufacturer?.localeCompare(b.Manufacturer))
         } 
         // else if (sortOrder === 'Z-A') {
         //     sortedData.sort((a, b) => b.Manufacturer.localeCompare(a.Manufacturer))
         // }
         else {
-            sortedData.sort((a, b) => b.Manufacturer.localeCompare(a.Manufacturer))
+            sortedData.sort((a, b) => b.Manufacturer?.localeCompare(a.Manufacturer))
         }
 
         sortedData.sort((a, b) => new Date(b.CreatedDate) - new Date(a.CreatedDate))
@@ -290,8 +290,7 @@ const CreditNote = () => {
                                                 </div>
                                                 <div className={Style.productTitle}>
                                                     <h3>
-                                                        {item.Manufacturer}
-                                                        {/* | <span>{item.productDescription}</span> */}
+                                                        {item.Manufacturer} | <span>{item?.opportunity?.Account?.Name}</span>
                                                     </h3>
                                                 </div>
                                             </div>
