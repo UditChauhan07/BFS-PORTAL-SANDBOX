@@ -359,7 +359,7 @@ const handlePriceChange = (e) => {
             Name: fetchBag?.Account?.name,
             ManufacturerId__c: fetchBag?.Manufacturer?.id,
             PONumber: PONumber,
-            desc: (orderDesc) ? orderDesc : '' + noteString,
+            desc: (orderDesc) ? orderDesc + noteString : '' + noteString,
             SalesRepId,
             Type: orderType,
             ShippingCity: fetchBag?.Account?.address?.city,
