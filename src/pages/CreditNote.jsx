@@ -107,7 +107,7 @@ const CreditNote = () => {
             sortedData.sort((a, b) => a.Manufacturer?.localeCompare(b.Manufacturer))
         } 
         // else if (sortOrder === 'Z-A') {
-        //     sortedData.sort((a, b) => b.Manufacturer.localeCompare(a.Manufacturer))
+        //     sortedData.sort((a, b) => b.Manufacturer?.localeCompare(a.Manufacturer))
         // }
         else {
             sortedData.sort((a, b) => b.Manufacturer?.localeCompare(a.Manufacturer))
