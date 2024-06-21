@@ -290,8 +290,7 @@ const CreditNote = () => {
                                                 </div>
                                                 <div className={Style.productTitle}>
                                                     <h3>
-                                                        {item.Manufacturer}
-                                                        {/* | <span>{item.productDescription}</span> */}
+                                                        {item.Manufacturer} | <span>{item?.opportunity?.Account?.Name}</span>
                                                     </h3>
                                                 </div>
                                             </div>
