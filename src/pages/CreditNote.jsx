@@ -113,8 +113,11 @@ const CreditNote = () => {
             sortedData.sort((a, b) => b.Manufacturer.localeCompare(a.Manufacturer))
         }
 
+        sortedData.sort((a, b) => new Date(b.CreatedDate) - new Date(a.CreatedDate))
         return sortedData
     }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder ])
+
+    console.log({filteredData})
 
     const brandBtnHandler = ({ manufacturerId }) => {
         setIsLoadedManufacture(false)
@@ -177,9 +180,6 @@ const CreditNote = () => {
     //............View Modal Function...........//
     // const handleShowModal = () => setShowModal(true);
     // const handleCloseModal = () => setShowModal(false);
-
-
-
 
     return (
         <AppLayout
@@ -245,9 +245,8 @@ const CreditNote = () => {
                                 <div className={Style.TransactionDiv} onMouseEnter={() => setShowDropmenu(true)} onMouseLeave={() => setShowDropmenu(false)}>
                                     <div className={Style.Transactionimg}>
                                         <img src='assets/images/Vector(4).png' alt='aa' /></div>
-
                                     <div className={Style.TransactionDropDown}>
-                                        <p >{selectedOption2}</p>
+                                        <p>{selectedOption2}</p>
                                         {showDropmenu && (
                                             <ul className={Style.dropdownOptions2}>
                                                 <li onClick={() => handleMenuClick('All')}>ALL</li>
@@ -276,7 +275,6 @@ const CreditNote = () => {
                                     <ul className={`${Style.dropdownOptions} ${showDropdown ? '' : Style.dropdownHidden}`}>
                                         <li onClick={() => handleOptionClick('A-Z')}>A-Z</li>
                                         <li onClick={() => handleOptionClick('Z-A')}>Z-A</li>
-
                                     </ul>
                                 </div>
                             </div>
@@ -286,8 +284,8 @@ const CreditNote = () => {
                         {
                             !isLoading ? (
                                 filteredData.length > 0 ? (
-                                    filteredData.map((item) => (
-                                        <div className={Style.productdata} key={item.id}>
+                                    filteredData.map((item, index) => (
+                                        <div className={Style.productdata} key={index}>
                                             <div className={Style.productDataDeatils}>
                                                 <div className={item?.ManufacturerLogo ? Style.ProductImg : Style.DefaultProductImg}>
                                                     {/* <img src={item?.ManufacturerLogo ?? img} alt='img' /> */}
