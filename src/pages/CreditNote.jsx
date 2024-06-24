@@ -29,6 +29,8 @@ const CreditNote = () => {
     const [showDropmenu, setShowDropmenu] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
+    const [modalOpenA, setModalOpenA] = useState(false)
+    const [selectedItemA, setSelectedItemA] = useState(null)
 
     // Component Modal Function start......//
     const openModal = (item) => {
@@ -39,6 +41,16 @@ const CreditNote = () => {
     const closeModal = () => {
         setModalOpen(false)
         setSelectedItem(null)
+    }
+
+    const openModalA = (item) => {
+        setSelectedItemA(item)
+        setModalOpenA(true)
+    }
+    
+    const closeModalA = () => {
+        setModalOpenA(false)
+        setSelectedItemA(null)
     }
     // Component Modal Function End......//
 
@@ -180,9 +192,17 @@ const CreditNote = () => {
     // const handleCloseModal = () => setShowModal(false);
 
     return (
+<>
+
+
+
         <AppLayout
             filterNodes={
                 <>
+
+
+                
+                
                     <FilterItem
                         minWidth="220px"
                         label="All Manufacturer"
@@ -211,12 +231,64 @@ const CreditNote = () => {
         >
             <div className="container p-0 ">
                 <div className="row p-0 m-0 d-flex flex-column justify-content-around align-items-center col-12">
-                    <div className={Style.backTransaction}>
+                <div className={Style.backTransaction}>
                         <div>
                             {/* <img src='assets/images/Vector.png' alt='ww' /> */}
                         </div>
-                        <div><h1>Transactions</h1></div>
+                        <div><h1>Transactions <span className={Style.seaportCSS}>Seaport Salon & Day Spa</span></h1></div>
                     </div>
+
+<div className={Style.BrandGroup}>
+    
+    <div className={`${Style.brandLightBlue} ${Style.brandColorCombi}`}>
+        <h2>Diptyque</h2>
+        <div className={Style.brandPrice}>
+            <h5>$312 <span>Available bal</span></h5>
+        </div>
+
+    </div>
+
+    <div className={`${Style.brandLightGreen} ${Style.brandColorCombi}`}>
+        <h2>Byredo</h2>
+        <div className={Style.brandPrice}>
+            <h5>$809 <span>Available bal</span></h5>
+        </div>
+
+    </div>
+
+    <div className={`${Style.brandLightPurple} ${Style.brandColorCombi}`}>
+        <h2>Estee Launder</h2>
+        <div className={Style.brandPrice}>
+            <h5>$315 <span>Available bal</span></h5>
+        </div>
+
+    </div>
+
+    <div className={`${Style.brandLightBrown} ${Style.brandColorCombi}`}>
+        <h2>Bumble and bumble</h2>
+        <div className={Style.brandPrice}>
+            <h5>$1920 <span>Available bal</span></h5>
+        </div>
+
+    </div>
+
+    <div className={`${Style.brandLightBlue} ${Style.brandColorCombi}`}>
+        <h2>Maison margiela</h2>
+        <div className={Style.brandPrice}>
+            <h5>$780 <span>Available bal</span></h5>
+        </div>
+
+    </div>
+
+    <div className={`${Style.brandLightBlue} ${Style.brandColorCombi}`}>
+        <h2>Bobbi brown</h2>
+        <div className={Style.brandPrice}>
+            <h5>$333 <span>Available bal</span></h5>
+        </div>
+
+    </div>
+
+</div>
                     <div className={Style.filterMain}>
                         <div className={Style.filterDotedDiv}>
                             <div className={Style.filterTransaction}>
@@ -290,7 +362,7 @@ const CreditNote = () => {
                                                 </div>
                                                 <div className={Style.productTitle}>
                                                     <h3>
-                                                        {item.Manufacturer} | <span>{item?.opportunity?.Account?.Name}</span>
+                                                        {item.Manufacturer} 
                                                     </h3>
                                                 </div>
                                             </div>
@@ -309,11 +381,23 @@ const CreditNote = () => {
                                                         {new Date(item.CreatedDate).toLocaleString()}
                                                     </small>
                                                 </div>
+
+
+                                                <div className={Style.CircleDotGreen}>
+                                                    <div className={Style.CircleDotGreenMain}>
+                                                    <div className={Style.DotGreen}>
+                                                     </div>
+
+                                                     <h5>Available</h5>
+                                                     </div>
+                                                </div>
+
+
                                                 <div className={Style.viewBtn}>
                                                     <button 
                                                         onClick={() => openModal(item)}
                                                     >
-                                                        View 
+                                                        View
                                                     </button>
                                                 </div>
                                             </div>
@@ -399,6 +483,8 @@ const CreditNote = () => {
                 </div>
             </div>
         </AppLayout>
+        </>
+
     );
 };
 
