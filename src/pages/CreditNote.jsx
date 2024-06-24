@@ -455,6 +455,56 @@ const CreditNote = () => {
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                               
+
+                                                            </div>
+                                                            
+
+                                                            <div className="" style={{ minWidth: '75vw' }}>
+                                                                <div className={Style.PoDeatils}>
+                                                                    <div className={Style.Ponumber}>PO Number <span>#{selectedItem?.opportunity?.PO_Number__c}</span> </div>
+                                                                    <div className={Style.PoDate}><p> Date: <span> { convertDate(selectedItem?.opportunity?.CreatedDate) }</span></p></div>
+                                                                </div>
+                                                                <div className={Style.maincreditAmountDiv}>
+                                                                    <div className={Style.CaseDeatils}>
+                                                                        <div className={Style.CaseTitle}>
+                                                                            <p>
+                                                                                {selectedItem?.Manufacturer} 
+                                                                                {/* | <span>Eau de Parfum</span> */}
+                                                                            </p>
+                                                                        </div>
+                                                                        <div className={Style.CaseNumDeatils}>
+                                                                            <p>Case Number
+                                                                                <span> #{selectedItem?.opportunity?.PO_Number__c}</span>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className={Style.creditAmountDiv}>
+                                                                        <div className={Style.creditAmount}>
+                                                                            <p>Credit Not Amount Adjusted </p>
+                                                                        </div>
+                                                                        <div 
+                                                                            // className={Style.creditAmountDetail}
+                                                                            className={(selectedItem?.Status__c === "Refund") ? (Style.creditAmountDetailDebit) : (Style.creditAmountDetail) }
+                                                                        >
+                                                                            <p className={Style.AmountRed}>${selectedItem?.Wallet_Amount__c}</p>
+                                                                            <small>
+                                                                                { convertDate(selectedItem?.CreatedDate) }
+                                                                            </small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className={Style.creditAmountDiv}>
+                                                                        <div className={Style.creditAmount}>
+                                                                            <p>Order Price</p>
+                                                                            </div>
+                                                                        <div className={Style.creditAmountDetail2}>
+                                                                            <p>${selectedItem?.opportunity?.Amount}</p>
+                                                                            <small>
+                                                                                {convertDate(selectedItem?.opportunity?.CreatedDate)}
+                                                                            </small>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                                 <div className={Style.mainbutton}>
                                                                     <div>
                                                                         <button className={Style.CancleBtn} onClick={closeModal}>Cancel</button>
@@ -463,6 +513,10 @@ const CreditNote = () => {
 
                                                             </div>
                                                         </div>
+
+                                                        
+
+                                                        
                                                     }
                                                 />
                                             )}

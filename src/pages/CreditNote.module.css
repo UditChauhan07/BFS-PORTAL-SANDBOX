@@ -680,18 +680,26 @@ padding: 5px;
 .mainbutton {
     display: flex;
     justify-content: flex-end;
-    margin-right: 4.5rem;
-    margin-top: 15px;
-    margin-bottom: 2.5rem;
+    /* margin-right: 4.5rem; */
+    /* margin-top: 15px;
+    margin-bottom: 2.5rem; */
+    width: 80%;
+    margin: 15px auto 2.5rem auto;
 }
 
 .CancleBtn {
     padding: 5px 30px !important;
     border: 1px solid rgba(0, 0, 0, 1);
     font-weight: 600;
-    margin-right: 20px;
+    margin-right: 0px;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+
+
+.AmountRed{
+    color:#B82F04 !important ;
 }
 
 /* .....my new modal css End.. */
