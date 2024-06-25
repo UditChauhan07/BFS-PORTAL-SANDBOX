@@ -7,6 +7,7 @@ import AppLayout from '../components/AppLayout';
 import { FilterItem } from '../components/FilterItem';
 import { GetAuthData, getCreditNotesList, getManufacturarAmount } from "../lib/store";
 import ModalPage from '../components/Modal UI';
+import { SliderValueLabel } from '@mui/material';
 
 
 const CreditNote = () => {
@@ -26,6 +27,7 @@ const CreditNote = () => {
     const [isLoadedRetailer, setIsLoadedRetailer] = useState(false)
     const [manufacturerFilter, setManufacturerFilter] = useState()
     const [retailerFilter, setRetailerFilter] = useState()
+    const [retailerLabelFilter, setRetailerLabelFilter] = useState()
     const [data, setData] = useState([])
     const [currentDate, setCurrentDate] = useState('')
 
@@ -236,6 +238,7 @@ const CreditNote = () => {
                             }))}
                             onChange={(value) => retailerBtnHandler({ retailerId: value })}
                         />
+
                     </>
                 }
             >
@@ -245,7 +248,12 @@ const CreditNote = () => {
                             <div>
                                 {/* <img src='assets/images/Vector.png' alt='ww' /> */}
                             </div>
-                            <div><h1>Transactions <span className={Style.seaportCSS}>Seaport Salon & Day Spa</span></h1></div>
+                            <div>
+                                <h1>
+                                    Transactions 
+                                    {/* <span className={Style.seaportCSS}>Seaport Salon & Day Spa</span> */}
+                                </h1>
+                            </div>
                         </div>
 
                         <div className={Style.BrandGroup}>
