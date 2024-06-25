@@ -152,34 +152,32 @@ const handlePriceChange = (e) => {
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
-  // console.log({total})
 
-  // useEffect(() => {
-  //   const calculateTotal = () => {
-  //     const value = Object.values(JSON.parse(localStorage.getItem("orders")))
-  //     value.map((ele) => {
-  //       // console.log(ele);
-  //       total += parseFloat(ele.product?.salesPrice * ele.quantity)
-  //     })
-  //   }
-  //   console.log({total2222:Object.values(bagValue?.orderList)})
-  //   calculateTotal(); 
-  
-  // }, []);
-
+  let totalPrice = 0
   const handleSubmitModal = () => {
     // setSubTotal(total)
     console.log({amount : selectedOption?.Amount, subTotal})
 
+    let fetchBag = fetchBeg()
 
-    Object.values(JSON.parse(localStorage.getItem("orders"))).map((ele) => {
-      // console.log(ele);
+    if (fetchBag) {
+      let arr = [];
+      let productLists = Object.values(fetchBag.orderList)
+      if (productLists.length) {
+        productLists.map((product) => {
+          let temp = {
+            ProductCode: product.product.ProductCode,
+            qty: product.quantity,
+            price: product.product?.salesPrice,
+            discount: product.product?.discount,
+          }
+          arr.push(temp);
+          totalPrice += parseFloat(product.product?.salesPrice * product.quantity);
+        })
+      }
+    }
 
-      total += parseFloat(ele.product?.salesPrice * ele.quantity)
-    })
-
-    console.log({total})
-    if (selectedOption?.Amount < subTotal) {
+    if (selectedOption?.Amount < totalPrice) {
       setCreditNoteFilter(selectedOption)
       localStorage.setItem('creditNoteFilterId', (selectedOption?.Id) ? selectedOption?.Id : '')
       localStorage.setItem('creditNoteFilterPoNumber', (selectedOption?.PO_Number) ? selectedOption?.PO_Number : '')
@@ -295,32 +293,6 @@ const handlePriceChange = (e) => {
   }, [total, bagValue, subTotal])
 
 
-  let fetchBag = fetchBeg()
-  // console.log({bagValueOrders:Object.values(fetchBag?.orderList)})
-
-  // let productLists = Object.values(fetchBag?.orderList);
-  // let totalPrice = 0;
-  // let arr= []
-  // if (productLists.length) {
-  //   productLists.forEach((product) => {
-      
-  //     let temp = {
-  //       ProductCode: product.product.ProductCode,
-  //       qty: product.quantity,
-  //       price: product.product?.salesPrice,
-  //       discount: product.product?.discount,
-  //     };
-
-  //     // Pushing temp object into list array (if needed)
-  //     arr.push(temp);
-
-  //     // Calculating total price
-  //     totalPrice += parseFloat(product.product?.salesPrice * product.quantity);
-  //   });
-  // }
-
-  // console.log({totalPrice})
-
   useEffect(() => {
     GetAuthData().then((user) => {
       setUserData(user)
@@ -339,37 +311,8 @@ const handlePriceChange = (e) => {
     }).catch((e) => console.log({ e }))
   }, [])
 
-  // if(localStorage.getItem('creditNoteFilterAmount') > 0)
-  // {
-  //   let noteString = `--------------Credit Note--------------- \n $`+ localStorage.getItem('creditNoteFilterAmount') +` approved from PO Number `+ localStorage.getItem('creditNoteFilterPoNumber')+`\n \n Expected to pay  $ `+ (subTotal - localStorage.getItem('creditNoteFilterAmount')) +`\n \n--------------Credit Note---------------`
-    
-  //   console.log({noteString})
-  // }
-
-
-  // useEffect(() => {
-  //   let amount = 0
-
-  //   const orders = localStorage.getItem("orders")
-  //   console.log({orders})
-
-  //   if (orders) {
-  //     const parsedOrders = Object.values(JSON.parse(orders))
-  //     if (parsedOrders.length > 0) {
-  //       amount = parsedOrders.reduce((acc, ele) => {
-  //         return acc + parseFloat(ele.product?.salesPrice * ele.quantity)
-  //       }, 0)
-  //     }
-  //   }
-
-  //   // console.log({amount})
-
-  //   setSubTotal(amount)
-  //   setSubTotalAmountValue(amount)
-  // }, []);
 
   const onPriceChangeHander = (product, price = '0') => {
-    console.log('lllllllllllllllllll')
     if (price == '') price = 0
     setOrderProductPrice(product, price).then((res) => {
       if (res) {
@@ -403,7 +346,6 @@ const handlePriceChange = (e) => {
             })
           }
 
-          console.log({totalPrice})
 
           var noteString = ''
 
