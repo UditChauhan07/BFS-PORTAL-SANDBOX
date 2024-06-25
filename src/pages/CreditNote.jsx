@@ -11,16 +11,9 @@ import { SliderValueLabel } from '@mui/material';
 
 
 const CreditNote = () => {
-    let img = 'assets/default-image.png'
-    // const colorClasses = [
-    //     'brandLightBlue',
-    //     'brandLightGreen',
-    //     'brandLightPurple',
-    //     'brandLightBrown',
-    // ];
     let colorClasses = [Style.brandLightBlue, Style.brandLightGreen, Style.brandLightPurple, Style.brandLightBrown];
     const [userData, setUserData] = useState(null)
-    const { data: manufacturers } = useManufacturer()
+    // const { data: manufacturers } = useManufacturer()
     const { data: retailers } = useRetailersData()
     const [isLoading, setIsLoading] = useState(false)
     const [isLoadedManufacture, setIsLoadedManufacture] = useState(false)
@@ -30,6 +23,7 @@ const CreditNote = () => {
     const [retailerLabelFilter, setRetailerLabelFilter] = useState()
     const [data, setData] = useState([])
     const [currentDate, setCurrentDate] = useState('')
+    const [manufacturers, setManufacturers] = useState([])
 
     //.....State for filter Search Start...////
     const [selectedOption, setSelectedOption] = useState('Filter')
@@ -42,6 +36,7 @@ const CreditNote = () => {
     const [modalOpenA, setModalOpenA] = useState(false)
     const [selectedItemA, setSelectedItemA] = useState(null)
     const [manufacturarAmount, setManufacturarAmount] = useState([])
+
     
     // Component Modal Function start......//
     const openModal = (item) => {
@@ -82,7 +77,8 @@ const CreditNote = () => {
         setIsLoading(true)
         GetAuthData().then((user) => {
             setUserData(user)
-            const retailerFilterValue = localStorage.getItem('reatilerFilterValue')
+            const retailerFilterValue = localStorage.getItem('reatilerFilterValue') || ''
+
             setRetailerFilter(retailerFilterValue)
             getCreditNotesList(user.x_access_token, retailerFilterValue, manufacturerFilter)
                 .then((data) => {
@@ -97,17 +93,18 @@ const CreditNote = () => {
             getManufacturarAmount(user.x_access_token, retailerFilter)
                 .then((amtData) => {
                     setManufacturarAmount(amtData)
-                    setIsLoading(false)
+                    setManufacturers(amtData)
                 })
                 .catch((amtErr) => {
                     console.log({ amtErr: amtErr.message })
-                    setIsLoading(false)
                 })
         }).catch((e) => {
             console.log({ e: e.message })
             setIsLoading(false)
         })
     }, [retailerFilter, manufacturerFilter])
+
+    console.log({manufacturers})
 
     const filteredData = useMemo(() => {
         const sortedData = data.filter(item => {
@@ -217,18 +214,6 @@ const CreditNote = () => {
                     <>  
                         <FilterItem
                             minWidth="220px"
-                            label="All Manufacturer"
-                            name="Manufacturer"
-                            value={manufacturerFilter}
-                            options={manufacturers?.data?.map((manufacturer) => ({
-                                label: manufacturer.Name,
-                                value: manufacturer.Id,
-                            }))}
-                            onChange={(value) => brandBtnHandler({ manufacturerId: value })}
-                        />
-
-                        <FilterItem
-                            minWidth="220px"
                             label="All Account"
                             name="Retailer"
                             value={retailerFilter}
@@ -237,6 +222,18 @@ const CreditNote = () => {
                                 value: retailer.Id,
                             }))}
                             onChange={(value) => retailerBtnHandler({ retailerId: value })}
+                        />
+
+                        <FilterItem
+                            minWidth="220px"
+                            label="All Manufacturer"
+                            name="Manufacturer"
+                            value={manufacturerFilter}
+                            options={manufacturers && Array.isArray(manufacturers) ? manufacturers.map((manufacturer) => ({
+                                label: manufacturer.Name,
+                                value: manufacturer.Id,
+                            })) : []}
+                            onChange={(value) => brandBtnHandler({ manufacturerId: value })}
                         />
 
                     </>
@@ -477,7 +474,7 @@ const CreditNote = () => {
                                                     <p>Order Price</p>
                                                 </div>
                                                 <div className={Style.creditAmountDetail2}>
-                                                    <p>${selectedItem?.Wallet_Amount__c}</p>
+                                                    <p>${selectedItem?.opportunity?.Amount}</p>
                                                     <small>
                                                         {convertDate(selectedItem?.CreatedDate)}
                                                     </small>

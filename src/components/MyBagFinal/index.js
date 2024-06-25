@@ -43,18 +43,19 @@ function MyBagFinal() {
   const [selectedOption, setSelectedOption] = useState(null);
 
   let total = 0
+
   const inputRef = useRef(null)
   const amount = localStorage.getItem('creditAmount') ?? '0'
 
-  const handleEditClick = () => {
-    setValidationMessage('')
-    setIsEditable(true)
-    setIsCheckboxChecked(false)
-    localStorage.setItem('creditAmount', '')
-    setPriceValue('')
-    setFullPriceValue('$')
-    inputRef.current.focus()
-  }
+  // const handleEditClick = () => {
+  //   setValidationMessage('')
+  //   setIsEditable(true)
+  //   setIsCheckboxChecked(false)
+  //   localStorage.setItem('creditAmount', '')
+  //   setPriceValue('')
+  //   setFullPriceValue('$')
+  //   inputRef.current.focus()
+  // }
 
   // const extractWordAfterCharacter = (input, character) => {
   //   const regex = new RegExp(`\\${character}(\\w+)`)
@@ -123,6 +124,9 @@ const handlePriceChange = (e) => {
     if (e.target.checked) {
 
       // console.log({cond: (creditNote?.amount?.available <= subTotal),ava : creditNote?.amount?.available, subTotal })
+
+     
+        
       if (creditNote?.amount?.available <= subTotal) {
         setPriceValue(creditNote?.amount?.available)
         localStorage.setItem('creditAmount', creditNote?.amount?.available)
@@ -148,10 +152,33 @@ const handlePriceChange = (e) => {
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
+  // console.log({total})
+
+  // useEffect(() => {
+  //   const calculateTotal = () => {
+  //     const value = Object.values(JSON.parse(localStorage.getItem("orders")))
+  //     value.map((ele) => {
+  //       // console.log(ele);
+  //       total += parseFloat(ele.product?.salesPrice * ele.quantity)
+  //     })
+  //   }
+  //   console.log({total2222:Object.values(bagValue?.orderList)})
+  //   calculateTotal(); 
+  
+  // }, []);
 
   const handleSubmitModal = () => {
+    // setSubTotal(total)
     console.log({amount : selectedOption?.Amount, subTotal})
 
+
+    Object.values(JSON.parse(localStorage.getItem("orders"))).map((ele) => {
+      // console.log(ele);
+
+      total += parseFloat(ele.product?.salesPrice * ele.quantity)
+    })
+
+    console.log({total})
     if (selectedOption?.Amount < subTotal) {
       setCreditNoteFilter(selectedOption)
       localStorage.setItem('creditNoteFilterId', (selectedOption?.Id) ? selectedOption?.Id : '')
@@ -268,6 +295,32 @@ const handlePriceChange = (e) => {
   }, [total, bagValue, subTotal])
 
 
+  let fetchBag = fetchBeg()
+  // console.log({bagValueOrders:Object.values(fetchBag?.orderList)})
+
+  // let productLists = Object.values(fetchBag?.orderList);
+  // let totalPrice = 0;
+  // let arr= []
+  // if (productLists.length) {
+  //   productLists.forEach((product) => {
+      
+  //     let temp = {
+  //       ProductCode: product.product.ProductCode,
+  //       qty: product.quantity,
+  //       price: product.product?.salesPrice,
+  //       discount: product.product?.discount,
+  //     };
+
+  //     // Pushing temp object into list array (if needed)
+  //     arr.push(temp);
+
+  //     // Calculating total price
+  //     totalPrice += parseFloat(product.product?.salesPrice * product.quantity);
+  //   });
+  // }
+
+  // console.log({totalPrice})
+
   useEffect(() => {
     GetAuthData().then((user) => {
       setUserData(user)
@@ -316,6 +369,7 @@ const handlePriceChange = (e) => {
   // }, []);
 
   const onPriceChangeHander = (product, price = '0') => {
+    console.log('lllllllllllllllllll')
     if (price == '') price = 0
     setOrderProductPrice(product, price).then((res) => {
       if (res) {
@@ -323,12 +377,13 @@ const handlePriceChange = (e) => {
       }
     })
   }
-
+  
   const orderPlaceHandler = () => {
     setIsOrderPlaced(1);
     let fetchBag = fetchBeg()
     GetAuthData()
       .then((user) => {
+        let totalPrice = 0
         let SalesRepId = localStorage.getItem(salesRepIdKey) ?? user.Sales_Rep__c
         if (fetchBag) {
           let list = [];
@@ -344,15 +399,20 @@ const handlePriceChange = (e) => {
                 discount: product.product?.discount,
               }
               list.push(temp);
+              totalPrice += parseFloat(product.product?.salesPrice * product.quantity);
             })
           }
+
+          console.log({totalPrice})
 
           var noteString = ''
 
           if(localStorage.getItem('creditNoteFilterAmount') > 0)
           {
-            noteString = `\n \n--------------Credit Note--------------- \n $`+ localStorage.getItem('creditNoteFilterAmount') +` approved from PO Number `+ localStorage.getItem('creditNoteFilterPoNumber')+`\n \n Expected to pay  $ `+ (subTotal - localStorage.getItem('creditNoteFilterAmount')) +`\n \n--------------Credit Note---------------`
+            noteString = `\n \n--------------Credit Note--------------- \n $`+ localStorage.getItem('creditNoteFilterAmount') +` approved from PO Number `+ localStorage.getItem('creditNoteFilterPoNumber')+`\n \n Expected to pay  $ `+ (totalPrice - localStorage.getItem('creditNoteFilterAmount')) +`\n \n--------------Credit Note---------------`
           }
+
+          console.log({noteString})
 
           let begToOrder = {
             AccountId: fetchBag?.Account?.id,
@@ -444,6 +504,9 @@ const handlePriceChange = (e) => {
   const deleteBag = () => {
     localStorage.removeItem("orders")
     localStorage.removeItem("creditAmount")
+    localStorage.removeItem('creditNoteFilterId')
+    localStorage.removeItem('creditNoteFilterPoNumber')
+    localStorage.removeItem('creditNoteFilterAmount')
     window.location.reload()
   }
 

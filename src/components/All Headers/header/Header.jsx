@@ -17,6 +17,7 @@ const Header = () => {
   const [ userData, setUserData ] = useState(null)
   const [checkedId, setCheckedId] = useState(null);
   const [validationMessage, setValidationMessage] = useState('');
+  const [retailerFilter, setRetailerFilter] = useState()
 
   const handleChange = (event) => {
     const selectedValue = event.target.id
@@ -27,12 +28,19 @@ const Header = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    console.log({checkedId})
     if (!checkedId) {
       setValidationMessage('Please select a Retailer.')
     }
     else {
       localStorage.setItem('reatilerFilterValue', checkedId)
+      // console.log({newId : localStorage.getItem('reatilerFilterValue')})
       navigate('/credit-note')
+
+      if(path == '/credit-note'){
+        closeModalA()
+        setRetailerFilter(checkedId)
+      }
     }
   }
 
@@ -121,7 +129,7 @@ const Header = () => {
           </Link>
 
           {/* credit note modal */}
-          {modalOpenA && (<ModalPage
+          {(path !== '/credit-note' && modalOpenA) && (<ModalPage
               open={modalOpenA}
               closeModalA={closeModalA}
               content={
