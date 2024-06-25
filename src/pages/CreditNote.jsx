@@ -5,11 +5,19 @@ import Style from "../pages/CreditNote.module.css";
 import Loading from "../components/Loading";
 import AppLayout from '../components/AppLayout';
 import { FilterItem } from '../components/FilterItem';
-import { GetAuthData, getCreditNotesList } from "../lib/store";
+import { GetAuthData, getCreditNotesList, getManufacturarAmount } from "../lib/store";
 import ModalPage from '../components/Modal UI';
+
 
 const CreditNote = () => {
     let img = 'assets/default-image.png'
+    // const colorClasses = [
+    //     'brandLightBlue',
+    //     'brandLightGreen',
+    //     'brandLightPurple',
+    //     'brandLightBrown',
+    // ];
+    let colorClasses = [Style.brandLightBlue, Style.brandLightGreen, Style.brandLightPurple, Style.brandLightBrown];
     const [userData, setUserData] = useState(null)
     const { data: manufacturers } = useManufacturer()
     const { data: retailers } = useRetailersData()
@@ -29,9 +37,13 @@ const CreditNote = () => {
     const [showDropmenu, setShowDropmenu] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
-
+    const [modalOpenA, setModalOpenA] = useState(false)
+    const [selectedItemA, setSelectedItemA] = useState(null)
+    const [manufacturarAmount, setManufacturarAmount] = useState([])
+    
     // Component Modal Function start......//
     const openModal = (item) => {
+        console.log({item})
         setSelectedItem(item)
         setModalOpen(true)
     }
@@ -39,6 +51,16 @@ const CreditNote = () => {
     const closeModal = () => {
         setModalOpen(false)
         setSelectedItem(null)
+    }
+
+    const openModalA = (item) => {
+        setSelectedItemA(item)
+        setModalOpenA(true)
+    }
+    
+    const closeModalA = () => {
+        setModalOpenA(false)
+        setSelectedItemA(null)
     }
     // Component Modal Function End......//
 
@@ -58,7 +80,9 @@ const CreditNote = () => {
         setIsLoading(true)
         GetAuthData().then((user) => {
             setUserData(user)
-            getCreditNotesList(user.x_access_token, retailerFilter, manufacturerFilter)
+            const retailerFilterValue = localStorage.getItem('reatilerFilterValue')
+            setRetailerFilter(retailerFilterValue)
+            getCreditNotesList(user.x_access_token, retailerFilterValue, manufacturerFilter)
                 .then((data) => {
                     setData(data)
                     setIsLoading(false)
@@ -67,12 +91,21 @@ const CreditNote = () => {
                     console.log({ err: err.message })
                     setIsLoading(false)
                 })
+
+            getManufacturarAmount(user.x_access_token, retailerFilter)
+                .then((amtData) => {
+                    setManufacturarAmount(amtData)
+                    setIsLoading(false)
+                })
+                .catch((amtErr) => {
+                    console.log({ amtErr: amtErr.message })
+                    setIsLoading(false)
+                })
         }).catch((e) => {
             console.log({ e: e.message })
             setIsLoading(false)
         })
     }, [retailerFilter, manufacturerFilter])
-
 
     const filteredData = useMemo(() => {
         const sortedData = data.filter(item => {
@@ -124,11 +157,11 @@ const CreditNote = () => {
 
     const retailerBtnHandler = ({ retailerId }) => {
         setIsLoadedRetailer(false)
+        localStorage.setItem('reatilerFilterValue', retailerId)
         setRetailerFilter(retailerId)
     }
 
     useEffect(() => {
-        // Set Default Date in the Date Picker
         const today = new Date()
         const year = today.getFullYear()
         let month = today.getMonth() + 1
@@ -175,230 +208,308 @@ const CreditNote = () => {
     };
     //.........DropDowwn2 Function End......///
 
-    //............View Modal Function...........//
-    // const handleShowModal = () => setShowModal(true);
-    // const handleCloseModal = () => setShowModal(false);
-
     return (
-        <AppLayout
-            filterNodes={
-                <>
-                    <FilterItem
-                        minWidth="220px"
-                        label="All Manufacturer"
-                        name="Manufacturer"
-                        value={manufacturerFilter}
-                        options={manufacturers?.data?.map((manufacturer) => ({
-                            label: manufacturer.Name,
-                            value: manufacturer.Id,
-                        }))}
-                        onChange={(value) => brandBtnHandler({ manufacturerId: value })}
-                    />
+        <>
+            <AppLayout
+                filterNodes={
+                    <>  
+                        <FilterItem
+                            minWidth="220px"
+                            label="All Manufacturer"
+                            name="Manufacturer"
+                            value={manufacturerFilter}
+                            options={manufacturers?.data?.map((manufacturer) => ({
+                                label: manufacturer.Name,
+                                value: manufacturer.Id,
+                            }))}
+                            onChange={(value) => brandBtnHandler({ manufacturerId: value })}
+                        />
 
-                    <FilterItem
-                        minWidth="220px"
-                        label="All Account"
-                        name="Retailer"
-                        value={retailerFilter}
-                        options={retailers?.data?.map((retailer) => ({
-                            label: retailer.Name,
-                            value: retailer.Id,
-                        }))}
-                        onChange={(value) => retailerBtnHandler({ retailerId: value })}
-                    />
-                </>
-            }
-        >
-            <div className="container p-0 ">
-                <div className="row p-0 m-0 d-flex flex-column justify-content-around align-items-center col-12">
+                        <FilterItem
+                            minWidth="220px"
+                            label="All Account"
+                            name="Retailer"
+                            value={retailerFilter}
+                            options={retailers?.data?.map((retailer) => ({
+                                label: retailer.Name,
+                                value: retailer.Id,
+                            }))}
+                            onChange={(value) => retailerBtnHandler({ retailerId: value })}
+                        />
+                    </>
+                }
+            >
+                <div className="container p-0 ">
+                    <div className="row p-0 m-0 d-flex flex-column justify-content-around align-items-center col-12">
                     <div className={Style.backTransaction}>
-                        <div>
-                            {/* <img src='assets/images/Vector.png' alt='ww' /> */}
-                        </div>
-                        <div><h1>Transactions</h1></div>
-                    </div>
-                    <div className={Style.filterMain}>
-                        <div className={Style.filterDotedDiv}>
-                            <div className={Style.filterTransaction}>
-                                <div className='search-icon'>
-                                    <img src='assets/images/Group235.png' alt='nn' />
-                                </div>
-                                <div className={Style.inputMain}>
-                                    <input 
-                                        className={Style.searchInput}
-                                        type="text"
-                                        placeholder="TYPE TO SEARCH FOR A TRANSACTION"
-                                        onKeyUp={handleKeywordChange}
-                                    />
-                                </div>
+                            <div>
+                                {/* <img src='assets/images/Vector.png' alt='ww' /> */}
                             </div>
+                            <div><h1>Transactions <span className={Style.seaportCSS}>Seaport Salon & Day Spa</span></h1></div>
+                        </div>
 
-                            <div className={Style.filterTransaction2}>
+                        <div className={Style.BrandGroup}>
+                            {Array.isArray(manufacturarAmount) && manufacturarAmount.length > 0 ? (
+                                manufacturarAmount.map((manufacturer, index) => (
+                                    <div key={index} className={`${colorClasses[index % colorClasses.length]} ${Style.brandColorCombi}`}>
+                                        <h2>{manufacturer.Name}</h2>
+                                        <div className={Style.brandPrice}>
+                                            <h5>${manufacturer.amount} <span>Available bal</span></h5>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : '' }
+                        </div>
 
-                                <div className={Style.Calendardate}>
-                                    <form action="/action_page.php">
-                                        <input type="date" name="calender" value={currentDate} onChange={handleDateChange} />
-                                    </form>
+
+
+                        <div className={Style.filterMain}>
+                            <div className={Style.filterDotedDiv}>
+                                <div className={Style.filterTransaction}>
+                                    <div className='search-icon'>
+                                        <img src='assets/images/Group235.png' alt='nn' />
+                                    </div>
+                                    <div className={Style.inputMain}>
+                                        <input 
+                                            className={Style.searchInput}
+                                            type="text"
+                                            placeholder="TYPE TO SEARCH FOR A TRANSACTION"
+                                            onKeyUp={handleKeywordChange}
+                                        />
+                                    </div>
                                 </div>
-                                <div className={Style.TransactionDiv} onMouseEnter={() => setShowDropmenu(true)} onMouseLeave={() => setShowDropmenu(false)}>
-                                    <div className={Style.Transactionimg}>
-                                        <img src='assets/images/Vector(4).png' alt='aa' /></div>
-                                    <div className={Style.TransactionDropDown}>
-                                        <p>{selectedOption2}</p>
-                                        {showDropmenu && (
-                                            <ul className={Style.dropdownOptions2}>
-                                                <li onClick={() => handleMenuClick('All')}>ALL</li>
-                                                <li onClick={() => handleMenuClick('DEBIT')}>DEBIT</li>
-                                                <li onClick={() => handleMenuClick('CREDIT')}>CREDIT</li>
-                                            </ul>
-                                        )}
+
+                                <div className={Style.filterTransaction2}>
+                                    <div className={Style.Calendardate}>
+                                        <form action="/action_page.php">
+                                            <input type="date" name="calender" value={currentDate} onChange={handleDateChange} />
+                                        </form>
+                                    </div>
+                                    <div className={Style.TransactionDiv} onMouseEnter={() => setShowDropmenu(true)} onMouseLeave={() => setShowDropmenu(false)}>
+                                        <div className={Style.Transactionimg}>
+                                            <img src='assets/images/Vector(4).png' alt='aa' /></div>
+                                        <div className={Style.TransactionDropDown}>
+                                            <p>{selectedOption2}</p>
+                                            {showDropmenu && (
+                                                <ul className={Style.dropdownOptions2}>
+                                                    <li onClick={() => handleMenuClick('All')}>ALL</li>
+                                                    <li onClick={() => handleMenuClick('DEBIT')}>DEBIT</li>
+                                                    <li onClick={() => handleMenuClick('CREDIT')}>CREDIT</li>
+                                                </ul>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
-                    </div>
-
-                    <div className={Style.productDeatils}>
-                        <div className={Style.titleAndFilter}>
-                            <div>
-                                <h3>PRODUCT DETAILS</h3>
-                            </div>
-                            <div className={Style.filterDropDown} onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
+                        <div className={Style.productDeatils}>
+                            <div className={Style.titleAndFilter}>
                                 <div>
-                                    <img src='assets/images/FilterIcon.png' alt='bb' />
+                                    <h3>PRODUCT DETAILS</h3>
                                 </div>
-                                <div className={Style.customDropdown}>
-                                    <span className={Style.FilterHead}>{selectedOption}</span>
-                                    <ul className={`${Style.dropdownOptions} ${showDropdown ? '' : Style.dropdownHidden}`}>
-                                        <li onClick={() => handleOptionClick('A-Z')}>A-Z</li>
-                                        <li onClick={() => handleOptionClick('Z-A')}>Z-A</li>
-                                    </ul>
+                                <div className={Style.filterDropDown} onMouseEnter={() => setShowDropdown(true)} onMouseLeave={() => setShowDropdown(false)}>
+                                    <div>
+                                        <img src='assets/images/FilterIcon.png' alt='bb' />
+                                    </div>
+                                    <div className={Style.customDropdown}>
+                                        <span className={Style.FilterHead}>{selectedOption}</span>
+                                        <ul className={`${Style.dropdownOptions} ${showDropdown ? '' : Style.dropdownHidden}`}>
+                                            <li onClick={() => handleOptionClick('A-Z')}>A-Z</li>
+                                            <li onClick={() => handleOptionClick('Z-A')}>Z-A</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-
-                        {
-                            !isLoading ? (
-                                filteredData.length > 0 ? (
-                                    filteredData.map((item, index) => (
-                                        <div className={Style.productdata} key={index}>
-                                            <div className={Style.productDataDeatils}>
-                                                <div className={item?.ManufacturerLogo ? Style.ProductImg : Style.DefaultProductImg}>
-                                                    {/* <img src={item?.ManufacturerLogo ?? img} alt='img' /> */}
+                            {
+                                !isLoading ? (
+                                    filteredData.length > 0 ? (
+                                        filteredData.map((item, index) => (
+                                            <div className={Style.productdata} key={index}>
+                                                <div className={Style.productDataDeatils}>
+                                                    <div className={item?.ManufacturerLogo ? Style.ProductImg : Style.DefaultProductImg}>
+                                                        {/* <img src={item?.ManufacturerLogo ?? img} alt='img' /> */}
+                                                    </div>
+                                                    <div className={Style.productTitle}>
+                                                        <h3>
+                                                            {item.Manufacturer} 
+                                                        </h3>
+                                                    </div>
                                                 </div>
-                                                <div className={Style.productTitle}>
-                                                    <h3>
-                                                        {item.Manufacturer} | <span>{item?.opportunity?.Account?.Name}</span>
-                                                    </h3>
+                                                <div className={Style.pricDeatils}>
+                                                    <div className={Style.priceAndDate}>
+                                                        {item.Status__c === 'Issued' ? (
+                                                            <p className={Style.plusPrice}>
+                                                                +${item.Wallet_Amount__c}
+                                                            </p>
+                                                        ) : (
+                                                            <p className={Style.minusPrice}>
+                                                                -${item.Wallet_Amount__c}
+                                                            </p>
+                                                        )}
+                                                        <small>
+                                                            {new Date(item.CreatedDate).toLocaleString()}
+                                                        </small>
+                                                    </div>
+
+
+                                                    <div className={Style.CircleDotGreen}>
+                                                        <div className={Style.CircleDotGreenMain}>
+                                                        <div className={(item?.Used_Status__c === "Used") ? Style.DotOrange : Style.DotGreen}>
+                                                        </div>
+                                                        <h5 className={(item?.Used_Status__c === "Used") ? Style.FontColorOrange : Style.FontColorGreen}>{(item?.Used_Status__c === "Used") ? "Use" : "Available"}</h5>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div className={Style.viewBtn}>
+                                                        <button 
+                                                            onClick={() => openModal(item)}
+                                                        >
+                                                            View
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                    {/* /// credit Modal.....Start */}
+
+                    {modalOpen && (
+                        <ModalPage
+                            open={modalOpen}
+                            closeModal={closeModal}
+                            content={
+                            <div className="" style={{ width: '75vw' }}>
+                                <div className="" style={{ minWidth: '75vw' }}>
+                                    <div className={Style.PoDeatils}>
+                                        <div className={Style.Ponumber}>PO Number <span>#{selectedItem?.opportunity?.PO_Number__c}</span> </div>
+                                        <div className={Style.PoDate}><p> Date: <span> { convertDate(selectedItem?.opportunity?.CreatedDate) }</span></p></div>
+                                    </div>
+                                    <div className={Style.maincreditAmountDiv}>
+                                        <div className={Style.CaseDeatils}>
+                                            <div className={Style.CaseTitle}>
+                                                <p>
+                                                    {selectedItem?.Manufacturer} 
+                                                    {/* | <span>Eau de Parfum</span> */}
+                                                </p>
+                                            </div>
+                                            <div className={Style.CaseNumDeatils}>
+                                                <p>Case Number
+                                                    <span> #{selectedItem?.opportunity?.PO_Number__c}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className={Style.creditAmountDiv}>
+                                            <div className={Style.creditAmount}>
+                                                <p>Credit Amount</p>
+                                            </div>
+                                            <div 
+                                                className={(selectedItem?.Status__c === "Refund") ? (Style.creditAmountDetailDebit) : (Style.creditAmountDetail) }
+                                            >
+                                                <p>${selectedItem?.Wallet_Amount__c}</p>
+                                                <small>
+                                                    { convertDate(selectedItem?.CreatedDate) }
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <div className={Style.creditAmountDiv}>
+                                            <div className={Style.creditAmount}>
+                                                <p>Order Price</p>
+                                                </div>
+                                            <div className={Style.creditAmountDetail2}>
+                                                <p>${selectedItem?.opportunity?.Amount}</p>
+                                                <small>
+                                                    {convertDate(selectedItem?.opportunity?.CreatedDate)}
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                
+
+                                </div>
+
+                                {/* console.log({ddd:selectedItem?.usage?.Po_Number1__c }) */}
+                                
+                                {(selectedItem.usage && selectedItem.usage.Id != '' )? (
+                                    <div className="" style={{ minWidth: '75vw' }}>
+                                        <div className={Style.PoDeatils}>
+                                            <div className={Style.Ponumber}>PO Number <span>#{selectedItem?.usage?.Po_Number1__c}</span> </div>
+                                            <div className={Style.PoDate}><p> Date: <span> { convertDate(selectedItem?.usage?.CreatedDate) }</span></p></div>
+                                        </div>
+                                        <div className={Style.maincreditAmountDiv}>
+                                            <div className={Style.CaseDeatils}>
+                                                <div className={Style.CaseTitle}>
+                                                    <p>
+                                                        {selectedItem?.Manufacturer} 
+                                                        {/* | <span>Eau de Parfum</span> */}
+                                                    </p>
+                                                </div>
+                                                <div className={Style.CaseNumDeatils}>
+                                                    <p>Case Number
+                                                        <span> #{selectedItem?.usage?.Po_Number1__c}</span>
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div className={Style.pricDeatils}>
-                                                <div className={Style.priceAndDate}>
-                                                    {item.Status__c === 'Issued' ? (
-                                                        <p className={Style.plusPrice}>
-                                                            +${item.Wallet_Amount__c}
-                                                        </p>
-                                                    ) : (
-                                                        <p className={Style.minusPrice}>
-                                                            -${item.Wallet_Amount__c}
-                                                        </p>
-                                                    )}
+                                            <div className={Style.creditAmountDiv}>
+                                                <div className={Style.creditAmount}>
+                                                    <p>Credit Amount Adjusted </p>
+                                                </div>
+                                                <div 
+                                                    className={(selectedItem?.Status__c === "Refund") ? (Style.creditAmountDetailDebit) : (Style.creditAmountDetail) }
+                                                >
+                                                    <p className={Style.AmountRed}>${selectedItem?.usage?.Wallet_Amount__c}</p>
                                                     <small>
-                                                        {new Date(item.CreatedDate).toLocaleString()}
+                                                        { convertDate(selectedItem?.CreatedDate) }
                                                     </small>
                                                 </div>
-                                                <div className={Style.viewBtn}>
-                                                    <button 
-                                                        onClick={() => openModal(item)}
-                                                    >
-                                                        View 
-                                                    </button>
+                                            </div>
+                                            <div className={Style.creditAmountDiv}>
+                                                <div className={Style.creditAmount}>
+                                                    <p>Order Price</p>
+                                                </div>
+                                                <div className={Style.creditAmountDetail2}>
+                                                    <p>${selectedItem?.Wallet_Amount__c}</p>
+                                                    <small>
+                                                        {convertDate(selectedItem?.CreatedDate)}
+                                                    </small>
                                                 </div>
                                             </div>
-
-                                            {/* /// credit Modal.....Start */}
-
-                                            {modalOpen && (
-                                                <ModalPage
-                                                    open={modalOpen}
-                                                    closeModal={closeModal}
-                                                    content={
-                                                        <div className="" style={{ width: '75vw' }}>
-                                                            <div className="" style={{ minWidth: '75vw' }}>
-                                                                <div className={Style.PoDeatils}>
-                                                                    <div className={Style.Ponumber}>PO Number <span>#{selectedItem?.opportunity?.PO_Number__c}</span> </div>
-                                                                    <div className={Style.PoDate}><p> Date: <span> { convertDate(selectedItem?.opportunity?.CreatedDate) }</span></p></div>
-                                                                </div>
-                                                                <div className={Style.maincreditAmountDiv}>
-                                                                    <div className={Style.CaseDeatils}>
-                                                                        <div className={Style.CaseTitle}>
-                                                                            <p>
-                                                                                {selectedItem?.Manufacturer} 
-                                                                                {/* | <span>Eau de Parfum</span> */}
-                                                                            </p>
-                                                                        </div>
-                                                                        <div className={Style.CaseNumDeatils}>
-                                                                            <p>Case Number
-                                                                                <span> #{selectedItem?.opportunity?.PO_Number__c}</span>
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className={Style.creditAmountDiv}>
-                                                                        <div className={Style.creditAmount}>
-                                                                            <p>Credit Amount</p>
-                                                                        </div>
-                                                                        <div 
-                                                                            // className={Style.creditAmountDetail}
-                                                                            className={(selectedItem?.Status__c === "Refund") ? (Style.creditAmountDetailDebit) : (Style.creditAmountDetail) }
-                                                                        >
-                                                                            <p>${selectedItem?.Wallet_Amount__c}</p>
-                                                                            <small>
-                                                                                { convertDate(selectedItem?.CreatedDate) }
-                                                                            </small>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className={Style.creditAmountDiv}>
-                                                                        <div className={Style.creditAmount}>
-                                                                            <p>Order Price</p>
-                                                                            </div>
-                                                                        <div className={Style.creditAmountDetail2}>
-                                                                            <p>${selectedItem?.opportunity?.Amount}</p>
-                                                                            <small>
-                                                                                {convertDate(selectedItem?.opportunity?.CreatedDate)}
-                                                                            </small>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div className={Style.mainbutton}>
-                                                                    <div>
-                                                                        <button className={Style.CancleBtn} onClick={closeModal}>Cancel</button>
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                    }
-                                                />
-                                            )}
-                                            {/* /// credit Modal.... End */}
                                         </div>
-                                    ))
-                                ) : (
-                                    <div className={Style.noDataFound}>
-                                        <h5>No Data Found</h5>
                                     </div>
-                                )
-                            ) : (
-                                <Loading height={"70vh"} />
-                            )
-                        }
+                                ) : ''}
 
+                                <div className={Style.mainbutton}>
+                                    <div>
+                                        <button className={Style.CancleBtn} onClick={closeModal}>
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            }
+                        />
+                    )}
+                    {/* /// credit Modal.... End */}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className={Style.noDataFound}>
+                                            <h5>No Data Found</h5>
+                                        </div>
+                                    )
+                                ) : (
+                                    <Loading height={"70vh"} />
+                                )
+                            }
+
+                        </div>
                     </div>
                 </div>
-            </div>
-        </AppLayout>
+            </AppLayout>
+        </>
+
     );
 };
 
