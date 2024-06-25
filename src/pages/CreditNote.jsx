@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useManufacturer } from "../api/useManufacturer";
+// import { useManufacturer } from "../api/useManufacturer";
 import { useRetailersData } from "../api/useRetailersData";
 import Style from "../pages/CreditNote.module.css";
 import Loading from "../components/Loading";
@@ -7,7 +7,7 @@ import AppLayout from '../components/AppLayout';
 import { FilterItem } from '../components/FilterItem';
 import { GetAuthData, getCreditNotesList, getManufacturarAmount } from "../lib/store";
 import ModalPage from '../components/Modal UI';
-import { SliderValueLabel } from '@mui/material';
+// import { SliderValueLabel } from '@mui/material';
 
 
 const CreditNote = () => {
@@ -16,11 +16,11 @@ const CreditNote = () => {
     // const { data: manufacturers } = useManufacturer()
     const { data: retailers } = useRetailersData()
     const [isLoading, setIsLoading] = useState(false)
-    const [isLoadedManufacture, setIsLoadedManufacture] = useState(false)
-    const [isLoadedRetailer, setIsLoadedRetailer] = useState(false)
+    // const [isLoadedManufacture, setIsLoadedManufacture] = useState(false)
+    // const [isLoadedRetailer, setIsLoadedRetailer] = useState(false)
     const [manufacturerFilter, setManufacturerFilter] = useState()
     const [retailerFilter, setRetailerFilter] = useState()
-    const [retailerLabelFilter, setRetailerLabelFilter] = useState()
+    // const [retailerLabelFilter, setRetailerLabelFilter] = useState()
     const [data, setData] = useState([])
     const [currentDate, setCurrentDate] = useState('')
     const [manufacturers, setManufacturers] = useState([])
@@ -37,7 +37,6 @@ const CreditNote = () => {
     const [selectedItemA, setSelectedItemA] = useState(null)
     const [manufacturarAmount, setManufacturarAmount] = useState([])
 
-    
     // Component Modal Function start......//
     const openModal = (item) => {
         console.log({item})
@@ -150,12 +149,12 @@ const CreditNote = () => {
     }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder ])
 
     const brandBtnHandler = ({ manufacturerId }) => {
-        setIsLoadedManufacture(false)
+        // setIsLoadedManufacture(false)
         setManufacturerFilter(manufacturerId)
     }
 
     const retailerBtnHandler = ({ retailerId }) => {
-        setIsLoadedRetailer(false)
+        // setIsLoadedRetailer(false)
         localStorage.setItem('reatilerFilterValue', retailerId)
         setRetailerFilter(retailerId)
     }
@@ -379,7 +378,6 @@ const CreditNote = () => {
                                                 </div>
 
                     {/* /// credit Modal.....Start */}
-
                     {modalOpen && (
                         <ModalPage
                             open={modalOpen}
@@ -433,8 +431,6 @@ const CreditNote = () => {
                                 
 
                                 </div>
-
-                                {/* console.log({ddd:selectedItem?.usage?.Po_Number1__c }) */}
                                 
                                 {(selectedItem.usage && selectedItem.usage.Id != '' )? (
                                     <div className="" style={{ minWidth: '75vw' }}>
@@ -447,7 +443,6 @@ const CreditNote = () => {
                                                 <div className={Style.CaseTitle}>
                                                     <p>
                                                         {selectedItem?.Manufacturer} 
-                                                        {/* | <span>Eau de Parfum</span> */}
                                                     </p>
                                                 </div>
                                                 <div className={Style.CaseNumDeatils}>
@@ -474,9 +469,9 @@ const CreditNote = () => {
                                                     <p>Order Price</p>
                                                 </div>
                                                 <div className={Style.creditAmountDetail2}>
-                                                    <p>${selectedItem?.opportunity?.Amount}</p>
+                                                    <p>${selectedItem?.usedOrder?.Amount}</p>
                                                     <small>
-                                                        {convertDate(selectedItem?.CreatedDate)}
+                                                        {convertDate(selectedItem?.usedOrder?.CreatedDate)}
                                                     </small>
                                                 </div>
                                             </div>
