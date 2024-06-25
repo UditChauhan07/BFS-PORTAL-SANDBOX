@@ -1,28 +1,69 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import styles from "./index.module.css";
-import { Link, useNavigate } from "react-router-dom";
-import "./index.css";
-import Style from "../../../pages/CreditNote.module.css";
-import ModalPage from '../../../components/Modal UI';
-
+import React, { useState, useEffect, useMemo } from 'react'
+import styles from "./index.module.css"
+import { Link, useNavigate } from "react-router-dom"
+import "./index.css"
+import Style from "../../../pages/CreditNote.module.css"
+import ModalPage from '../../../components/Modal UI'
+import { GetAuthData, getRetailerListWithAmount } from '../../../../src/lib/store'
 
 const Header = () => {
   const navigate = useNavigate();
   const path = window.location.pathname;
 
+  const [ modalOpenA, setModalOpenA ] = useState(false)
+  const [ selectedItemA, setSelectedItemA ] = useState(null)
+  const [ retailerAmount, setRetailerAmount ] = useState([])
+  const [ isLoading, setIsLoading ] = useState(false)
+  const [ userData, setUserData ] = useState(null)
+  const [checkedId, setCheckedId] = useState(null);
+  const [validationMessage, setValidationMessage] = useState('');
 
-  const [modalOpenA, setModalOpenA] = useState(false)
-  const [selectedItemA, setSelectedItemA] = useState(null)
+  const handleChange = (event) => {
+    const selectedValue = event.target.id
+    setValidationMessage('')
+    // localStorage.setItem('reatilerFilterValue', selectedValue)
+    setCheckedId(selectedValue)
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    if (!checkedId) {
+      setValidationMessage('Please select a Retailer.')
+    }
+    else {
+      localStorage.setItem('reatilerFilterValue', checkedId)
+      navigate('/credit-note')
+    }
+  }
 
   const openModalA = (item) => {
-      setSelectedItemA(item)
-      setModalOpenA(true)
+    setSelectedItemA(item)
+    setModalOpenA(true)
   }
   
   const closeModalA = () => {
-      setModalOpenA(false)
-      setSelectedItemA(null)
+    setModalOpenA(false)
+    setSelectedItemA(null)
   }
+
+  useEffect(() => {
+    setIsLoading(true)
+    GetAuthData().then((user) => {
+        setUserData(user)
+        getRetailerListWithAmount(user?.x_access_token, user?.Sales_Rep__c)
+            .then((data) => {
+              setRetailerAmount(data)
+              setIsLoading(false)
+            })
+            .catch((err) => {
+                console.log({ err: err.message })
+                setIsLoading(false)
+            })
+    }).catch((e) => {
+        console.log({ e: e.message })
+        setIsLoading(false)
+    })
+}, [])
   
   return (
     <div className="d-none-print">
@@ -79,79 +120,52 @@ const Header = () => {
           Credit Note
           </Link>
 
-{/* credit note modal */}
-{modalOpenA && (
-                                                <ModalPage
-                                                    open={modalOpenA}
-                                                    closeModalA={closeModalA}
-                                                    content={
-                                                       <div className={Style.ModalPart}>
-<h4>Choose the Retailer</h4>
+          {/* credit note modal */}
+          {modalOpenA && (<ModalPage
+              open={modalOpenA}
+              closeModalA={closeModalA}
+              content={
+                <div className={Style.ModalPart}>
+                  <h4>Choose the Retailer</h4>
+                    <div className={Style.RetailerMainName}>
+                      <div className={Style.RetailerAllName}>
 
-<div className={Style.RetailerMainName}>
+                      {retailerAmount.length > 0 ? 
+                        retailerAmount.map((entry, index) => (
+                          <div className={Style.Retailers} key={entry.Id}>
+                              <label>
+                                <input 
+                                  type='radio' 
+                                  id={entry.Id}
+                                  name='rate' 
+                                  value={entry.Id}
+                                  checked={checkedId === entry.Id}
+                                  onChange={handleChange}
+                                />
+                                {entry?.Name}
+                              </label>
+                              <div className={Style.RetailerRate}>
+                                  <h4>${entry?.amount}</h4>
+                                  <p>Available bal</p>
+                              </div>
+                          </div>
+                        ))
+                      : '' }
+                      </div>
 
-<div className={Style.RetailerAllName}>
+                      {validationMessage && <p className={Style.ValidationMessage}>{validationMessage}</p>}
 
+                      <div className={Style.ButtonSubmit}>
+                        <button className={Style.CancleBtn} onClick={closeModalA}>Cancel</button>
+                        <button className={Style.SubmitButton} onClick={handleSubmit}>Submit</button>
+                      </div>
+                    </div>
+                  </div>
+                }
+              />
+            )}
 
-
-    <div className={Style.Retailers}>
-        <label><input type='radio' id='1' name='rate'/>Earthsavers.Inc </label>
-
-        <div className={Style.RetailerRate}>
-            <h4>$971</h4>
-            <p>Available bal</p>
-        </div>
-    </div>
-
-    <div className={Style.Retailers}>
-        <label><input type='radio' id='2' name='rate'/>Earthsavers.Inc </label>
-
-        <div className={Style.RetailerRate}>
-            <h4>$971</h4>
-            <p>Available bal</p>
-        </div>
-    </div>
-
-    <div className={Style.Retailers}>
-        <label><input type='radio' id='3' name='rate' />Earthsavers.Inc </label>
-
-        <div className={Style.RetailerRate}>
-            <h4>$971</h4>
-            <p>Available bal</p>
-        </div>
-    </div>
-
-
-    <div className={Style.Retailers}>
-        <label><input type='radio'  id='4' name='rate'/>Earthsavers.Inc </label>
-
-        <div className={Style.RetailerRate}>
-            <h4>$971</h4>
-            <p>Available bal</p>
-        </div>
-    </div>
-    </div>
-
-
-<div className={Style.ButtonSubmit}>
-    <a onClick={closeModalA}>Cancel</a>
-     
-    <a href="/credit-note" className={Style.SubmitButton} >Submit</a>
-
-</div>
-
-
-</div>
-
-
-                                                       </div>
-                                                    }
-                                                />
-                                            )}
-
-{/* credit note modal */}
-
-
+          {/* credit note modal */}
         </p>
         <p className={`m-0  ${styles.text}`}>
           <Link to="/customer-support" className="linkStyle">
