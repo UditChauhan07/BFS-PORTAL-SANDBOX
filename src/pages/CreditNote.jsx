@@ -373,7 +373,7 @@ const CreditNote = () => {
                                                         <button 
                                                             onClick={() => openModal(item)}
                                                         >
-                                                            View
+                                                        View
                                                         </button>
                                                     </div>
                                                 </div>
