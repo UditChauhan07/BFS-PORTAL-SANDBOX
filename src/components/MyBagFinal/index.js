@@ -13,7 +13,6 @@ import ProductDetails from "../../pages/productDetails";
 import Select from "react-select";
 import { Modal } from 'react-bootstrap';
 
-
 function MyBagFinal() {
   let Img1 = "/assets/images/dummy.png";
   const navigate = useNavigate();
@@ -43,7 +42,6 @@ function MyBagFinal() {
   const [selectedOption, setSelectedOption] = useState(null);
 
   let total = 0
-
   const inputRef = useRef(null)
   const amount = localStorage.getItem('creditAmount') ?? '0'
 
@@ -66,67 +64,58 @@ function MyBagFinal() {
 
 
 //...New...Function...Write...By... Ankush...Start//
-
-const extractWordAfterCharacter = (input, character) => {
-  const regex = new RegExp(`\\${character}(\\d+\\.?\\d*)`);
-  const match = input.match(regex);
-  return match ? match[1] : '';
-}
-const handlePriceChange = (e) => {
-  const val = e.target.value;
-  const character = '$';
-  const value = extractWordAfterCharacter(val, character);
-
-  console.log({ val, character, value });
-
-  if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= creditNote?.amount?.available && parseFloat(value) <= subTotal)) {
-    setPriceValue(value);
-    localStorage.setItem('creditAmount', value);
-    setFullPriceValue('$' + value);
-    setValidationMessage('');
-
-    console.log({ lll: localStorage.getItem('creditAmount') });
-  } else {
-    setValidationMessage('Enter Valid Amount for Credit Allocation');
-
-    setTimeout(() => {
-      setValidationMessage('');
-    }, 5000);
-
-//   const handlePriceChange = (e) => {
-//     const val = e.target.value
-//     const character = '$'
-//     const value = extractWordAfterCharacter(val, character)
-
-//     console.log({val, character, value})
-    
-//     if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available && value <= subTotal)) {
-//       setPriceValue(value)
-//       localStorage.setItem('creditAmount', value)
-//       setFullPriceValue('$' + value)
-//       setValidationMessage('')
-//     } else {
-//       setValidationMessage('Enter Valid Amount for Credit Allocation')
-//       setTimeout(() => {
-//         setValidationMessage('')
-//       }, 5000)
-//     }
-
+  const extractWordAfterCharacter = (input, character) => {
+    const regex = new RegExp(`\\${character}(\\d+\\.?\\d*)`);
+    const match = input.match(regex);
+    return match ? match[1] : '';
   }
-}
-  
+  const handlePriceChange = (e) => {
+    const val = e.target.value;
+    const character = '$';
+    const value = extractWordAfterCharacter(val, character);
+
+    console.log({ val, character, value });
+
+    if (value === '' || (parseFloat(value) >= 0 && parseFloat(value) <= creditNote?.amount?.available && parseFloat(value) <= subTotal)) {
+      setPriceValue(value);
+      localStorage.setItem('creditAmount', value);
+      setFullPriceValue('$' + value);
+      setValidationMessage('');
+
+      console.log({ lll: localStorage.getItem('creditAmount') });
+    } else {
+      setValidationMessage('Enter Valid Amount for Credit Allocation');
+
+      setTimeout(() => {
+        setValidationMessage('');
+      }, 5000);
+
+  //   const handlePriceChange = (e) => {
+  //     const val = e.target.value
+  //     const character = '$'
+  //     const value = extractWordAfterCharacter(val, character)
+
+  //     console.log({val, character, value})
+      
+  //     if (value === '' || (parseFloat(value) >= 0 && value <= creditNote.available && value <= subTotal)) {
+  //       setPriceValue(value)
+  //       localStorage.setItem('creditAmount', value)
+  //       setFullPriceValue('$' + value)
+  //       setValidationMessage('')
+  //     } else {
+  //       setValidationMessage('Enter Valid Amount for Credit Allocation')
+  //       setTimeout(() => {
+  //         setValidationMessage('')
+  //       }, 5000)
+  //     }
+
+    }
+  }
 //...New...Function...Write...By... Ankush...End//
-
-
 
   const handleCheckboxChange = (e) => {
     setIsCheckboxChecked(e.target.checked)
     if (e.target.checked) {
-
-      // console.log({cond: (creditNote?.amount?.available <= subTotal),ava : creditNote?.amount?.available, subTotal })
-
-     
-        
       if (creditNote?.amount?.available <= subTotal) {
         setPriceValue(creditNote?.amount?.available)
         localStorage.setItem('creditAmount', creditNote?.amount?.available)
@@ -135,7 +124,6 @@ const handlePriceChange = (e) => {
       }
       else {
         setValidationMessage(`You can't set the value above the Sub Total Value - $${creditNote.amount.available}.`)
-
 
         setTimeout(() => {
           setValidationMessage('')
@@ -155,11 +143,9 @@ const handlePriceChange = (e) => {
 
   let totalPrice = 0
   const handleSubmitModal = () => {
-    // setSubTotal(total)
-    console.log({amount : selectedOption?.Amount, subTotal})
+    // console.log({amount : selectedOption?.Amount, subTotal})
 
     let fetchBag = fetchBeg()
-
     if (fetchBag) {
       let arr = [];
       let productLists = Object.values(fetchBag.orderList)
