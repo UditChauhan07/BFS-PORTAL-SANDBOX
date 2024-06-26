@@ -70,7 +70,7 @@ const CreditNote = () => {
     const [searchFilter, setSearchFilter] = useState('')
     const [createdDateFilter, setCreatedDateFilter] = useState('')
     const [recordStatusFilter, setRecordStatusFilter] = useState('')
-    const [sortOrder, setSortOrder] = useState('Z-A')
+    const [sortOrder, setSortOrder] = useState('')
 
     useEffect(() => {
         setIsLoading(true)
@@ -103,7 +103,7 @@ const CreditNote = () => {
         })
     }, [retailerFilter, manufacturerFilter])
 
-    console.log({manufacturers})
+    // console.log({manufacturers})
 
     const filteredData = useMemo(() => {
         const sortedData = data.filter(item => {
@@ -137,14 +137,13 @@ const CreditNote = () => {
         if (sortOrder === 'A-Z') {
             sortedData.sort((a, b) => a.Manufacturer?.localeCompare(b.Manufacturer))
         } 
-        // else if (sortOrder === 'Z-A') {
-        //     sortedData.sort((a, b) => b.Manufacturer?.localeCompare(a.Manufacturer))
-        // }
-        else {
+        else if (sortOrder === 'Z-A') {
             sortedData.sort((a, b) => b.Manufacturer?.localeCompare(a.Manufacturer))
         }
+        else {
+            sortedData.sort((a, b) => new Date(b.CreatedDate) - new Date(a.CreatedDate))
+        }
 
-        sortedData.sort((a, b) => new Date(b.CreatedDate) - new Date(a.CreatedDate))
         return sortedData
     }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder ])
 
