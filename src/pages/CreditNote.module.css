@@ -517,12 +517,14 @@ padding: 5px;
     margin: auto 0;
     font-family: "Montserrat";
     line-height: 0.6;
+    
 }
 
 .plusPrice {
     color:#000;
     font-size: 18px;
     font-weight: 700;
+    width: 170px;
 }
 
 .minusPrice {
