@@ -23,8 +23,9 @@
 .MainInner {
   background: #fff;
   padding: 17px 27px;
-  min-height: 400px;
+
   overflow: auto;
+  height: 380px;
 }
 
 .MainInner::-webkit-scrollbar {

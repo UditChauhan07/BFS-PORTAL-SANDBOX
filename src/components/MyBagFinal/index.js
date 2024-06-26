@@ -556,7 +556,7 @@ const handlePriceChange = (e) => {
                   <div className={Styles.MainBag}>
                     <h3>SHOPPING BAG ({orderQuantity})</h3>
                     <div className={Styles.scrollP}>
-                      <div className={`${Styles.MainInner} overflow-auto`} style={{ minHeight: "400px" }}>
+                      <div className={`${Styles.MainInner} overflow-auto`} style={{ minHeight: "380px" }}>
                         {localStorage.getItem("orders") && Object.values(JSON.parse(localStorage.getItem("orders"))).length > 0 ? (
                           Object.values(JSON.parse(localStorage.getItem("orders"))).map((ele) => {
                             // console.log(ele);
@@ -631,7 +631,7 @@ const handlePriceChange = (e) => {
                       {/* New Total Start */}
                       {localStorage.getItem("orders") && Object.values(JSON.parse(localStorage.getItem("orders"))).length > 0 ?
                         (
-                          <>
+                          <div className={Styles.TotalBox}>
                             <div className={Styles.PreviousPricer}>
                               <div>
                                 <h2>Total</h2>
@@ -658,7 +658,7 @@ const handlePriceChange = (e) => {
                                 <h2>${(localStorage.getItem('creditAmount') > 0) ? Number(total - localStorage.getItem('creditAmount')).toFixed(2) : Number(total).toFixed(2)}</h2>
                               </div>
                             </div>
-                          </>
+                          </div>
                         )
                         : ''}
                     </div>
