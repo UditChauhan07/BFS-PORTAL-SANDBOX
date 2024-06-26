@@ -1,7 +1,7 @@
 .scrollP {
   border: 1px solid #e4e4e4;
   padding: 10px 20px;
-  height: 590px;
+  /* height: 590px; */
   overflow: auto;
 }
 
@@ -23,8 +23,9 @@
 .MainInner {
   background: #fff;
   padding: 17px 27px;
-  min-height: 400px;
+
   overflow: auto;
+  height: 380px;
 }
 
 .MainInner::-webkit-scrollbar {
@@ -225,9 +226,10 @@
   font-family: Arial, Helvetica, sans-serif;
   font-size: 18px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 32px;
   /* 177.778% */
+  margin: 0;
   letter-spacing: 1.12px;
 }
 .DiscountPricer{
@@ -241,9 +243,10 @@
   font-family: Arial, Helvetica, sans-serif;
   font-size: 18px;
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 32px;
   /* 177.778% */
+  margin: 0;
   letter-spacing: 1.12px;
 }
 .DiscountPricer .disprice{
@@ -253,6 +256,7 @@
   font-style: normal;
   font-weight: 700;
   line-height: 32px;
+  margin: 0;
   /* 177.778% */
   letter-spacing: 1.12px;
 }
@@ -272,6 +276,7 @@
   font-weight: 700;
   line-height: 32px;
   /* 177.778% */
+  margin: 0;
   letter-spacing: 1.12px;
 }
 
