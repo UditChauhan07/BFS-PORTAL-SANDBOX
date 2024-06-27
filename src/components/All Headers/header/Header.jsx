@@ -10,8 +10,8 @@ const Header = () => {
   const formentAcmount =(amount,totalorderPrice,monthTotalAmount)=>{
     return `${Number(amount,totalorderPrice,monthTotalAmount).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
   }
-  const navigate = useNavigate();
-  const path = window.location.pathname;
+  const navigate = useNavigate()
+  const path = window.location.pathname
 
   const [ modalOpenA, setModalOpenA ] = useState(false)
   const [ selectedItemA, setSelectedItemA ] = useState(null)
@@ -19,8 +19,7 @@ const Header = () => {
   const [ isLoading, setIsLoading ] = useState(false)
   const [ userData, setUserData ] = useState(null)
   const [checkedId, setCheckedId] = useState(null);
-  const [validationMessage, setValidationMessage] = useState('');
-  const [retailerFilter, setRetailerFilter] = useState()
+  const [validationMessage, setValidationMessage] = useState('')
 
   const handleChange = (event) => {
     const selectedValue = event.target.id
