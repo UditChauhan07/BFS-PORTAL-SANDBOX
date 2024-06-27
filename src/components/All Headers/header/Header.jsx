@@ -72,6 +72,49 @@ const Header = () => {
   
   return (
     <div className="d-none-print">
+
+      {(path !== '/credit-note' && modalOpenA) && (<ModalPage
+          open={modalOpenA||false}
+          content={<div className={Style.ModalPart}>
+          <h4>Choose the Retailer</h4>
+            <div className={Style.RetailerMainName}>
+              <div className={Style.RetailerAllName}>
+
+              {retailerAmount.length > 0 ? 
+                retailerAmount.map((entry, index) => (
+                  <div className={Style.Retailers} key={entry.Id}>
+                      <label>
+                        <input 
+                          type='radio' 
+                          id={entry.Id}
+                          name='rate' 
+                          value={entry.Id}
+                          checked={checkedId === entry.Id}
+                          onChange={handleChange}
+                        />
+                        {entry?.Name}
+                      </label>
+                      <div className={Style.RetailerRate}>
+                          {/* <h4>${entry?.amount}</h4> */}
+                          <h4>${formentAcmount(Number(entry?.amount).toFixed(2))}</h4>
+                          <p>Available bal</p>
+                      </div>
+                  </div>
+                ))
+              : '' }
+              </div>
+
+              {validationMessage && <p className={Style.ValidationMessage}>{validationMessage}</p>}
+
+              <div className={Style.ButtonSubmit}>
+                <button className={Style.CancleBtn} onClick={closeModalA}>Cancel</button>
+                <button className={Style.SubmitButton} onClick={handleSubmit}>Submit</button>
+              </div>
+            </div>
+          </div>}
+        onClose={()=>setModalOpenA(false)}
+      />)}
+      
       <div id={`${styles.main}`} className="d-flex justify-content-between  align-items-center gap-1">
         <p className={`m-0 ${styles.text}`}>
           <Link to="/top-products" className="linkStyle">
@@ -119,59 +162,11 @@ const Header = () => {
             Education Center
           </Link>
         </p>
-        <p className={`m-0  ${styles.text}`} onClick={() => openModalA()} >
+        <p className={`m-0  ${styles.text}`} onClick={() => setModalOpenA(true)} >
           {/* <Link to="/credit-note" className="linkStyle"> */}
-          <Link to="" className="linkStyle">
+          {/* <Link to="" className="linkStyle"> */}
           Credit Note
-          </Link>
-
-          {/* credit note modal */}
-          {(path !== '/credit-note' && modalOpenA) && (<ModalPage
-              open={modalOpenA}
-              onClose={closeModalA}
-              content={
-                <div className={Style.ModalPart}>
-                  <h4>Choose the Retailer</h4>
-                    <div className={Style.RetailerMainName}>
-                      <div className={Style.RetailerAllName}>
-
-                      {retailerAmount.length > 0 ? 
-                        retailerAmount.map((entry, index) => (
-                          <div className={Style.Retailers} key={entry.Id}>
-                              <label>
-                                <input 
-                                  type='radio' 
-                                  id={entry.Id}
-                                  name='rate' 
-                                  value={entry.Id}
-                                  checked={checkedId === entry.Id}
-                                  onChange={handleChange}
-                                />
-                                {entry?.Name}
-                              </label>
-                              <div className={Style.RetailerRate}>
-                                  {/* <h4>${entry?.amount}</h4> */}
-                                  <h4>${formentAcmount(Number(entry?.amount).toFixed(2))}</h4>
-                                  <p>Available bal</p>
-                              </div>
-                          </div>
-                        ))
-                      : '' }
-                      </div>
-
-                      {validationMessage && <p className={Style.ValidationMessage}>{validationMessage}</p>}
-
-                      <div className={Style.ButtonSubmit}>
-                        <button className={Style.CancleBtn} onClick={closeModalA}>Cancel</button>
-                        <button className={Style.SubmitButton} onClick={handleSubmit}>Submit</button>
-                      </div>
-                    </div>
-                  </div>
-                }
-              />
-            )}
-
-          {/* credit note modal */}
+          {/* </Link> */}
         </p>
         <p className={`m-0  ${styles.text}`}>
           <Link to="/customer-support" className="linkStyle">
