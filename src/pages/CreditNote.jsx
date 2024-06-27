@@ -33,7 +33,7 @@ const CreditNote = () => {
     const [manufacturers, setManufacturers] = useState([])
 
     //.....State for filter Search Start...////
-    const [selectedOption, setSelectedOption] = useState('Filter')
+    const [selectedOption, setSelectedOption] = useState('Sort By')
     const [showDropdown, setShowDropdown] = useState(false)
     //.....State for filter Search End...////
     const [selectedOption2, setSelectedOption2] = useState('Transaction')
