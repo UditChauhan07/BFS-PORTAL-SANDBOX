@@ -7,6 +7,9 @@ import ModalPage from '../../../components/Modal UI'
 import { GetAuthData, getRetailerListWithAmount } from '../../../../src/lib/store'
 
 const Header = () => {
+  const formentAcmount =(amount,totalorderPrice,monthTotalAmount)=>{
+    return `${Number(amount,totalorderPrice,monthTotalAmount).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+  }
   const navigate = useNavigate();
   const path = window.location.pathname;
 
@@ -36,11 +39,6 @@ const Header = () => {
       localStorage.setItem('reatilerFilterValue', checkedId)
       // console.log({newId : localStorage.getItem('reatilerFilterValue')})
       navigate('/credit-note')
-
-      if(path == '/credit-note'){
-        closeModalA()
-        setRetailerFilter(checkedId)
-      }
     }
   }
 
@@ -131,7 +129,7 @@ const Header = () => {
           {/* credit note modal */}
           {(path !== '/credit-note' && modalOpenA) && (<ModalPage
               open={modalOpenA}
-              closeModalA={closeModalA}
+              onClose={closeModalA}
               content={
                 <div className={Style.ModalPart}>
                   <h4>Choose the Retailer</h4>
@@ -153,7 +151,8 @@ const Header = () => {
                                 {entry?.Name}
                               </label>
                               <div className={Style.RetailerRate}>
-                                  <h4>${entry?.amount}</h4>
+                                  {/* <h4>${entry?.amount}</h4> */}
+                                  <h4>${formentAcmount(Number(entry?.amount).toFixed(2))}</h4>
                                   <p>Available bal</p>
                               </div>
                           </div>
@@ -249,4 +248,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header

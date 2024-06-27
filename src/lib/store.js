@@ -1,8 +1,8 @@
 // export const originAPi = "https://b2b.beautyfashionsales.com"
 // export const originAPi = "https://dev.beautyfashionsales.com"
 
-export const originAPi = "https://www.uditchauhan.com"
-// export const originAPi = "http://localhost:8010"
+// export const originAPi = "https://www.uditchauhan.com"
+export const originAPi = "http://localhost:8010"
 
 let url = `${originAPi}/beauty/`;
 let URL = `${originAPi}/beauty/0DS68FOD7s`;
@@ -1039,7 +1039,7 @@ export async function getCreditNotesList(key, retailer='', manufacturer='') {
   }
 }
 
-export async function getManufacturarAmount(key, retailer) {
+export async function getManufacturarAmount(key, retailer, saleRepId) {
   const headersList = {
     Accept: "*/*",
     "Content-Type": "application/json",
@@ -1048,7 +1048,7 @@ export async function getManufacturarAmount(key, retailer) {
 
   let response = await fetch(originAPi + "/beauty/v3/xmJaWBmpNO", {
     method: "POST",
-    body: JSON.stringify({ accountId: retailer }),
+    body: JSON.stringify({ accountId: retailer, Sales_Rep__c: saleRepId }),
     headers: headersList,
   })
 

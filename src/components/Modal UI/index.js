@@ -8,8 +8,7 @@ const Modal = ({ isOpen, onClose, children }) => {
           <div 
             className={`${Styles.modal} `}
             onClick={(e) => {
-              // do not close modal if anything inside modal content is clicked
-              e.stopPropagation();
+              e.stopPropagation()
             }}
           >
             <div className={Styles.modalContent}>{children}</div>

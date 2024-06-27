@@ -11,6 +11,10 @@ import ModalPage from '../components/Modal UI';
 
 
 const CreditNote = () => {
+    const formentAcmount =(amount,totalorderPrice,monthTotalAmount)=>{
+        return `${Number(amount,totalorderPrice,monthTotalAmount).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+      }
+
     let colorClasses = [Style.brandLightBlue, Style.brandLightGreen, Style.brandLightPurple, Style.brandLightBrown];
     const [userData, setUserData] = useState(null)
     // const { data: manufacturers } = useManufacturer()
@@ -39,7 +43,6 @@ const CreditNote = () => {
 
     // Component Modal Function start......//
     const openModal = (item) => {
-        console.log({item})
         setSelectedItem(item)
         setModalOpen(true)
     }
@@ -47,16 +50,6 @@ const CreditNote = () => {
     const closeModal = () => {
         setModalOpen(false)
         setSelectedItem(null)
-    }
-
-    const openModalA = (item) => {
-        setSelectedItemA(item)
-        setModalOpenA(true)
-    }
-    
-    const closeModalA = () => {
-        setModalOpenA(false)
-        setSelectedItemA(null)
     }
     // Component Modal Function End......//
 
@@ -89,7 +82,7 @@ const CreditNote = () => {
                     setIsLoading(false)
                 })
 
-            getManufacturarAmount(user.x_access_token, retailerFilter)
+            getManufacturarAmount(user.x_access_token, retailerFilter, user.Sales_Rep__c)
                 .then((amtData) => {
                     setManufacturarAmount(amtData)
                     setManufacturers(amtData)
@@ -257,14 +250,15 @@ const CreditNote = () => {
                                     <div key={index} className={`${colorClasses[index % colorClasses.length]} ${Style.brandColorCombi}`}>
                                         <h2>{manufacturer.Name}</h2>
                                         <div className={Style.brandPrice}>
-                                            <h5>${manufacturer.amount} <span>Available bal</span></h5>
+                                            <h5>
+                                                ${formentAcmount(Number(manufacturer?.amount).toFixed(2))}
+                                                <span> Available bal</span>
+                                            </h5>
                                         </div>
                                     </div>
                                 ))
                             ) : '' }
                         </div>
-
-
 
                         <div className={Style.filterMain}>
                             <div className={Style.filterDotedDiv}>
@@ -345,11 +339,11 @@ const CreditNote = () => {
                                                     <div className={Style.priceAndDate}>
                                                         {item.Status__c === 'Issued' ? (
                                                             <p className={Style.plusPrice}>
-                                                                +${item.Wallet_Amount__c}
+                                                                +${formentAcmount(Number(item?.Wallet_Amount__c).toFixed(2))}
                                                             </p>
                                                         ) : (
                                                             <p className={Style.minusPrice}>
-                                                                -${item.Wallet_Amount__c}
+                                                                -${formentAcmount(Number(item?.Wallet_Amount__c).toFixed(2))}
                                                             </p>
                                                         )}
                                                         <small>
@@ -385,8 +379,8 @@ const CreditNote = () => {
                             <div className="" style={{ width: '75vw' }}>
                                 <div className="" style={{ minWidth: '75vw' }}>
                                     <div className={Style.PoDeatils}>
-                                        <div className={Style.Ponumber}>PO Number <span>#{selectedItem?.opportunity?.PO_Number__c}</span> </div>
-                                        <div className={Style.PoDate}><p> Date: <span> { convertDate(selectedItem?.opportunity?.CreatedDate) }</span></p></div>
+                                        <div className={Style.Ponumber}>PO Number <span>#{selectedItem?.opportunity?.PO_Number__c }</span> </div>
+                                        <div className={Style.PoDate}><p> Date: <span> { (selectedItem?.opportunity?.CreatedDate) ? convertDate(selectedItem?.opportunity?.CreatedDate) : 'No Date' }</span></p></div>
                                     </div>
                                     <div className={Style.maincreditAmountDiv}>
                                         <div className={Style.CaseDeatils}>
@@ -409,7 +403,7 @@ const CreditNote = () => {
                                             <div 
                                                 className={(selectedItem?.Status__c === "Refund") ? (Style.creditAmountDetailDebit) : (Style.creditAmountDetail) }
                                             >
-                                                <p>${selectedItem?.Wallet_Amount__c}</p>
+                                                <p>${(selectedItem?.Wallet_Amount__c) ? formentAcmount(Number(selectedItem?.Wallet_Amount__c).toFixed(2)) : ''}</p>
                                                 <small>
                                                     { convertDate(selectedItem?.CreatedDate) }
                                                 </small>
@@ -418,9 +412,9 @@ const CreditNote = () => {
                                         <div className={Style.creditAmountDiv}>
                                             <div className={Style.creditAmount}>
                                                 <p>Order Price</p>
-                                                </div>
+                                            </div>
                                             <div className={Style.creditAmountDetail2}>
-                                                <p>${selectedItem?.opportunity?.Amount}</p>
+                                                <p>${(selectedItem?.opportunity?.Amount) ? formentAcmount(Number(selectedItem?.opportunity?.Amount).toFixed(2)) : ''}</p>
                                                 <small>
                                                     {convertDate(selectedItem?.opportunity?.CreatedDate)}
                                                 </small>
@@ -457,7 +451,9 @@ const CreditNote = () => {
                                                 <div 
                                                     className={(selectedItem?.Status__c === "Refund") ? (Style.creditAmountDetailDebit) : (Style.creditAmountDetail) }
                                                 >
-                                                    <p className={Style.AmountRed}>${selectedItem?.usage?.Wallet_Amount__c}</p>
+                                                    <p className={Style.AmountRed}>
+                                                        ${(selectedItem?.usage?.Wallet_Amount__c) ? formentAcmount(Number(selectedItem?.usage?.Wallet_Amount__c).toFixed(2)) : ''}
+                                                    </p>
                                                     <small>
                                                         { convertDate(selectedItem?.CreatedDate) }
                                                     </small>
@@ -468,7 +464,7 @@ const CreditNote = () => {
                                                     <p>Order Price</p>
                                                 </div>
                                                 <div className={Style.creditAmountDetail2}>
-                                                    <p>${selectedItem?.usedOrder?.Amount}</p>
+                                                    <p>${(selectedItem?.usedOrder?.Amount) ? formentAcmount(Number(selectedItem?.usedOrder?.Amount).toFixed(2)) : '' }</p>
                                                     <small>
                                                         {convertDate(selectedItem?.usedOrder?.CreatedDate)}
                                                     </small>

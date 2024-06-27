@@ -615,38 +615,38 @@ function MyBagFinal() {
                       </div>
 
                       {/* New Total Start */}
-                      {localStorage.getItem("orders") && Object.values(JSON.parse(localStorage.getItem("orders"))).length > 0 ?
-                        (
-                          <div className={Styles.TotalBox}>
-                            <div className={Styles.PreviousPricer}>
-                              <div>
-                                <h2>Total</h2>
-                              </div>
-                              <div>
-                                <h2>${Number(total).toFixed(2)}</h2>
-                              </div>
+                      <div className={Styles.TotalBox}>
+                        <div className={Styles.PreviousPricer}>
+                          <div>
+                            <h2>Total</h2>
+                          </div>
+                          <div>
+                            <h2>${Number(total).toFixed(2)}</h2>
+                          </div>
+                        </div>
+                        {(localStorage.getItem("orders") && Object.values(JSON.parse(localStorage.getItem("orders"))).length > 0) ? (
+                          <>
+                          <div className={Styles.DiscountPricer}>
+                            <div>
+                              <p>Credit Note Discount</p>
                             </div>
-                            <div className={Styles.DiscountPricer}>
-                              <div>
-                                <p>Credit Note Discount</p>
-                              </div>
-                              <div className={Styles.editPrice}>
-                                <h2 className={Styles.disprice}>-${Number(localStorage.getItem('creditAmount')).toFixed(2)}</h2>
-                                <img src="assets/images/pencil-square.png" alt="edit-icon" onClick={handleShowModal} />
-                              </div>
-                            </div>
-                            {/* New Total End */}
-                            <div className={Styles.TotalPricer}>
-                              <div>
-                                <h2>Expected To Pay</h2>
-                              </div>
-                              <div>
-                                <h2>${(localStorage.getItem('creditAmount') > 0) ? Number(total - localStorage.getItem('creditAmount')).toFixed(2) : Number(total).toFixed(2)}</h2>
-                              </div>
+                            <div className={Styles.editPrice}>
+                              <h2 className={Styles.disprice}>-${Number(localStorage.getItem('creditAmount')).toFixed(2)}</h2>
+                              <img src="assets/images/pencil-square.png" alt="edit-icon" onClick={handleShowModal} />
                             </div>
                           </div>
-                        )
-                        : ''}
+                       
+                          <div className={Styles.TotalPricer}>
+                            <div>
+                              <h2>Expected To Pay</h2>
+                            </div>
+                            <div>
+                              <h2>${(localStorage.getItem('creditAmount') > 0) ? Number(total - localStorage.getItem('creditAmount')).toFixed(2) : Number(total).toFixed(2)}</h2>
+                            </div>
+                          </div>
+                          </>
+                        ) : '' }
+                      </div>
                     </div>
                   </div>
                 </div>
