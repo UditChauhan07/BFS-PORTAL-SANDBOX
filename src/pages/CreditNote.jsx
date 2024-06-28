@@ -123,10 +123,7 @@ const CreditNote = () => {
                         item.Wallet_Amount__c?.toString().toLowerCase(),
                         item.CreatedDate ? new Date(item.CreatedDate).toISOString().toLowerCase() : null
                     ]
-                    console.log({fieldsToSearch})
                     const searchResult = fieldsToSearch.some(fieldValue => fieldValue?.includes(lowerCaseKeyword))
-
-                    console.log({searchResult})
 
                     return searchResult
                 }) 
