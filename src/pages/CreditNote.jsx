@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, forwardRef } from 'react';
 // import { useManufacturer } from "../api/useManufacturer";
 import { useRetailersData } from "../api/useRetailersData";
 import Style from "../pages/CreditNote.module.css";
@@ -9,7 +9,9 @@ import { FilterItem } from '../components/FilterItem';
 import { GetAuthData, getCreditNotesList, getManufacturarAmount } from "../lib/store";
 import ModalPage from '../components/Modal UI';
 import Pagination from "../components/Pagination/Pagination";
-// import { SliderValueLabel } from '@mui/material';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { CalenderIcon } from "../lib/svg";
 
 let PageSize = 10
 
@@ -42,6 +44,7 @@ const CreditNote = () => {
     const [selectedItem, setSelectedItem] = useState(null)
     const [manufacturarAmount, setManufacturarAmount] = useState([])
 
+    // console.log({currentDate})
     // Component Modal Function start......//
     const openModal = (item) => {
         setSelectedItem(item)
@@ -157,20 +160,13 @@ const CreditNote = () => {
     }
 
     useEffect(() => {
-        const today = new Date()
-        const year = today.getFullYear()
-        let month = today.getMonth() + 1
-        let day = today.getDate()
-
-        month = month < 10 ? '0' + month : month
-        day = day < 10 ? '0' + day : day
-
-        const formattedDate = `${year}-${month}-${day}`
-        setCurrentDate(formattedDate)
+        let date = new Date()
+        setCurrentDate(date)
     }, [])
 
     const handleDateChange = (event) => {
-        let value = event.target.value
+        let value = new Date(event)
+        // console.log({value})
         setCurrentDate(value)
         setCreatedDateFilter(value)
     }
@@ -275,9 +271,6 @@ const CreditNote = () => {
                     <div className="row p-0 m-0 d-flex flex-column justify-content-around align-items-center col-12">
                     <div className={Style.backTransaction}>
                             <div>
-                                {/* <img src='assets/images/Vector.png' alt='ww' /> */}
-                            </div>
-                            <div>
                                 <h1>
                                     Transactions 
                                     {/* <span className={Style.seaportCSS}>Seaport Salon & Day Spa</span> */}
@@ -327,7 +320,9 @@ const CreditNote = () => {
                                 <div className={Style.filterTransaction2}>
                                     <div className={Style.Calendardate}>
                                         <form action="/action_page.php">
-                                            <input type="date" name="calender" value={currentDate} onChange={handleDateChange} />
+                                            {/* <input type="date" name="calender" value={currentDate} onChange={handleDateChange} /> */}
+                                            <DatePicker selected={currentDate} dateFormat="MMM/dd/yyyy" onChange={handleDateChange}/>
+                                            <CalenderIcon />
                                         </form>
                                     </div>
                                     <div className={Style.TransactionDiv} onMouseEnter={() => setShowDropmenu(true)} onMouseLeave={() => setShowDropmenu(false)}>
