@@ -7,8 +7,11 @@ import ModalPage from '../../../components/Modal UI'
 import { GetAuthData, getRetailerListWithAmount } from '../../../../src/lib/store'
 
 const Header = () => {
-  const navigate = useNavigate();
-  const path = window.location.pathname;
+  const formentAcmount =(amount,totalorderPrice,monthTotalAmount)=>{
+    return `${Number(amount,totalorderPrice,monthTotalAmount).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
+  }
+  const navigate = useNavigate()
+  const path = window.location.pathname
 
   const [ modalOpenA, setModalOpenA ] = useState(false)
   const [ selectedItemA, setSelectedItemA ] = useState(null)
@@ -16,8 +19,7 @@ const Header = () => {
   const [ isLoading, setIsLoading ] = useState(false)
   const [ userData, setUserData ] = useState(null)
   const [checkedId, setCheckedId] = useState(null);
-  const [validationMessage, setValidationMessage] = useState('');
-  const [retailerFilter, setRetailerFilter] = useState()
+  const [validationMessage, setValidationMessage] = useState('')
 
   const handleChange = (event) => {
     const selectedValue = event.target.id
@@ -36,11 +38,6 @@ const Header = () => {
       localStorage.setItem('reatilerFilterValue', checkedId)
       // console.log({newId : localStorage.getItem('reatilerFilterValue')})
       navigate('/credit-note')
-
-      if(path == '/credit-note'){
-        closeModalA()
-        setRetailerFilter(checkedId)
-      }
     }
   }
 
@@ -75,6 +72,49 @@ const Header = () => {
   
   return (
     <div className="d-none-print">
+
+      {(path !== '/credit-note' && modalOpenA) && (<ModalPage
+          open={modalOpenA||false}
+          content={<div className={Style.ModalPart}>
+          <h4>Choose the Retailer</h4>
+            <div className={Style.RetailerMainName}>
+              <div className={Style.RetailerAllName}>
+
+              {retailerAmount.length > 0 ? 
+                retailerAmount.map((entry, index) => (
+                  <div className={Style.Retailers} key={entry.Id}>
+                      <label>
+                        <input 
+                          type='radio' 
+                          id={entry.Id}
+                          name='rate' 
+                          value={entry.Id}
+                          checked={checkedId === entry.Id}
+                          onChange={handleChange}
+                        />
+                        {entry?.Name}
+                      </label>
+                      <div className={Style.RetailerRate}>
+                          {/* <h4>${entry?.amount}</h4> */}
+                          <h4>${formentAcmount(Number(entry?.amount).toFixed(2))}</h4>
+                          <p>Available bal</p>
+                      </div>
+                  </div>
+                ))
+              : '' }
+              </div>
+
+              {validationMessage && <p className={Style.ValidationMessage}>{validationMessage}</p>}
+
+              <div className={Style.ButtonSubmit}>
+                <button className={Style.CancleBtn} onClick={closeModalA}>Cancel</button>
+                <button className={Style.SubmitButton} onClick={handleSubmit}>Submit</button>
+              </div>
+            </div>
+          </div>}
+        onClose={()=>setModalOpenA(false)}
+      />)}
+      
       <div id={`${styles.main}`} className="d-flex justify-content-between  align-items-center gap-1">
         <p className={`m-0 ${styles.text}`}>
           <Link to="/top-products" className="linkStyle">
@@ -122,58 +162,11 @@ const Header = () => {
             Education Center
           </Link>
         </p>
-        <p className={`m-0  ${styles.text}`} onClick={() => openModalA()} >
+        <p className={`m-0  ${styles.text}`} onClick={() => setModalOpenA(true)} >
           {/* <Link to="/credit-note" className="linkStyle"> */}
-          <Link to="" className="linkStyle">
+          {/* <Link to="" className="linkStyle"> */}
           Credit Note
-          </Link>
-
-          {/* credit note modal */}
-          {(path !== '/credit-note' && modalOpenA) && (<ModalPage
-              open={modalOpenA}
-              closeModalA={closeModalA}
-              content={
-                <div className={Style.ModalPart}>
-                  <h4>Choose the Retailer</h4>
-                    <div className={Style.RetailerMainName}>
-                      <div className={Style.RetailerAllName}>
-
-                      {retailerAmount.length > 0 ? 
-                        retailerAmount.map((entry, index) => (
-                          <div className={Style.Retailers} key={entry.Id}>
-                              <label>
-                                <input 
-                                  type='radio' 
-                                  id={entry.Id}
-                                  name='rate' 
-                                  value={entry.Id}
-                                  checked={checkedId === entry.Id}
-                                  onChange={handleChange}
-                                />
-                                {entry?.Name}
-                              </label>
-                              <div className={Style.RetailerRate}>
-                                  <h4>${entry?.amount}</h4>
-                                  <p>Available bal</p>
-                              </div>
-                          </div>
-                        ))
-                      : '' }
-                      </div>
-
-                      {validationMessage && <p className={Style.ValidationMessage}>{validationMessage}</p>}
-
-                      <div className={Style.ButtonSubmit}>
-                        <button className={Style.CancleBtn} onClick={closeModalA}>Cancel</button>
-                        <button className={Style.SubmitButton} onClick={handleSubmit}>Submit</button>
-                      </div>
-                    </div>
-                  </div>
-                }
-              />
-            )}
-
-          {/* credit note modal */}
+          {/* </Link> */}
         </p>
         <p className={`m-0  ${styles.text}`}>
           <Link to="/customer-support" className="linkStyle">
@@ -249,4 +242,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header
