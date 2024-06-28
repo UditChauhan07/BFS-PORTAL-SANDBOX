@@ -27,7 +27,6 @@ const CreditNote = () => {
     // const [isLoadedRetailer, setIsLoadedRetailer] = useState(false)
     const [retailerFilter, setRetailerFilter] = useState()
     const [manufacturerFilter, setManufacturerFilter] = useState()
-    const [manufacturerLabelFilter, setManufacturerLabelFilter] = useState('All Manufacturer')
     const [data, setData] = useState([])
     const [currentDate, setCurrentDate] = useState('')
     const [manufacturers, setManufacturers] = useState([])
@@ -40,8 +39,6 @@ const CreditNote = () => {
     const [showDropmenu, setShowDropmenu] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
-    const [modalOpenA, setModalOpenA] = useState(false)
-    const [selectedItemA, setSelectedItemA] = useState(null)
     const [manufacturarAmount, setManufacturarAmount] = useState([])
 
     // Component Modal Function start......//
@@ -103,8 +100,6 @@ const CreditNote = () => {
         })
     }, [retailerFilter, manufacturerFilter])
 
-    console.log({manufacturerLabelFilter})
-
     const filteredData = useMemo(() => {
         const sortedData = data.filter(item => {
             const manufacturerMatch = manufacturerFilter ? item.Manufacturer__c === manufacturerFilter : true
@@ -115,27 +110,25 @@ const CreditNote = () => {
             : true
 
             const keywords = searchFilter.split(' ').filter(Boolean)
-            // console.log({keywords})
             const keywordMatch = keywords.length > 0 
                 ? keywords.some(keyword => {
                     const lowerCaseKeyword = keyword.toLowerCase();
-                    return Object.values(item).some(value => {
-                        if (typeof value === 'string') {
-                            return value.toLowerCase().includes(lowerCaseKeyword);
-                        } else if (typeof value === 'number') {
-                            return value.toString().includes(lowerCaseKeyword);
-                        } else if (value instanceof Date) {
-                            return value.toISOString().toLowerCase().includes(lowerCaseKeyword);
-                        }
-                        return false;
-                    });
-                }) 
-                : true
-                
-            const isFilterInManufacturers = manufacturers.some(manufacturer => manufacturer.Id === manufacturerFilter)
-            const labelMatch = isFilterInManufacturers ? manufacturers.find(manufacturer => manufacturer.Id === manufacturerFilter)?.Name : "All Manufacturer";
 
-            return manufacturerMatch && retailerMatch && statusMatch && createdDateMatch && keywordMatch && labelMatch
+                    const fieldsToSearch = [
+                        item.Manufacturer?.toLowerCase(),
+                        item.Wallet_Amount__c?.toString().toLowerCase(),
+                        item.CreatedDate ? new Date(item.CreatedDate).toISOString().toLowerCase() : null
+                    ]
+                    console.log({fieldsToSearch})
+                    const searchResult = fieldsToSearch.some(fieldValue => fieldValue?.includes(lowerCaseKeyword))
+
+                    console.log({searchResult})
+
+                    return searchResult
+                }) 
+                : true;
+
+            return manufacturerMatch && retailerMatch && statusMatch && createdDateMatch && keywordMatch
         })
 
         if (sortOrder === 'A-Z') {
@@ -149,9 +142,8 @@ const CreditNote = () => {
         }
 
         setCurrentPage(1)
-        console.log({sortedData})
         return sortedData   
-    }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder, manufacturers ])
+    }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder ])
 
     const brandBtnHandler = ({ manufacturerId }) => {
         // setIsLoadedManufacture(false)
@@ -211,7 +203,6 @@ const CreditNote = () => {
 
     const handleKeywordChange = (event) => {
         let value = event.target.value
-        console.log({searchKeyword : value})
         setSearchFilter(value)
     }
 
@@ -261,15 +252,20 @@ const CreditNote = () => {
 
                         <FilterItem
                             minWidth="220px"
-                            label={manufacturerLabelFilter || "All Manufacturer" }
+                            label="All Manufacturer"
                             name="Manufacturer"
                             value={manufacturerFilter}
-                            options={manufacturers && Array.isArray(manufacturers) ? manufacturers.map((manufacturer) => ({
-                                label: manufacturer.Name || "All Manufacturer",
-                                value: manufacturer.Id,
-                            })) : []}
+                            options={
+                                manufacturers && Array.isArray(manufacturers) 
+                                ? manufacturers.map((manufacturer) => ({
+                                    label: manufacturer.Name,
+                                    value: manufacturer.Id,
+                                })) 
+                                : []
+                            }
                             onChange={(value) => brandBtnHandler({ manufacturerId: value })}
                         />
+
 
                     </>
                 }
