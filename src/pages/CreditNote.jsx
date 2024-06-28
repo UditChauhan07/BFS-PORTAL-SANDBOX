@@ -278,7 +278,7 @@ const CreditNote = () => {
                             </div>
                         </div>
 
-                        { isLoadedManufacture ? 
+                        { !isLoadedManufacture ? 
                             (
                                 <div className={Style.BrandGroup}>
                                     {Array.isArray(manufacturarAmount) && manufacturarAmount.length > 0 ? (
@@ -297,7 +297,7 @@ const CreditNote = () => {
                                     ''
                                     )}
                                 </div> 
-                            ) : (<LoadingSmall className={Style.loaderSmall} style="display: flex !important; justify-content: start !important"  height={"5vh"} />)
+                            ) : (<LoadingSmall className={Style.loaderSmall}  height={"5vh"} />)
                         }
 
 

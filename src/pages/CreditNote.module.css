@@ -313,12 +313,21 @@ margin-bottom: 1rem;
     /* width: 50%; */
 }
 .Calendardate input{
-    width: 80%;
+    width: 97px;
     font-weight: 500;
     color: rgba(0, 0, 0, 1);
     margin-left: 3px;
     outline: none;
 }
+
+.Calendardate form{
+    display: flex;
+    align-items: center;
+    }
+    .Calendardate form svg path{
+        fill: #000;
+    }
+
 .TransactionDiv{
     /* width: 50%; */
     display: flex;
@@ -356,6 +365,7 @@ margin-bottom: 1rem;
 }
 .filterTransaction2 {
     display: flex;
+    gap: 17px;
     border: 1px solid rgba(0, 0, 0, 1);
     border-style: dotted;
     /* width: 27%; */
@@ -885,3 +895,4 @@ margin: 0 0 30px 0;
     display: flex;
     justify-content: flex-start !important;
   }
+

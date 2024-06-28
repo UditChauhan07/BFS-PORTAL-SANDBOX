@@ -164,9 +164,9 @@ const Header = () => {
         </p>
         <p className={`m-0  ${styles.text}`} onClick={() => setModalOpenA(true)} >
           {/* <Link to="/credit-note" className="linkStyle"> */}
-          {/* <Link to="" className="linkStyle"> */}
+          <Link to="" className="linkStyle">
           Credit Note
-          {/* </Link> */}
+          </Link>
         </p>
         <p className={`m-0  ${styles.text}`}>
           <Link to="/customer-support" className="linkStyle">

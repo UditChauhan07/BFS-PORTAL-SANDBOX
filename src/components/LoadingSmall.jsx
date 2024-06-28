@@ -5,10 +5,10 @@ const LoadingSmall = ({height}) => {
   // console.log(minHeight);
   return (
     <div
-      className="d-flex justify-content-start align-items-center"
+      className="d-flex justify-content-center align-items-center"
       style={{ minHeight: `${minHeight}`  }}
     >
-      <div className="spinner-border "   role="status">
+      <div className="spinner-border smallLoader "   role="status">
         <span className="visually-hidden">Loading...</span>
       </div>
     </div>
