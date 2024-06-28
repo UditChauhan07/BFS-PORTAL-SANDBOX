@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, forwardRef } from 'react';
 // import { useManufacturer } from "../api/useManufacturer";
 import { useRetailersData } from "../api/useRetailersData";
 import Style from "../pages/CreditNote.module.css";
 import Loading from "../components/Loading";
+import LoadingSmall from "../components/LoadingSmall" ;
 import AppLayout from '../components/AppLayout';
 import { FilterItem } from '../components/FilterItem';
 import { GetAuthData, getCreditNotesList, getManufacturarAmount } from "../lib/store";
 import ModalPage from '../components/Modal UI';
 import Pagination from "../components/Pagination/Pagination";
-// import { SliderValueLabel } from '@mui/material';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { CalenderIcon } from "../lib/svg";
 
 let PageSize = 10
 
@@ -27,7 +30,6 @@ const CreditNote = () => {
     // const [isLoadedRetailer, setIsLoadedRetailer] = useState(false)
     const [retailerFilter, setRetailerFilter] = useState()
     const [manufacturerFilter, setManufacturerFilter] = useState()
-    const [manufacturerLabelFilter, setManufacturerLabelFilter] = useState('All Manufacturer')
     const [data, setData] = useState([])
     const [currentDate, setCurrentDate] = useState('')
     const [manufacturers, setManufacturers] = useState([])
@@ -40,10 +42,9 @@ const CreditNote = () => {
     const [showDropmenu, setShowDropmenu] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
-    const [modalOpenA, setModalOpenA] = useState(false)
-    const [selectedItemA, setSelectedItemA] = useState(null)
     const [manufacturarAmount, setManufacturarAmount] = useState([])
 
+    // console.log({currentDate})
     // Component Modal Function start......//
     const openModal = (item) => {
         setSelectedItem(item)
@@ -103,8 +104,6 @@ const CreditNote = () => {
         })
     }, [retailerFilter, manufacturerFilter])
 
-    console.log({manufacturerLabelFilter})
-
     const filteredData = useMemo(() => {
         const sortedData = data.filter(item => {
             const manufacturerMatch = manufacturerFilter ? item.Manufacturer__c === manufacturerFilter : true
@@ -115,27 +114,25 @@ const CreditNote = () => {
             : true
 
             const keywords = searchFilter.split(' ').filter(Boolean)
-            // console.log({keywords})
             const keywordMatch = keywords.length > 0 
                 ? keywords.some(keyword => {
                     const lowerCaseKeyword = keyword.toLowerCase();
-                    return Object.values(item).some(value => {
-                        if (typeof value === 'string') {
-                            return value.toLowerCase().includes(lowerCaseKeyword);
-                        } else if (typeof value === 'number') {
-                            return value.toString().includes(lowerCaseKeyword);
-                        } else if (value instanceof Date) {
-                            return value.toISOString().toLowerCase().includes(lowerCaseKeyword);
-                        }
-                        return false;
-                    });
-                }) 
-                : true
-                
-            const isFilterInManufacturers = manufacturers.some(manufacturer => manufacturer.Id === manufacturerFilter)
-            const labelMatch = isFilterInManufacturers ? manufacturers.find(manufacturer => manufacturer.Id === manufacturerFilter)?.Name : "All Manufacturer";
 
-            return manufacturerMatch && retailerMatch && statusMatch && createdDateMatch && keywordMatch && labelMatch
+                    const fieldsToSearch = [
+                        item.Manufacturer?.toLowerCase(),
+                        item.Wallet_Amount__c?.toString().toLowerCase(),
+                        item.CreatedDate ? new Date(item.CreatedDate).toISOString().toLowerCase() : null
+                    ]
+                    console.log({fieldsToSearch})
+                    const searchResult = fieldsToSearch.some(fieldValue => fieldValue?.includes(lowerCaseKeyword))
+
+                    console.log({searchResult})
+
+                    return searchResult
+                }) 
+                : true;
+
+            return manufacturerMatch && retailerMatch && statusMatch && createdDateMatch && keywordMatch
         })
 
         if (sortOrder === 'A-Z') {
@@ -149,9 +146,8 @@ const CreditNote = () => {
         }
 
         setCurrentPage(1)
-        console.log({sortedData})
         return sortedData   
-    }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder, manufacturers ])
+    }, [ data, manufacturerFilter, retailerFilter, recordStatusFilter, createdDateFilter, searchFilter, sortOrder ])
 
     const brandBtnHandler = ({ manufacturerId }) => {
         // setIsLoadedManufacture(false)
@@ -164,20 +160,13 @@ const CreditNote = () => {
     }
 
     useEffect(() => {
-        const today = new Date()
-        const year = today.getFullYear()
-        let month = today.getMonth() + 1
-        let day = today.getDate()
-
-        month = month < 10 ? '0' + month : month
-        day = day < 10 ? '0' + day : day
-
-        const formattedDate = `${year}-${month}-${day}`
-        setCurrentDate(formattedDate)
+        let date = new Date()
+        setCurrentDate(date)
     }, [])
 
     const handleDateChange = (event) => {
-        let value = event.target.value
+        let value = new Date(event)
+        // console.log({value})
         setCurrentDate(value)
         setCreatedDateFilter(value)
     }
@@ -211,7 +200,6 @@ const CreditNote = () => {
 
     const handleKeywordChange = (event) => {
         let value = event.target.value
-        console.log({searchKeyword : value})
         setSearchFilter(value)
     }
 
@@ -261,15 +249,20 @@ const CreditNote = () => {
 
                         <FilterItem
                             minWidth="220px"
-                            label={manufacturerLabelFilter || "All Manufacturer" }
+                            label="All Manufacturer"
                             name="Manufacturer"
                             value={manufacturerFilter}
-                            options={manufacturers && Array.isArray(manufacturers) ? manufacturers.map((manufacturer) => ({
-                                label: manufacturer.Name || "All Manufacturer",
-                                value: manufacturer.Id,
-                            })) : []}
+                            options={
+                                manufacturers && Array.isArray(manufacturers) 
+                                ? manufacturers.map((manufacturer) => ({
+                                    label: manufacturer.Name,
+                                    value: manufacturer.Id,
+                                })) 
+                                : []
+                            }
                             onChange={(value) => brandBtnHandler({ manufacturerId: value })}
                         />
+
 
                     </>
                 }
@@ -277,9 +270,6 @@ const CreditNote = () => {
                 <div className="container p-0 ">
                     <div className="row p-0 m-0 d-flex flex-column justify-content-around align-items-center col-12">
                     <div className={Style.backTransaction}>
-                            <div>
-                                {/* <img src='assets/images/Vector.png' alt='ww' /> */}
-                            </div>
                             <div>
                                 <h1>
                                     Transactions 
@@ -307,7 +297,7 @@ const CreditNote = () => {
                                     ''
                                     )}
                                 </div> 
-                            ) : ('')
+                            ) : (<LoadingSmall className={Style.loaderSmall}  height={"5vh"} />)
                         }
 
 
@@ -330,7 +320,9 @@ const CreditNote = () => {
                                 <div className={Style.filterTransaction2}>
                                     <div className={Style.Calendardate}>
                                         <form action="/action_page.php">
-                                            <input type="date" name="calender" value={currentDate} onChange={handleDateChange} />
+                                            {/* <input type="date" name="calender" value={currentDate} onChange={handleDateChange} /> */}
+                                            <DatePicker selected={currentDate} dateFormat="MMM/dd/yyyy" onChange={handleDateChange}/>
+                                            <CalenderIcon />
                                         </form>
                                     </div>
                                     <div className={Style.TransactionDiv} onMouseEnter={() => setShowDropmenu(true)} onMouseLeave={() => setShowDropmenu(false)}>
