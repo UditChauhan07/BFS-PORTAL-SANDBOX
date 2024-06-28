@@ -303,7 +303,7 @@ const CreditNote = () => {
                                     ''
                                     )}
                                 </div> 
-                            ) : ('')
+                            ) : (<Loading height={"5vh"} />)
                         }
 
 
