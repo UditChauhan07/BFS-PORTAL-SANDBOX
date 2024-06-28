@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useRetailersData } from "../api/useRetailersData";
 import Style from "../pages/CreditNote.module.css";
 import Loading from "../components/Loading";
+import LoadingSmall from "../components/LoadingSmall" ;
 import AppLayout from '../components/AppLayout';
 import { FilterItem } from '../components/FilterItem';
 import { GetAuthData, getCreditNotesList, getManufacturarAmount } from "../lib/store";
@@ -284,7 +285,7 @@ const CreditNote = () => {
                             </div>
                         </div>
 
-                        { !isLoadedManufacture ? 
+                        { isLoadedManufacture ? 
                             (
                                 <div className={Style.BrandGroup}>
                                     {Array.isArray(manufacturarAmount) && manufacturarAmount.length > 0 ? (
@@ -303,7 +304,7 @@ const CreditNote = () => {
                                     ''
                                     )}
                                 </div> 
-                            ) : (<Loading height={"5vh"} />)
+                            ) : (<LoadingSmall className={Style.loaderSmall} style="display: flex !important; justify-content: start !important"  height={"5vh"} />)
                         }
 
 

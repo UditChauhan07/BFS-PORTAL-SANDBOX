@@ -879,3 +879,9 @@ margin: 0 0 30px 0;
     font-size: 14px !important;
     margin-top: 10px;
   }
+
+  
+  .loaderSmall{
+    display: flex;
+    justify-content: flex-start !important;
+  }
