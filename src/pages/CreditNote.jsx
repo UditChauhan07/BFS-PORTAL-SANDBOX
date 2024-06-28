@@ -44,7 +44,6 @@ const CreditNote = () => {
     const [selectedItem, setSelectedItem] = useState(null)
     const [manufacturarAmount, setManufacturarAmount] = useState([])
 
-    // console.log({currentDate})
     // Component Modal Function start......//
     const openModal = (item) => {
         setSelectedItem(item)
@@ -87,7 +86,7 @@ const CreditNote = () => {
                     setIsLoading(false)
                 })
 
-            getManufacturarAmount(user.x_access_token, retailerFilter, user.Sales_Rep__c)
+            getManufacturarAmount(user.x_access_token, retailerFilterValue, user.Sales_Rep__c)
                 .then((amtData) => {
                     setManufacturarAmount(amtData)
                     setManufacturers(amtData)
@@ -163,7 +162,6 @@ const CreditNote = () => {
 
     const handleDateChange = (event) => {
         let value = new Date(event)
-        // console.log({value})
         setCurrentDate(value)
         setCreatedDateFilter(value)
     }
@@ -178,7 +176,6 @@ const CreditNote = () => {
     ///...........Function for Filter start.....//
 
     const handleMenuClick = (option) => {
-        // console.log({option})
         setSelectedOption2(option)
         setShowDropmenu(false)
         let status
@@ -191,7 +188,6 @@ const CreditNote = () => {
         } else {
             status = ''
         }
-        console.log({status})
         setRecordStatusFilter(status)
     }
 
