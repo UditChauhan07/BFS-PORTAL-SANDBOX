@@ -323,17 +323,17 @@ margin-bottom: 1rem;
 
 .Calendardate form{
     display: flex;
-    align-items: center;
+        align-items: center;
     }
+
     .Calendardate form svg path{
         fill: #000;
     }
 
     .Calendardate form svg{
         width: 20px;
-    height: 20px;
-    margin: 5px 0 0 0;
-    
+        height: 20px;
+        margin: 5px 0px 0px 8px;
     }
 
 .TransactionDiv{
@@ -896,11 +896,17 @@ margin: 0 0 30px 0;
     color: red !important;
     font-size: 14px !important;
     margin-top: 10px;
-  }
+}
 
   
-  .loaderSmall{
+.loaderSmall{
     display: flex;
     justify-content: flex-start !important;
-  }
+}
 
+.componentDatePicker {
+    cursor: pointer;
+    padding: 5px 10px;
+    display: inline-flex;
+    align-items: center;
+}

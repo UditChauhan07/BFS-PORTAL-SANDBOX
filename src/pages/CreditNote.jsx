@@ -15,7 +15,15 @@ import { CalenderIcon } from "../lib/svg";
 
 let PageSize = 10
 
+
 const CreditNote = () => {
+    const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
+        <div className={Style.componentDatePicker} onClick={onClick} ref={ref} >
+            {value || 'Select Date'}
+            <CalenderIcon />
+        </div>
+    ));
+  
     const formentAcmount =(amount,totalorderPrice,monthTotalAmount)=>{
         return `${Number(amount,totalorderPrice,monthTotalAmount).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`
     }
@@ -197,10 +205,33 @@ const CreditNote = () => {
     }
 
     const convertDate = (isoDate) => {
-        const date = new Date(isoDate)
-        const options = { day: '2-digit', month: 'short', year: 'numeric' }
-        return date.toLocaleDateString('en-GB', options)
+        const date = new Date(isoDate);
+        
+        // Get formatted components
+        const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
+        const month = date.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase();
+        const year = date.toLocaleDateString('en-GB', { year: 'numeric' });
+    
+        // Construct the desired format
+        return `${month} ${day}, ${year}`;
     };
+
+    const convertDateTime = (isoDate) => {
+        const date = new Date(isoDate);
+        
+        // Get formatted date components
+        const day = date.toLocaleDateString('en-GB', { day: '2-digit' });
+        const month = date.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase();
+        const year = date.toLocaleDateString('en-GB', { year: 'numeric' });
+        
+        // Get formatted time components
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        
+        // Construct the desired format
+        return `${month} ${day}, ${year} ${hours}:${minutes}`;
+    };
+
     //.........DropDowwn2 Function End......///
 
     const currentTableData = filteredData.slice(
@@ -314,8 +345,8 @@ const CreditNote = () => {
                                     <div className={Style.Calendardate}>
                                         <form action="/action_page.php">
                                             {/* <input type="date" name="calender" value={currentDate} onChange={handleDateChange} /> */}
-                                            <DatePicker selected={currentDate} dateFormat="MMM/dd/yyyy" onChange={handleDateChange}/>
-                                            <CalenderIcon />
+                                            <DatePicker selected={currentDate} dateFormat="MMM/dd/yyyy" onChange={handleDateChange} customInput={<ExampleCustomInput />} />
+                                            {/* <CalenderIcon /> */}
                                         </form>
                                     </div>
                                     <div className={Style.TransactionDiv} onMouseEnter={() => setShowDropmenu(true)} onMouseLeave={() => setShowDropmenu(false)}>
@@ -384,7 +415,7 @@ const CreditNote = () => {
                                                                 </p>
                                                             )}
                                                             <small>
-                                                                {formatDateToCustomFormat(item.CreatedDate)}
+                                                                {convertDateTime(item.CreatedDate)}
                                                             </small>
                                                         </div>
 
