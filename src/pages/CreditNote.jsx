@@ -344,9 +344,7 @@ const CreditNote = () => {
                                 <div className={Style.filterTransaction2}>
                                     <div className={Style.Calendardate}>
                                         <form action="/action_page.php">
-                                            {/* <input type="date" name="calender" value={currentDate} onChange={handleDateChange} /> */}
                                             <DatePicker selected={currentDate} dateFormat="MMM/dd/yyyy" onChange={handleDateChange} customInput={<ExampleCustomInput />} />
-                                            {/* <CalenderIcon /> */}
                                         </form>
                                     </div>
                                     <div className={Style.TransactionDiv} onMouseEnter={() => setShowDropmenu(true)} onMouseLeave={() => setShowDropmenu(false)}>
