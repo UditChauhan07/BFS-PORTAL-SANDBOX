@@ -15,7 +15,6 @@ import { CalenderIcon } from "../lib/svg";
 
 let PageSize = 10
 
-
 const CreditNote = () => {
     const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
         <div className={Style.componentDatePicker} onClick={onClick} ref={ref} >
