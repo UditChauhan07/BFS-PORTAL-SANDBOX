@@ -3,7 +3,7 @@ import AppLayout from "../../components/AppLayout";
 import Loading from "../../components/Loading";
 import Styles from "./index.module.css";
 import Table from "../../components/Material/table";
-import { getMarkertingMaterial } from "../../lib/store";
+import { GetAuthData, getMarkertingMaterial } from "../../lib/store";
 
 const MarketingMaterial = () => {
   // const [user, setUser] = useState()
@@ -16,9 +16,17 @@ const MarketingMaterial = () => {
 
   const sendApiCall = async () => {
     setIsLoading(true)
-    const result = await getMarkertingMaterial()
-    setApiData(result)
-    setIsLoading(false)
+    GetAuthData().then((user)=>{
+      getMarkertingMaterial({saleRepId:user.Sales_Rep__c,token:user.x_access_token}).then((result)=>{
+        setApiData(result)
+        setIsLoading(false)
+      }).catch((resErr)=>{
+        console.log({resErr});
+        
+      })
+    }).catch((userErr)=>{
+      console.log({userErr});
+    })
   }
 
   // const getUserData = async () => {

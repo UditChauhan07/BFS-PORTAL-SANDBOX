@@ -965,16 +965,8 @@ export async function uploadFileSupport({key,supportId,files}){
   }
 }
 
-export async function getMarkertingMaterial() {
-  let user = GetAuthData()
+export async function getMarkertingMaterial({saleRepId,token}) {
 
-  // console.log({user})
-
-  let saleRepId = user?.Sales_Rep__c
-  let token = user?.x_access_token
-
-  // let saleRepId = '0053b00000DgAVKAA3'
-  // let token = "00DO8000001NKS5!AQEAQC54cydfyWi6PsiARD8oJ8HC3whS.UxD83Ff.pkyemw3RMKyaCgoOovMo0qN_E8A9qZN_28GML8Yh4Dei8XWHaFdouN6"
 
   let headersList = {
     Accept: "*/*",
